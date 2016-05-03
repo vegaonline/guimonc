@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.chart.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" fx:id="plotMainAnchorPane" prefHeight="418.0" prefWidth="623.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="moncgui.AnalyzerController">
+   <children>
+      <TableView fx:id="plotTable" blendMode="SOFT_LIGHT" cache="true" editable="true" layoutX="9.0" layoutY="194.0" prefHeight="200.0" tableMenuButtonVisible="true">
+        <columns>            
+          <TableColumn fx:id="plotTabC1" maxWidth="-1.0" minWidth="-1.0" prefWidth="-1.0" text="" />
+          <TableColumn fx:id="plotTabC2" maxWidth="-1.0" minWidth="-1.0" prefWidth="-1.0" text="" /> 
+          <TableColumn fx:id="plotTabC3" maxWidth="-1.0" minWidth="-1.0" prefWidth="-1.0" text="" />
+          <TableColumn fx:id="plotTabC4" maxWidth="-1.0" minWidth="-1.0" prefWidth="-1.0" text="" />          
+          <TableColumn fx:id="plotTabC5" maxWidth="-1.0" minWidth="-1.0" prefWidth="-1.0" text="" />          
+          <TableColumn fx:id="plotTabC6" maxWidth="-1.0" minWidth="-1.0" prefWidth="-1.0" text="" />          
+        </columns>
+
+         <padding>
+            <Insets left="2.0" />
+         </padding>
+      </TableView>
+      <Button fx:id="plotFileOpener" layoutX="10.0" layoutY="6.0" mnemonicParsing="false" onAction="#plotFileOpen" prefHeight="29.0" prefWidth="104.0" text="Open" />
+      <ComboBox fx:id="plotType" layoutX="10.0" layoutY="35.0" prefHeight="29.0" prefWidth="104.0" promptText="Plot Type" visibleRowCount="3" />
+      <ComboBox fx:id="plotStyle" layoutX="10.0" layoutY="64.0" prefHeight="29.0" prefWidth="104.0" promptText="Plot Style" visibleRowCount="3" />
+      <Button fx:id="plotIt" layoutX="10.0" layoutY="93.0" mnemonicParsing="false" onAction="#plotItNow" prefHeight="29.0" prefWidth="104.0" text="Plot" />
+      <ComboBox fx:id="plotExport" layoutX="10.0" layoutY="122.0" onAction="#plotPNGJPG" prefHeight="29.0" prefWidth="104.0" promptText="Export To" visibleRowCount="2" />
+      <Button fx:id="plotClear" layoutX="10.0" layoutY="151.0" mnemonicParsing="false" onAction="#plotClearArea" prefHeight="29.0" prefWidth="104.0" text="RESET" />
+      <ChoiceBox fx:id="selectX" layoutX="118.0" layoutY="33.0" prefHeight="33.0" prefWidth="104.0" />
+      <ChoiceBox fx:id="selectY" layoutX="118.0" layoutY="76.0" prefHeight="33.0" prefWidth="104.0" />
+      <ChoiceBox fx:id="selectZ" layoutX="118.0" layoutY="119.0" prefHeight="33.0" prefWidth="104.0" />
+      <AnchorPane fx:id="plotAnchor2Plot" layoutX="276.0" layoutY="14.0" prefHeight="337.0" prefWidth="339.0" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="280.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
+      <Label layoutX="255.0" layoutY="385.0" text="Title" />
+      <TextField fx:id="plotChartTitle" layoutX="292.0" layoutY="380.0" promptText="Enter Plot title" />
+   </children>
+</AnchorPane>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.input.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" 
+            minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" 
+            prefWidth="600.0" xmlns="http://javafx.com/javafx/8" 
+            xmlns:fx="http://javafx.com/fxml/1" 
+            fx:controller="moncgui.RootLayoutController">
+   <top>
+      <MenuBar>
+        <menus>
+          <Menu fx:id="doConfig" mnemonicParsing="false" text="Configure">
+               <items>
+                  <MenuItem fx:id="doConfigNew" mnemonicParsing="false" 
+                            onAction="#confNew" text="New" />
+                  <MenuItem fx:id="doConfigOpen" mnemonicParsing="false" 
+                            onAction="#confOpen" text="Open" />
+                  <MenuItem fx:id="doConfigSave" mnemonicParsing="false" 
+                            onAction="#confSave" text="Save" />
+                  <MenuItem fx:id="doQuit" mnemonicParsing="false" onAction="#handleExit" 
+                            text="Exit" />
+               </items>
+          </Menu>
+          <Menu fx:id="doGeom" mnemonicParsing="false" text="Geometry">
+            <items>
+                  <MenuItem fx:id="doGeomStart" mnemonicParsing="false" 
+                            onAction="#GeomInitialize" text="Start Design" />
+              <MenuItem fx:id="doGeomClear" mnemonicParsing="false" text="Clear" />
+                  <MenuItem mnemonicParsing="false" text="Update" />
+            </items>
+          </Menu>
+          <Menu fx:id="doRun" mnemonicParsing="false" text="Run" />
+            <Menu fx:id="anaLyzePlot" mnemonicParsing="false" text="Analyze and Report">
+               <items>
+                  <MenuItem fx:id="analyzePlot" mnemonicParsing="false" onAction="#doPlot" 
+                            text="Plot" />
+                  <MenuItem mnemonicParsing="false" text="Prepare Report" />
+               </items></Menu>
+        </menus>
+      </MenuBar>
+   </top>
+</BorderPane>

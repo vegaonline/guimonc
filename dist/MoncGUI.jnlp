@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jnlp spec="1.0" xmlns:jfx="http://javafx.com" href="MoncGUI.jnlp">
+  <information>
+    <title>MoncGUI</title>
+    <vendor>Abhijit Bhattacharyya, NPD< BARC, INDIA</vendor>
+    <description>null</description>
+    <offline-allowed/>
+  </information>
+  <resources>
+    <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
+    <jar href="MoncGUI.jar" size="30046" download="eager" />
+    <jar href="lib/gluegen-rt-natives-linux-amd64.jar" size="6877" download="eager" />
+    <jar href="lib/gluegen-rt.jar" size="210226" download="eager" />
+    <jar href="lib/gluegen2-rt-natives.jar" size="21556" download="eager" />
+    <jar href="lib/gluegen2-rt.jar" size="389717" download="eager" />
+    <jar href="lib/jogl-all-natives-linux-amd64.jar" size="148986" download="eager" />
+    <jar href="lib/jogl-all.jar" size="4770608" download="eager" />
+    <jar href="lib/jogl2.jar" size="3685649" download="eager" />
+    <jar href="lib/jzy3d-api-0.9.1-maths-io.jar" size="84226" download="eager" />
+    <jar href="lib/jzy3d-api-0.9.1.jar" size="617033" download="eager" />
+    <jar href="lib/jzy3d-convexhull-awt-0.9.1.jar" size="271445" download="eager" />
+    <jar href="lib/jzy3d-depthpeeling-0.9.1.jar" size="43917" download="eager" />
+    <jar href="lib/jzy3d-g2d-0.9.1.jar" size="10003" download="eager" />
+    <jar href="lib/jzy3d-javafx-1.0.0-20160304.181247-1.jar" size="20128" download="eager" />
+    <jar href="lib/jzy3d-jdt-core-0.9.1.jar" size="31395" download="eager" />
+    <jar href="lib/jzy3d-svm-mapper-0.9.1.jar" size="18933" download="eager" />
+    <jar href="lib/jzy3d-swt-0.9.1.jar" size="12560" download="eager" />
+    <jar href="lib/jzy3d-tools-libsvm-0.9.1.jar" size="54053" download="eager" />
+  </resources>
+  <applet-desc  width="800" height="600" main-class="com.javafx.main.NoJavaFXFallback"  name="MoncGUI" >
+    <param name="requiredFXVersion" value="8.0+"/>
+  </applet-desc>
+  <jfx:javafx-desc  width="800" height="600" main-class="moncgui.MoncGUI"  name="MoncGUI" />
+  <update check="always"/>
+</jnlp>

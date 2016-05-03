@@ -1,0 +1,14 @@
+/*
+ * Empty Stylesheet file.
+ */
+
+.mainFxmlClass {
+
+.split-pane > *.split-pane-divider {
+    -fx-padding: 0 0.75em 0 0.75em;
+}
+.split-pane-divider {
+    -fx-background-color: transparent;
+}
+
+}

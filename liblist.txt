@@ -1,0 +1,17 @@
+gluegen2-rt.jar
+gluegen2-rt-natives.jar
+gluegen-rt.jar
+gluegen-rt-natives-linux-amd64.jar
+jogl2.jar
+jogl-all.jar
+jogl-all-natives-linux-amd64.jar
+jzy3d-api-0.9.1.jar
+jzy3d-api-0.9.1-maths-io.jar
+jzy3d-convexhull-awt-0.9.1.jar
+jzy3d-depthpeeling-0.9.1.jar
+jzy3d-g2d-0.9.1.jar
+jzy3d-javafx-1.0.0-20160304.181247-1.jar
+jzy3d-jdt-core-0.9.1.jar
+jzy3d-svm-mapper-0.9.1.jar
+jzy3d-swt-0.9.1.jar
+jzy3d-tools-libsvm-0.9.1.jar
