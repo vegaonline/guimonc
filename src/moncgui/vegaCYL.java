@@ -8,7 +8,6 @@ package moncgui;
 import java.util.*;
 import javafx.collections.ObservableFloatArray;
 import javafx.geometry.Point3D;
-import javafx.scene.paint.*;
 import javafx.scene.shape.TriangleMesh;
 
 /**
@@ -148,11 +147,5 @@ public class vegaCYL extends TriangleMesh {
         throw new UnsupportedOperationException ("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    final Material getDefMat() {
-        final PhongMaterial redMaterial = new PhongMaterial ();
-        redMaterial.setDiffuseColor (Color.DARKRED);
-        redMaterial.setSpecularColor (Color.RED);
-        return redMaterial;
-    }
 
 }

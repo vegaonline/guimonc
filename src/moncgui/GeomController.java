@@ -7,13 +7,12 @@ package moncgui;
 
 import java.net.URL;
 import java.util.*;
-import javafx.beans.value.*;
 import javafx.event.*;
 import javafx.fxml.*;
 import javafx.geometry.*;
 import javafx.scene.*;
 import javafx.scene.control.*;
-import javafx.scene.input.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.*;
 import javafx.scene.shape.*;
@@ -34,8 +33,8 @@ public class GeomController implements Initializable {
 
     private Stage newStage;
     private Scene newScene;
-
-    private TriangleMesh cylMesh;
+    private CameraView camV;
+    private Axis3D axis;
 
     private final ScrollBar scB = new ScrollBar ();
     private final SplitPane paramPane1 = new SplitPane ();
@@ -119,21 +118,30 @@ public class GeomController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        camV = new CameraView ();
         buildScene ();
-        setMaterial ();
-        //buildAxes ();
 
-        geoScene = new Scene (rootGr, geoWidth, geoHeight, true);
-        //geoScene = new Scene (cameraView, geoWidth, geoHeight, true);
+        //geoScene = new Scene (rootGr, geoWidth, geoHeight, true);
+        geoScene = new Scene (camV, geoWidth, geoHeight, true);
 
         geoScene.setFill (new RadialGradient (225, 0.85, centerX, centerY,
                 drawWidth, false,
                 CycleMethod.NO_CYCLE, new Stop[]{new Stop (0f, Color.BLUE),
                     new Stop (1f, Color.LIGHTBLUE)}));
-        
+
         buildCamera (geoScene);
 //        geoStage.setScene (geoScene);
-        
+
+        Context3D context = Context3D.getInstance (camV);
+        context.lighting = new Lighting3D ();
+        context.lighting.add (Lighting3D.Type.DIFFUSE,
+                Lighting3D.Source.PARALLEL, 1.5, new Vector3D (1, 0.8, 0.6));
+        context.lighting.add (Lighting3D.Type.DIFFUSE,
+                Lighting3D.Source.PARALLEL, 1.0, new Vector3D (-1, -0.8, 0.6));
+        context.lighting.add (Lighting3D.Type.DIFFUSE,
+                Lighting3D.Source.PARALLEL, 0.5, new Vector3D (0, -0.2, -0.8));
+        axis = buildAxes ();
+        camV.add (axis);
     }
 
     private void buildScene() {
@@ -162,116 +170,22 @@ public class GeomController implements Initializable {
 
         geoMainArea.setLeft (paramPane);
         geoMainArea.setRight (drawPane);
-        scB.setLayoutX (drawWidth - scB.getWidth ());
-        scB.setMin (0);
-        scB.setOrientation (Orientation.VERTICAL);
-        scB.setPrefHeight (drawHeight - 10);
-        scB.setMax (400);
-
-        scB.valueProperty ().addListener (new ChangeListener<Number> () {
-            public void changed(ObservableValue<? extends Number> ov,
-                    Number old_val, Number new_val) {
-                drawPane.setLayoutY (-new_val.doubleValue ());
-            }
-        });
-        cylMesh = new TriangleMesh ();
     }
 
     private PerspectiveCamera buildCamera(Scene scene) {
         PerspectiveCamera cam = new PerspectiveCamera (true);
-        cam.setNearClip (0.1);
-        cam.setFarClip (10000.0);
-        cam.setTranslateX (250);
-        cam.setTranslateY (250);
-        cam.setTranslateZ (-cameraDistance);
+        //cam.setNearClip (0.1);
+        //cam.setFarClip (10000.0);
+        //cam.setTranslateX (250);
+        //cam.setTranslateY (250);
+        //cam.setTranslateZ (-cameraDistance);
         scene.setCamera (cam);
         return cam;
     }
 
-    private void buildAxes() {
-        /*
-         * axis = new Axis3D (50); axis.setTranslateX (20); axis.setTranslateY
-         * (10); axis.setTranslateZ (10); cameraView.add (axis);
-         * drawPane.getItems ().add (cameraView);
-         */
-    }
-
-    private void buildAxesOld() {
-        PhongMaterial XAxisMat = null;
-        PhongMaterial YAxisMat = null;
-        PhongMaterial ZAxisMat = null;
-        String XMat = "redMaterial", YMat = "blueMaterial", ZMat
-                = "greenMaterial";
-
-        int queVal = 0, Xque = 0, Yque = 0, Zque = 0, net = 3;
-        for ( String s : materialNames ) {
-            if ( s == XMat ) {
-                Xque = queVal;
-                net--;
-            } else if ( s == YMat ) {
-                Yque = queVal;
-                net--;
-            } else if ( s == ZMat ) {
-                Zque = queVal;
-                net--;
-            }
-            if ( net == 0 ) {
-                break;
-            }
-            queVal++;
-        }
-        XAxisMat = MaterialList.get (Xque);
-        YAxisMat = MaterialList.get (Yque);
-        ZAxisMat = MaterialList.get (Zque);
-
-        //final Box xAxis = new Box (lineLength, lineHeight, lineDepth);
-        //final Box yAxis = new Box (lineHeight, lineLength, lineDepth); // Box(1, 240, 1);
-        //final Box zAxis = new Box (lineHeight, lineDepth, lineLength); // Box(1, 1, 240.0);
-
-        // axisGroup.getChildren ().addAll (xAxis, yAxis, zAxis);
-        //boolean addAll = worldForm.getChildren ().addAll (axisGroup);
-        // drawPane.getItems ().addAll (xAxis, yAxis, zAxis);
-    }
-
-    private void setMaterial() {
-        final PhongMaterial redMaterial = new PhongMaterial ();
-        redMaterial.setDiffuseColor (Color.DARKRED);
-        redMaterial.setSpecularColor (Color.RED);
-        MaterialList.add (redMaterial);
-        materialNames.add ("redMaterial");
-
-        final PhongMaterial greenMaterial = new PhongMaterial ();
-        greenMaterial.setDiffuseColor (Color.DARKGREEN);
-        greenMaterial.setSpecularColor (Color.GREEN);
-        MaterialList.add (greenMaterial);
-        materialNames.add ("greenMaterial");
-
-        final PhongMaterial blueMaterial = new PhongMaterial ();
-        blueMaterial.setDiffuseColor (Color.DARKBLUE);
-        blueMaterial.setSpecularColor (Color.BLUE);
-        MaterialList.add (blueMaterial);
-        materialNames.add ("blueMaterial");
-
-        final PhongMaterial PE = new PhongMaterial ();
-        PE.setDiffuseColor (Color.DARKRED);
-        PE.setSpecularColor (Color.RED);
-        MaterialList.add (PE);
-        materialNames.add ("PE");
-
-        final PhongMaterial Steel = new PhongMaterial ();
-        Steel.setDiffuseColor (Color.WHITE);
-        Steel.setSpecularColor (Color.LIGHTBLUE);
-        MaterialList.add (Steel);
-        materialNames.add ("Steel");
-
-        final PhongMaterial Lead = new PhongMaterial ();
-        Lead.setDiffuseColor (Color.DARKGREY);
-        Lead.setSpecularColor (Color.GREY);
-        MaterialList.add (Lead);
-        materialNames.add ("Lead");
-
-        matList.getItems ().setAll ("PE", "Steel", "Lead");
-        matList.setValue ("PE");
+    private Axis3D buildAxes() {
+        axis = new Axis3D (20.0, Color.AQUAMARINE);
+        return axis;
     }
 
     public void drawCylSolid() {
@@ -312,65 +226,34 @@ public class GeomController implements Initializable {
         paramPane.add (matT, 0, 5);
         paramPane.add (matList, 0, 6);
         paramPane.add (drawMe, 0, 7);
-        rad0 = 8.0;
-        len0 = 50.0;
+        rad0 = 10.0;
+        len0 = 30.0;
         radSample = 2 * (int) rad0;
+        lenSample = (int) (len0 / 5.0);
+
+        cylTest cyl
+                = new cylTest ("cyl", lenSample, radSample, rad0, len0);
+
+        paramPane.getChildren ().removeAll (vb1, radT, rad, heightT, ht,
+                matT, matList, drawMe);
+        camV.add (cyl);
 
         drawMe.setOnAction (new EventHandler<ActionEvent> () {
             @Override
-            public void handle(ActionEvent ev) {                
-                final MeshView cyl = new MeshView(new vegaCYL(
-                        "CYL1",rad0, len0, radSample, lenSample));
-                cyl.setCullFace (CullFace.NONE);
-                PhongMaterial myMat = null;
-                String chkMat;
-                int queVal = 0;
-                chkMat = matList.getValue ();
-                for ( String s : materialNames ) {
-                    if ( s == chkMat ) {
-                        break;
-                    }
-                    ++queVal;
-                }
-                myMat = MaterialList.get (queVal);
-                cx = Double.parseDouble (baseCX.getText ());
-                cy = Double.parseDouble (baseCY.getText ());
-                cz = Double.parseDouble (baseCZ.getText ());
-                rad0 = Double.parseDouble (rad.getText ());
-                len0 = Double.parseDouble (ht.getText ());
-                radSample = 2 * (int) rad0;
-                cyl.setMaterial (myMat);
-                
-                geoScene.setOnMousePressed (new EventHandler<MouseEvent>() {
-                    @Override public void handle(MouseEvent event) {
-                        anchorX = event.getSceneX ();
-                        anchorY = event.getSceneY ();
-                        anchorAngle = cyl.getRotate ();
-                    }
-                });
-                
-                geoScene.setOnMouseDragged (new EventHandler<MouseEvent>() {
-                    @Override public void handle(MouseEvent event) {
-                        cyl.setRotate (anchorAngle + anchorX - event.getSceneX ());
-                    }
-                });
-                
-                paramPane.getChildren ().removeAll (vb1, radT, rad, heightT, ht,
-                        matT, matList, drawMe);
+            public void handle(ActionEvent ev) {
+                /*
+                 * cylTest cyl = new cylTest ("cyl", lenSample, radSample, rad0,
+                 * len0);
+                 *
+                 * paramPane.getChildren ().removeAll (vb1, radT, rad, heightT,
+                 * ht, matT, matList, drawMe); camV.add (cyl);
+                 */
             }
         });
-    }
+        camV.frameCam (geoStage, geoScene);
+        MouseHandler mouseHandler = new MouseHandler (geoScene, camV);
+        KeyHandler keyHandler = new KeyHandler (geoStage, geoScene, camV);
 
-    public void addMouseScrolling(Node node) {
-        node.setOnScroll ((ScrollEvent event) -> {
-            double zoomFactor = 1.05;
-            double deltaY = event.getDeltaY ();
-            if ( deltaY < 0 ) {
-                zoomFactor = 2.0 - zoomFactor;
-            }
-            node.setScaleX (node.getScaleX () * zoomFactor);
-            node.setScaleY (node.getScaleY () * zoomFactor);
-        });
     }
 
     @FXML
