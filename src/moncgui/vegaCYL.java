@@ -29,6 +29,7 @@ public class vegaCYL extends TriangleMesh {
     private boolean closed;
 
     List<Point3D> listVertices = new ArrayList<> ();
+    
     /*
     float[] texCoord = {1, 1, // t0
                        1, 0, // t1
@@ -114,7 +115,10 @@ public class vegaCYL extends TriangleMesh {
             }
         }
 
-
+        int totPoints = axialSamples * ntheta;
+        int[] listFaces = new int[totPoints];
+        
+        /*
         for ( int v = 0; v <= ht; v++ ) {
             float dv = (float) v / ((float) ht);
             for ( int u = 0; u <= wid; u++ ) {
@@ -123,10 +127,23 @@ public class vegaCYL extends TriangleMesh {
                 index += 2;
             }
         }
-
+        */
+        int ii=0;
+        for (int nZ = 0; nZ < axialSamples; nZ++) {
+            for (int itht=0; itht < ntheta; itht++) {
+                listFaces[ii] = ii;
+                listFaces[ii+1] = 0;
+                ++ii;
+            }
+        }
+        
+        this.getTexCoords ().addAll (0,0); 
+        // This is for testing as I do not need texture important at this moment
  
+        this.getFaces ().addAll (listFaces);
+        
         this.getPoints ().setAll ((ObservableFloatArray) listVertices);
-        this.getTexCoords ().addAll (texCoord);
+        
         //triangleMesh.getTexCoords().setAll(textureCoords);
         throw new UnsupportedOperationException ("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
