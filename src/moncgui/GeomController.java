@@ -100,17 +100,17 @@ public class GeomController implements Initializable {
     @FXML
     private BorderPane geoMainArea;
 
-    public void setMainApp(MoncGUI myGUI) {
+    public void setMainApp(MoncGUI badGUI) {
         this.myGUI = myGUI;
     }
 
-    public void setMyScene(Scene geoScene) {
-        //this.geoScene = geoScene;
+    public void setMyScene(Scene scene) {
+        //this.geoScene = scene;
         this.geoScene = geoStage.getScene ();
     }
 
-    public void setMyStage(Stage geoStage) {
-        this.geoStage = geoStage;
+    public void setMyStage(Stage stage) {
+        this.geoStage = stage;
     }
 
     /**
@@ -119,13 +119,11 @@ public class GeomController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         setMainApp (myGUI);
-        setMyStage (geoStage);
-
         camV = new CameraView ();
         buildScene ();
-//        geoStage.setTitle ("Testing");
+        // geoStage.setTitle ("Testing");
         //geoScene = new Scene (rootGr, geoWidth, geoHeight, true);
-        geoScene = new Scene (camV, drawWidth, drawHeight, true);
+        final Scene geoScene = new Scene (camV, drawWidth, drawHeight, true);
         geoScene.setFill (new RadialGradient (225, 0.85, centerX, centerY,
                 drawWidth, false,
                 CycleMethod.NO_CYCLE, new Stop[]{new Stop (0f, Color.BLUE),
@@ -169,7 +167,7 @@ public class GeomController implements Initializable {
         PerspectiveCamera cam = new PerspectiveCamera (true);
         //cam.setNearClip (0.1);
         //cam.setFarClip (10000.0);
-        cam.setTranslateX (250);
+        //cam.setTranslateX (250);
         //cam.setTranslateY (250);
         //cam.setTranslateZ (-cameraDistance);
         scene.setCamera (cam);
@@ -240,7 +238,7 @@ public class GeomController implements Initializable {
 
         cylTest cyl
                 = new cylTest ("cyl", lenSample, radSample, rad0, len0);
-        cyl.getTransforms ().add (new Translate (centerX, centerY, 0));
+        cyl.getTransforms ().add (new Translate (centerX, -centerY, 10.0));
 
         // paramPane.getChildren ().removeAll (vb1, radT, rad, heightT, ht, matT, matList, drawMe);
         camV.add (cyl);
