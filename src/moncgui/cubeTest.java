@@ -6,7 +6,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 import javafx.scene.transform.Rotate;
 
-    public class Cube extends Group {
+    public class cubeTest extends Group {
 
 		Rectangle top;
 		Rectangle bottom;
@@ -15,7 +15,7 @@ import javafx.scene.transform.Rotate;
 		Rectangle front;
 		Rectangle back;
 
-        public Cube(double size, Color color, double shade) {
+        public cubeTest(double size, Color color, double shade) {
 
                 back = RectangleBuilder.create() // back face
                     .width(size).height(size)

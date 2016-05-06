@@ -8,7 +8,7 @@ import javafx.scene.transform.*;
 
     public class Rod3D extends Group {
 
-		Cube cube;
+		cubeTest cube;
         double size;
         double thick=0.05;
 
@@ -21,7 +21,7 @@ import javafx.scene.transform.*;
         	this.thick = thick;
         	double shade=1.0;
         	double yzScale=thick/size;
-        	cube = new Cube(size, color, shade);
+        	cube = new cubeTest(size, color, shade);
         	cube.getTransforms().add(new Scale(1.0, yzScale, yzScale));
         	//cube.getTransforms().add(new Translate(0.5*size, 0, 0));
         	getChildren().addAll(cube);
@@ -44,7 +44,7 @@ import javafx.scene.transform.*;
         	size = P1.distance(P2);
         	double shade=1.0;
         	double yzScale=thick/size;
-        	cube = new Cube(size, color, shade);
+        	cube = new cubeTest(size, color, shade);
         	cube.getTransforms().add(new Scale(1.0, yzScale, yzScale));
         	cube.getTransforms().add(new Translate(0.5*size, 0, 0));
 

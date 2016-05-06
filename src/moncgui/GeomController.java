@@ -17,7 +17,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.*;
 import javafx.scene.shape.*;
 import javafx.scene.text.Font;
-import javafx.scene.transform.Rotate;
+import javafx.scene.transform.*;
 import javafx.stage.Stage;
 
 /**
@@ -44,7 +44,7 @@ public class GeomController implements Initializable {
     private final Group rootGr = new Group ();
 
     double anchorX, anchorY, anchorAngle;
-    private final double cameraDistance = -1000.0;
+    //private final double cameraDistance = -1000.0;
 
     private double cx = 0.0, cy = 0.0, cz = 0.0, len0 = 0.0, len1 = 0.0,
             len2 = 0.0;
@@ -118,28 +118,21 @@ public class GeomController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        setMainApp (myGUI);
+        setMyStage (geoStage);
+
         camV = new CameraView ();
         buildScene ();
-
+//        geoStage.setTitle ("Testing");
         //geoScene = new Scene (rootGr, geoWidth, geoHeight, true);
-        geoScene = new Scene (camV, geoWidth, geoHeight, true);
-
+        geoScene = new Scene (camV, drawWidth, drawHeight, true);
         geoScene.setFill (new RadialGradient (225, 0.85, centerX, centerY,
                 drawWidth, false,
                 CycleMethod.NO_CYCLE, new Stop[]{new Stop (0f, Color.BLUE),
                     new Stop (1f, Color.LIGHTBLUE)}));
-
         buildCamera (geoScene);
-//        geoStage.setScene (geoScene);
-
         Context3D context = Context3D.getInstance (camV);
-        context.lighting = new Lighting3D ();
-        context.lighting.add (Lighting3D.Type.DIFFUSE,
-                Lighting3D.Source.PARALLEL, 1.5, new Vector3D (1, 0.8, 0.6));
-        context.lighting.add (Lighting3D.Type.DIFFUSE,
-                Lighting3D.Source.PARALLEL, 1.0, new Vector3D (-1, -0.8, 0.6));
-        context.lighting.add (Lighting3D.Type.DIFFUSE,
-                Lighting3D.Source.PARALLEL, 0.5, new Vector3D (0, -0.2, -0.8));
+        lightSetting(context);
         axis = buildAxes ();
         camV.add (axis);
     }
@@ -151,8 +144,8 @@ public class GeomController implements Initializable {
         menuHeight = geoHeight - yoffset;
         drawWidth = geoWidth - menuWidth - xoffset;
         drawHeight = menuHeight;
-        centerX = 0.5 * drawWidth - xoffset;
-        centerY = 0.5 * drawHeight + yoffset;
+        centerX = 0.5 * drawWidth;// - xoffset;
+        centerY = 0.5 * drawHeight;// + yoffset;
         centerZ = 0.3;
         scaleX = 0.08;
         scaleY = 0.08;
@@ -176,15 +169,28 @@ public class GeomController implements Initializable {
         PerspectiveCamera cam = new PerspectiveCamera (true);
         //cam.setNearClip (0.1);
         //cam.setFarClip (10000.0);
-        //cam.setTranslateX (250);
+        cam.setTranslateX (250);
         //cam.setTranslateY (250);
         //cam.setTranslateZ (-cameraDistance);
         scene.setCamera (cam);
         return cam;
     }
 
+    private void lightSetting(Context3D context) {
+        context.lighting = new Lighting3D ();
+        context.lighting.add (Lighting3D.Type.DIFFUSE,
+                Lighting3D.Source.PARALLEL, 1.5, new Vector3D (1, 0.8, 0.6));
+        context.lighting.add (Lighting3D.Type.DIFFUSE,
+                Lighting3D.Source.PARALLEL, 1.0, new Vector3D (-1, -0.8, 0.6));
+        context.lighting.add (Lighting3D.Type.DIFFUSE,
+                Lighting3D.Source.PARALLEL, 0.5, new Vector3D (0, -0.2, -0.8));
+        context.showLights();        
+        context.setShowBorders (true);
+        context.setShowTexts (true);
+    }
+
     private Axis3D buildAxes() {
-        axis = new Axis3D (20.0, Color.AQUAMARINE);
+        axis = new Axis3D (100.0, Color.AQUAMARINE);
         return axis;
     }
 
@@ -217,7 +223,7 @@ public class GeomController implements Initializable {
         baseCZ.setPromptText ("0.0");
         rad.setPromptText ("50.0");
         ht.setPromptText ("100.0");
-
+/*
         paramPane.add (vb1, 0, 0); // col row
         paramPane.add (radT, 0, 1);
         paramPane.add (rad, 0, 2);
@@ -226,16 +232,17 @@ public class GeomController implements Initializable {
         paramPane.add (matT, 0, 5);
         paramPane.add (matList, 0, 6);
         paramPane.add (drawMe, 0, 7);
-        rad0 = 10.0;
-        len0 = 30.0;
-        radSample = 2 * (int) rad0;
-        lenSample = (int) (len0 / 5.0);
+        */ 
+        rad0 = 90.0;
+        len0 = 130.0;
+        radSample = 5;//2 * (int) rad0;
+        lenSample = 3;//(int) (len0 / 5.0);
 
         cylTest cyl
                 = new cylTest ("cyl", lenSample, radSample, rad0, len0);
+        cyl.getTransforms ().add (new Translate (centerX, centerY, 0));
 
-        paramPane.getChildren ().removeAll (vb1, radT, rad, heightT, ht,
-                matT, matList, drawMe);
+        // paramPane.getChildren ().removeAll (vb1, radT, rad, heightT, ht, matT, matList, drawMe);
         camV.add (cyl);
 
         drawMe.setOnAction (new EventHandler<ActionEvent> () {
@@ -250,10 +257,15 @@ public class GeomController implements Initializable {
                  */
             }
         });
+        complete ();
+    }
+
+    void complete() {
         camV.frameCam (geoStage, geoScene);
         MouseHandler mouseHandler = new MouseHandler (geoScene, camV);
         KeyHandler keyHandler = new KeyHandler (geoStage, geoScene, camV);
-
+        geoStage.setScene (geoScene);
+        geoStage.show ();
     }
 
     @FXML

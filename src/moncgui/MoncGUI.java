@@ -34,15 +34,16 @@ public class MoncGUI extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
-        this.primaryStage.setTitle("MONC GUI :: Abhijit Bhattacharyya");
-        FXMLLoader loader = new FXMLLoader(MoncGUI.class.getResource("RootLayout.fxml"));
-        rootLayout = (BorderPane) loader.load();
+        this.primaryStage.setTitle ("MONC GUI :: Abhijit Bhattacharyya");
+        FXMLLoader loader = new FXMLLoader (MoncGUI.class.getResource (
+                "RootLayout.fxml"));
+        rootLayout = (BorderPane) loader.load ();
         //Scene scene = new Scene(rootLayout);
-        rootScene = new Scene(rootLayout);
-        primaryStage.setScene(rootScene);
-        RootLayoutController controller = loader.getController();
-        controller.setMainApp(this);
-        primaryStage.show();
+        rootScene = new Scene (rootLayout);
+        primaryStage.setScene (rootScene);
+        RootLayoutController controller = loader.getController ();
+        controller.setMainApp (this);
+        primaryStage.show ();
     }
 
     /**
@@ -70,56 +71,63 @@ public class MoncGUI extends Application {
 
     public void callConfig() {
         try {
-            FXMLLoader loader = new FXMLLoader(MoncGUI.class.getResource("configSet.fxml"));
-            AnchorPane confPage = (AnchorPane) loader.load();
-            rootLayout.setCenter(confPage);
+            FXMLLoader loader = new FXMLLoader (MoncGUI.class.getResource (
+                    "configSet.fxml"));
+            AnchorPane confPage = (AnchorPane) loader.load ();
+            rootLayout.setCenter (confPage);
         } catch (IOException ex) {
-            System.out.println(" Problem in loading config set");
-            Logger.getLogger(MoncGUI.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println (" Problem in loading config set");
+            Logger.getLogger (MoncGUI.class.getName ()).log (Level.SEVERE, null,
+                    ex);
         }
     }
 
     public void QUIT() {
-        System.out.println("Control came here.......");
-        System.exit(0);
+        System.out.println ("Control came here.......");
+        System.exit (0);
     }
 
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        launch(args);
+        launch (args);
     }
 
     public void GeomStart() {
         try {
-            FXMLLoader loader = new FXMLLoader(MoncGUI.class.getResource("Geom.fxml"));
-            AnchorPane geomPage = (AnchorPane) loader.load();
-            rootLayout.setCenter(geomPage);
-            GeomController controller = loader.getController();
-            controller.setMainApp(this);
-            controller.setMyStage (primaryStage);            
-            controller.setMyScene(rootScene);
+            FXMLLoader loader = new FXMLLoader (MoncGUI.class.getResource (
+                    "Geom.fxml"));
+            AnchorPane geomPage = (AnchorPane) loader.load ();
+            rootLayout.setCenter (geomPage);
+
+            primaryStage.setScene (rootScene);
+            GeomController controller = loader.getController ();
+            controller.setMainApp (this);
+            controller.setMyStage (primaryStage);
+            controller.setMyScene (rootScene);
         } catch (IOException ex) {
-            System.out.println(" Problem in loading geometry set");
-            Logger.getLogger(MoncGUI.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println (" Problem in loading geometry set");
+            Logger.getLogger (MoncGUI.class.getName ()).log (Level.SEVERE, null,
+                    ex);
         }
     }
-
 
     public void callAnalyze() {
 
         try {
-            FXMLLoader loader = new FXMLLoader(MoncGUI.class.getResource("Analyzer.fxml"));
-            AnchorPane plotPage = (AnchorPane) loader.load();
-            rootLayout.setCenter(plotPage);
-            AnalyzerController controller = loader.getController();
-            controller.setMainApp(this);
-            controller.setMyScene(rootScene);
+            FXMLLoader loader = new FXMLLoader (MoncGUI.class.getResource (
+                    "Analyzer.fxml"));
+            AnchorPane plotPage = (AnchorPane) loader.load ();
+            rootLayout.setCenter (plotPage);
+            AnalyzerController controller = loader.getController ();
+            controller.setMainApp (this);
+            controller.setMyScene (rootScene);
             //System.out.println("Here in Call Analyze plot page routine");
         } catch (IOException ex) {
-            System.out.println(" Problem in loading Plotting set");
-            Logger.getLogger(MoncGUI.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println (" Problem in loading Plotting set");
+            Logger.getLogger (MoncGUI.class.getName ()).log (Level.SEVERE, null,
+                    ex);
         }
     }
 }

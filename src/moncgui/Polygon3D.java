@@ -49,7 +49,7 @@ import moncgui.Material;
     	Group decoration = new Group();
     	Group perimeter = new Group();
 
-    	Cube centroidNormal;
+    	cubeTest centroidNormal;
 
 		int id;
 		double normalScale=0.25;
@@ -185,7 +185,7 @@ if (debug){
 			cp = setCentroid(P);
 
 			// cube at centroid to scale into rod to act as normal vector
-			centroidNormal = new Cube(1.0, Color.BLUE, 1.0);
+			centroidNormal = new cubeTest(1.0, Color.BLUE, 1.0);
 			Vector3D ct = new Vector3D(cp.getX(), cp.getY(), 0);
 			centroidNormal.getTransforms().add(new Translate(ct.getX(),ct.getY(),ct.getZ()));
 
