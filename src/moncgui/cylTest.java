@@ -213,9 +213,9 @@ public class cylTest extends Mesh {
         createTriangles();
 
         for (int k=0;k<verts;k++){
-System.out.println("V=" + getVertexCoord(k));
-System.out.println("N=" + getNormalCoord(k));
-System.out.println("");
+// System.out.println("V=" + getVertexCoord(k));
+// System.out.println("N=" + getNormalCoord(k));
+// System.out.println("");
         }
 
     }

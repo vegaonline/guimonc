@@ -208,8 +208,7 @@ class CameraView extends CameraTransform {
         cam.s.setY (scaleFactor);
         cam.s.setZ (scaleFactor);
         updateStatusText ();
-        System.out.println ("In setCamScale : width = " + width + " height " +
-                height + " scaleFactor " + scaleFactor);
+        // System.out.println ("In setCamScale : width = " + width + " height " + height + " scaleFactor " + scaleFactor);
     }
 
     //=========================================================================
@@ -228,7 +227,7 @@ class CameraView extends CameraTransform {
         cam.ip.setY (-pivotY);
         cam.ip.setZ (-pivotZ);
         updateStatusText ();
-        System.out.println(" Set Cam PIVOT bounds=" + bounds);
+        // System.out.println(" Set Cam PIVOT bounds=" + bounds);
     }
 
     //=========================================================================
@@ -242,7 +241,7 @@ class CameraView extends CameraTransform {
         cam.t.setX (-pivotX);
         cam.t.setY (-pivotY);
         updateStatusText ();
-        System.out.println (" pivotX " + pivotX + " pivotY " + pivotY);
+       //  System.out.println (" pivotX " + pivotX + " pivotY " + pivotY);
     }
 
     public void resetCam() {
@@ -285,7 +284,7 @@ class CameraView extends CameraTransform {
         cam.ip.setZ (0.0);
 
         final Bounds bounds = cam.getBoundsInLocal ();
-        System.out.println (" 0 bounds=  " + bounds);
+        // System.out.println (" 0 bounds=  " + bounds);
         final double pivotX = bounds.getMinX () + bounds.getWidth () / 2;
         final double pivotY = bounds.getMinY () + bounds.getHeight () / 2;
         final double pivotZ = bounds.getMinZ () + bounds.getDepth () / 2;
@@ -299,7 +298,7 @@ class CameraView extends CameraTransform {
         cam.ip.setZ (-pivotZ);
 
         updateStatusText ();
-        System.out.println (" 0 bounds=  " + bounds);
+        // System.out.println (" 0 bounds=  " + bounds);
     }
 
 }

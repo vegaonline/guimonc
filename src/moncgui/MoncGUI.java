@@ -32,9 +32,10 @@ public class MoncGUI extends Application {
 
     //final CameraView cameraView = new CameraView();
     @Override
-    public void start(Stage primaryStage) throws Exception {
-        this.primaryStage = primaryStage;
-        this.primaryStage.setTitle ("MONC GUI :: Abhijit Bhattacharyya");
+    public void start(Stage pStage) throws Exception {
+        this.primaryStage=pStage;
+        
+        primaryStage.setTitle ("MONC GUI :: Abhijit Bhattacharyya");
         FXMLLoader loader = new FXMLLoader (MoncGUI.class.getResource (
                 "RootLayout.fxml"));
         rootLayout = (BorderPane) loader.load ();
@@ -103,7 +104,7 @@ public class MoncGUI extends Application {
             primaryStage.setScene (rootScene);
             GeomController controller = loader.getController ();
             controller.setMainApp (this);            
-            controller.setMyStage (this.primaryStage);
+            controller.setMyStage (primaryStage);
            // controller.setMyScene (rootScene);
         } catch (IOException ex) {
             System.out.println (" Problem in loading geometry set");
