@@ -100,12 +100,11 @@ public class MoncGUI extends Application {
                     "Geom.fxml"));
             AnchorPane geomPage = (AnchorPane) loader.load ();
             rootLayout.setCenter (geomPage);
-
             primaryStage.setScene (rootScene);
             GeomController controller = loader.getController ();
-            controller.setMainApp (this);
-            controller.setMyStage (primaryStage);
-            controller.setMyScene (rootScene);
+            controller.setMainApp (this);            
+            controller.setMyStage (this.primaryStage);
+           // controller.setMyScene (rootScene);
         } catch (IOException ex) {
             System.out.println (" Problem in loading geometry set");
             Logger.getLogger (MoncGUI.class.getName ()).log (Level.SEVERE, null,

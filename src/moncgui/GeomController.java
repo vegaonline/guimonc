@@ -17,7 +17,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.*;
 import javafx.scene.shape.*;
 import javafx.scene.text.Font;
-import javafx.scene.transform.*;
+import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 
 /**
@@ -29,7 +29,7 @@ public class GeomController implements Initializable {
 
     private MoncGUI myGUI;
     private Scene geoScene;
-    private Stage geoStage;
+    private Stage geoStage = new Stage();
 
     private Stage newStage;
     private Scene newScene;
@@ -119,10 +119,10 @@ public class GeomController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         setMainApp (myGUI);
+        setMyStage(geoStage);
         camV = new CameraView ();
         buildScene ();
-        // geoStage.setTitle ("Testing");
-        //geoScene = new Scene (rootGr, geoWidth, geoHeight, true);
+        geoStage.setTitle ("Testing");
         final Scene geoScene = new Scene (camV, drawWidth, drawHeight, true);
         geoScene.setFill (new RadialGradient (225, 0.85, centerX, centerY,
                 drawWidth, false,
@@ -163,15 +163,8 @@ public class GeomController implements Initializable {
         geoMainArea.setRight (drawPane);
     }
 
-    private PerspectiveCamera buildCamera(Scene scene) {
-        PerspectiveCamera cam = new PerspectiveCamera (true);
-        //cam.setNearClip (0.1);
-        //cam.setFarClip (10000.0);
-        //cam.setTranslateX (250);
-        //cam.setTranslateY (250);
-        //cam.setTranslateZ (-cameraDistance);
-        scene.setCamera (cam);
-        return cam;
+    private void buildCamera(Scene scene) {
+        scene.setCamera (new PerspectiveCamera ());
     }
 
     private void lightSetting(Context3D context) {
@@ -188,7 +181,7 @@ public class GeomController implements Initializable {
     }
 
     private Axis3D buildAxes() {
-        axis = new Axis3D (100.0, Color.AQUAMARINE);
+        axis = new Axis3D (50.0, Color.AQUAMARINE);
         return axis;
     }
 
@@ -238,7 +231,7 @@ public class GeomController implements Initializable {
 
         cylTest cyl
                 = new cylTest ("cyl", lenSample, radSample, rad0, len0);
-        cyl.getTransforms ().add (new Translate (centerX, -centerY, 10.0));
+        //cyl.getTransforms ().add (new Translate (centerX, -centerY, 10.0));
 
         // paramPane.getChildren ().removeAll (vb1, radT, rad, heightT, ht, matT, matList, drawMe);
         camV.add (cyl);
