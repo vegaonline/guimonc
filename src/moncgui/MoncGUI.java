@@ -97,15 +97,23 @@ public class MoncGUI extends Application {
 
     public void GeomStart() {
         try {
-            FXMLLoader loader = new FXMLLoader (MoncGUI.class.getResource (
-                    "Geom.fxml"));
+            FXMLLoader loader = new FXMLLoader (getClass().getResource (
+                    "Geom.fxml"));  // MoncGUI.c
             AnchorPane geomPage = (AnchorPane) loader.load ();
-            rootLayout.setCenter (geomPage);
-            primaryStage.setScene (rootScene);
+             rootLayout.setCenter (geomPage);
+            
+            //Stage geoStage = new Stage();
+            //Scene geoScene = new Scene(geomPage);
+            //geoStage.setScene (geoScene);
+//            Scene geoScene = new Scene(geomPage);
+//            primaryStage.setScene(geoScene);
             GeomController controller = loader.getController ();
+            
             controller.setMainApp (this);            
             controller.setMyStage (primaryStage);
-           // controller.setMyScene (rootScene);
+            //controller.setMyStage (geoStage);
+            //geoStage.show ();
+            //primaryStage.show();
         } catch (IOException ex) {
             System.out.println (" Problem in loading geometry set");
             Logger.getLogger (MoncGUI.class.getName ()).log (Level.SEVERE, null,
