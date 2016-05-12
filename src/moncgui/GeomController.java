@@ -106,10 +106,6 @@ public class GeomController implements Initializable {
         this.myGUI = myGUI;
     }
 
-    /*
-     * public void setMyScene(Scene scene) { //this.geoScene = scene;
-     * this.geoScene = scene; }
-     */
     public void setMyStage(Stage stage) {
         this.geoStage = stage;
         System.out.println (geoStage.getScene ().getWindow ().widthProperty ());
@@ -121,19 +117,14 @@ public class GeomController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         buildScene ();
-        Scene  geoScene = null;
     }
 
     private Scene setMyScene(double wid, double ht) {
         Scene sc = new Scene (camV, wid, ht, true);
-        sc.setFill (new RadialGradient (225, 0.85, centerX, centerY,
+        sc.setFill (new RadialGradient (230, 0.85, centerX, centerY,
                 wid, false,
                 CycleMethod.NO_CYCLE, new Stop[]{new Stop (0f, Color.BLUE),
                     new Stop (1f, Color.LIGHTBLUE)}));
-        System.out.println("passed setMyScene....");
-        System.out.println (
-                "SetMyScene:: Scene Height " + sc.getHeight () + " Width " +
-                sc.getWidth ());
         return sc;
     }
 
@@ -216,31 +207,28 @@ public class GeomController implements Initializable {
         baseCZ.setPromptText ("0.0");
         rad.setPromptText ("50.0");
         ht.setPromptText ("100.0");
-        /*
-         * paramPane.add (vb1, 0, 0); // col row paramPane.add (radT, 0, 1);
-         * paramPane.add (rad, 0, 2); paramPane.add (heightT, 0, 3);
-         * paramPane.add (ht, 0, 4); paramPane.add (matT, 0, 5); paramPane.add
-         * (matList, 0, 6); paramPane.add (drawMe, 0, 7);
-         */
+        
+         paramPane.add (vb1, 0, 0); // col row paramPane.add (radT, 0, 1);
+         paramPane.add (rad, 0, 2); paramPane.add (heightT, 0, 3);
+         paramPane.add (ht, 0, 4); paramPane.add (matT, 0, 5); paramPane.add
+         (matList, 0, 6); paramPane.add (drawMe, 0, 7);
+        
         rad0 = 90.0;
         len0 = 130.0;
         radSample = 10;//2 * (int) rad0;
         lenSample = 10;//(int) (len0 / 5.0);
 
+        drawMe.setOnAction (new EventHandler<ActionEvent> () {
+            @Override
+            public void handle(ActionEvent ev) {
+                
         cylTest cyl
                 = new cylTest ("cyl", lenSample, radSample, rad0, len0);
         //cyl.getTransforms ().add (new Translate (centerX, -centerY, 10.0));
 
         // paramPane.getChildren ().removeAll (vb1, radT, rad, heightT, ht, matT, matList, drawMe);
         camV.add (cyl);
-
-        drawMe.setOnAction (new EventHandler<ActionEvent> () {
-            @Override
-            public void handle(ActionEvent ev) {
-                /*
-                 * cylTest cyl = new cylTest ("cyl", lenSample, radSample, rad0,
-                 * len0);
-                 *
+                 /*
                  * paramPane.getChildren ().removeAll (vb1, radT, rad, heightT,
                  * ht, matT, matList, drawMe); camV.add (cyl);
                  */
@@ -249,20 +237,21 @@ public class GeomController implements Initializable {
         //complete ();
     }
 
-    void complete(Stage geoStage, Scene geoScene) {
-        camV.frameCam (geoStage, geoScene);
-        MouseHandler mouseHandler = new MouseHandler (geoScene, camV);
-        KeyHandler keyHandler = new KeyHandler (geoStage, geoScene, camV);
-        geoStage.setScene (geoScene);
-       // geoStage.show ();
+    void complete(Stage vegaStage, Scene vegaScene) {
+        camV.frameCam (vegaStage, vegaScene);
+        MouseHandler mouseHandler = new MouseHandler (vegaScene, camV);
+        KeyHandler keyHandler = new KeyHandler (vegaStage, vegaScene, camV);
+        vegaStage.setScene (vegaScene);
+       vegaStage.show ();
     }
 
     @FXML
     void doShapeCyl(ActionEvent event) {
         if ( initialized == 0 ) {
-            System.out.println ("In FXML :: Processing initialized=0");            
-            geoStage.setTitle ("Testing");
-
+            System.out.println ("In FXML :: Processing initialized=0");          
+            newStage = new Stage();
+            //geoStage.setTitle ("Testing");
+            
             geoScene = setMyScene (drawWidth, drawHeight);
             System.out.println ("in fxml :: Scene Height = " + geoScene.
                     getHeight () + "  Width = " + geoScene.getWidth ());
@@ -275,7 +264,7 @@ public class GeomController implements Initializable {
             initialized = 1;
         }
         drawCylSolid ();
-        complete (geoStage, geoScene);
+        complete (newStage, geoScene);
     }
 
     public void drawCircSolid() {
