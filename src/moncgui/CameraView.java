@@ -300,5 +300,4 @@ class CameraView extends CameraTransform {
         updateStatusText ();
         // System.out.println (" 0 bounds=  " + bounds);
     }
-
 }

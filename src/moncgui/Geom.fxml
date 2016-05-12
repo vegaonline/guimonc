@@ -16,10 +16,9 @@
       <HBox layoutX="2.0" layoutY="1.0" prefHeight="29.0" prefWidth="646.0">
          <children>
             <Button fx:id="shapeCLS" mnemonicParsing="false" onMouseClicked="#doDrawReset" text="Clear" />
-            <Button fx:id="shapeLine" mnemonicParsing="false" text="LINE" />
-            <Button fx:id="shapeCirc" mnemonicParsing="false" onAction="#doShapeCirc" text="Circle" />
+            <Button fx:id="shapeCirc" mnemonicParsing="false" onAction="#doShapeCirc" text="Disk" />
             <Button fx:id="shapeEllip" mnemonicParsing="false" text="Ellipse" />
-            <Button fx:id="shapeCYL" mnemonicParsing="false" onAction="#doShapeCyl" text="Cylinder" />
+            <Button fx:id="shapeCYL" mnemonicParsing="false" onAction="#doShapeCyl" text="Tube" />
             <Button fx:id="shapeUpd" mnemonicParsing="false" text="UPDATE" />
          </children>
       </HBox>
