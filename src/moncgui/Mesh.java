@@ -329,12 +329,12 @@ public class Mesh extends Group {
 ////		tri = new Triangle3D[triangleCount];
 		tri = new Polygon3D[triangleCount];
 		ObservableList list = getChildren();
-System.out.println();
-System.out.println("Triangle=");
-System.out.println("==========");
-System.out.println("vertexCount=" + vertexCount);
-System.out.println("normalCount=" + normalCount);
-System.out.println("triangleCount=" + triangleCount);
+//System.out.println();
+//System.out.println("Triangle=");
+//System.out.println("==========");
+//System.out.println("vertexCount=" + vertexCount);
+//System.out.println("normalCount=" + normalCount);
+//System.out.println("triangleCount=" + triangleCount);
 
 		for (int i=0; i<triangleCount; i++){
 //System.out.println("POLY no. " + i);

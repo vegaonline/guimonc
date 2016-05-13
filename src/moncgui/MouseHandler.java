@@ -4,12 +4,12 @@ package moncgui;
 
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.input.*;
 
-public class MouseHandler{
+public class MouseHandler {
 
-	//Scene scene;
-	//CameraView cameraView;
+    //Scene scene;
+    //CameraView cameraView;
     double mousePosX;
     double mousePosY;
     double mouseOldX;
@@ -17,82 +17,70 @@ public class MouseHandler{
     double mouseDeltaX;
     double mouseDeltaY;
 
-	public MouseHandler(Scene scene, final CameraView cameraView){
+    public MouseHandler(Scene scene, final CameraView cameraView) {
 
-        scene.setOnMousePressed(new EventHandler<MouseEvent>() {
+        scene.setOnMousePressed (new EventHandler<MouseEvent> () {
             public void handle(MouseEvent me) {
-                mousePosX = me.getX();
-                mousePosY = me.getY();
-                mouseOldX = me.getX();
-                mouseOldY = me.getY();
+                mousePosX = me.getX ();
+                mousePosY = me.getY ();
+                mouseOldX = me.getX ();
+                mouseOldY = me.getY ();
                 //System.out.println("scene.setOnMousePressed " + me);
             }
         });
 
-		scene.setOnMouseDragged(new EventHandler<MouseEvent>() {
+        scene.setOnScroll (new EventHandler<ScrollEvent> () {
+            public void handle(ScrollEvent sc) {
+                mouseOldX = mousePosX;
+                mouseOldY = mousePosY;
+                mousePosX = sc.getX ();
+                mousePosY = sc.getY ();
+                mouseDeltaX = mousePosX - mouseOldX;
+                mouseDeltaY = mousePosY - mouseOldY;
+                double newScale = 0;
+                double scale = cameraView.getXScale ();
+                if ( sc.getDeltaY () > 0 ) {
+                    newScale = scale * 1.1;
+                    cameraView.setXScale (newScale);
+                    cameraView.setYScale (newScale);
+                    cameraView.setZScale (newScale);
+                } else if ( sc.getDeltaY () < 0 ) {
+                    newScale = scale * 1.0 / 1.1;
+                    cameraView.setXScale (newScale);
+                    cameraView.setYScale (newScale);
+                    cameraView.setZScale (newScale);
+                }
+                cameraView.updateStatusText ();
+            }
+        });
+
+        scene.setOnMouseDragged (new EventHandler<MouseEvent> () {
             public void handle(MouseEvent me) {
                 mouseOldX = mousePosX;
                 mouseOldY = mousePosY;
-                mousePosX = me.getX();
-                mousePosY = me.getY();
+                mousePosX = me.getX ();
+                mousePosY = me.getY ();
                 mouseDeltaX = mousePosX - mouseOldX;
                 mouseDeltaY = mousePosY - mouseOldY;
 //                if (me.isAltDown() && me.isShiftDown() && me.isPrimaryButtonDown()) {
-                if (me.isAltDown() &&  me.isPrimaryButtonDown()) {
-                    double rzAngle = cameraView.getRz();
-                    cameraView.setRz(rzAngle - mouseDeltaX);
+                if ( me.isAltDown () && me.isPrimaryButtonDown () ) {
+                    double rzAngle = cameraView.getRz ();
+                    cameraView.setRz (rzAngle - mouseDeltaX);
+                } //                else if (me.isAltDown() && me.isPrimaryButtonDown()) {
+                else if ( me.isPrimaryButtonDown () ) {
+                    double ryAngle = cameraView.getRy ();
+                    cameraView.setRy (ryAngle + mouseDeltaX);
+                    double rxAngle = cameraView.getRx ();
+                    cameraView.setRx (rxAngle + mouseDeltaY);
                 }
-//                else if (me.isAltDown() && me.isPrimaryButtonDown()) {
-                else if (me.isPrimaryButtonDown()) {
-                    double ryAngle = cameraView.getRy();
-                    cameraView.setRy(ryAngle + mouseDeltaX);
-                    double rxAngle = cameraView.getRx();
-                    cameraView.setRx(rxAngle + mouseDeltaY);
-                    //System.out.println("ROTATE rx=" + cameraView.getRx() + " ry=" + cameraView.getRy());
-
+                else if ( me.isSecondaryButtonDown () ) {
+                    double tx = cameraView.getXTranslate ();
+                    double ty = cameraView.getYTranslate ();
+                    cameraView.setXTranslate (tx + mouseDeltaX);
+                    cameraView.setYTranslate (ty + mouseDeltaY);
                 }
-                //else if (me.isShiftDown() && me.isPrimaryButtonDown()) {
-                //    double yShear = shear.getY();
-                //    shear.setY(yShear + mouseDeltaY/1000.0);
-                //    double xShear = shear.getX();
-                //    shear.setX(xShear + mouseDeltaX/1000.0);
-                //}
-//                else if (me.isAltDown() && me.isSecondaryButtonDown()) {
-
-                else if (me.isMiddleButtonDown()) {
-                    double scale = cameraView.getXScale();
-                    //System.out.println("Scale=" + scale);
-//                    double newScale = scale + mouseDeltaX*0.01;
-                    double newScale = scale + mouseDeltaX*1.0;
-                    cameraView.setXScale(newScale);
-                    cameraView.setYScale(newScale);
-                    cameraView.setZScale(newScale);
-                    //cameraView.setScale(newScale);
-                }
-//                else if (me.isAltDown() && me.isMiddleButtonDown()) {
-                else if (me.isSecondaryButtonDown()) {
-                    double tx = cameraView.getXTranslate();
-                    double ty = cameraView.getYTranslate();
-                    //System.out.println("TX=" + tx + " TY=" + ty);
-                    cameraView.setXTranslate(tx + mouseDeltaX);
-                    cameraView.setYTranslate(ty + mouseDeltaY);
-                }
-                /*
-                System.out.println("t = (" +
-                                   cam.t.getX() + ", " +
-                                   cam.t.getY() + ", " +
-                                   cam.t.getZ() + ") " +
-                                   "r = (" +
-                                   cam.rx.getAngle() + ", " +
-                                   cam.ry.getAngle() + ", " +
-                                   cam.rz.getAngle() + ") " +
-                                   "s = (" +
-                                   cam.s.getX() + ", " +
-                                   cam.s.getY() + ", " +
-                                   cam.s.getZ() + ")");
-                */
-                //cameraView.updateStatusText();
+                cameraView.updateStatusText ();
             }
         });
-	}
+    }
 }

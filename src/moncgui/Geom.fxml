@@ -15,11 +15,11 @@
    <children>
       <HBox layoutX="2.0" layoutY="1.0" prefHeight="29.0" prefWidth="646.0">
          <children>
-            <Button fx:id="shapeCLS" mnemonicParsing="false" onMouseClicked="#doDrawReset" text="Clear" />
-            <Button fx:id="shapeCirc" mnemonicParsing="false" onAction="#doShapeCirc" text="Disk" />
-            <Button fx:id="shapeEllip" mnemonicParsing="false" text="Ellipse" />
-            <Button fx:id="shapeCYL" mnemonicParsing="false" onAction="#doShapeCyl" text="Tube" />
-            <Button fx:id="shapeUpd" mnemonicParsing="false" text="UPDATE" />
+            <Button fx:id="shapeRST" mnemonicParsing="false" onAction="#doGeomReset" onMouseClicked="#doDrawReset" text="Reset" />
+            <Button fx:id="geomClear" mnemonicParsing="false" onAction="#doCLS" text="clear" />
+            <Button fx:id="shapeEllip" mnemonicParsing="false" onAction="#doShapeCirc" text="Spheroid / Ellipsoid" />
+            <Button fx:id="shapeCYL" mnemonicParsing="false" onAction="#doShapeCyl" text="Tube/Disk" />
+            <Button fx:id="shapeUpd" mnemonicParsing="false" onAction="#doUpdate" text="UPDATE" />
          </children>
       </HBox>
       <BorderPane fx:id="geoMainArea" layoutX="1.0" layoutY="29.0" />
