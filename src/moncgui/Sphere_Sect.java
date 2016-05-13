@@ -153,7 +153,8 @@ public class Sphere_Sect extends Mesh {
             final double fZ2 = outrad * fZFraction;
 
             // compute center of slice
-            kSliceCenter = new Vector3D (center.getX (), center.getY (),center.getZ () + fZ1);
+            kSliceCenter = new Vector3D (center.getX (), center.getY (), center.
+                    getZ () + fZ1);
             // kSliceCenter1 = new Vector3D (center.getX (), center.getY (),center.getZ () + fZ1);
             //kSliceCenter2 = new Vector3D (center.getX (), center.getY (),center.getZ () + fZ2);
 
@@ -188,7 +189,8 @@ public class Sphere_Sect extends Mesh {
                 tempVa2 = getVertexCoord (i);
 
                 kNormal1 = new Vector3D (center.getX () - tempVa1.getX (),
-                        center.getY () - tempVa1.getY () , center.getZ () - tempVa1.getZ () );
+                        center.getY () - tempVa1.getY (), center.getZ () -
+                        tempVa1.getZ ());
                 double mag = Math.sqrt (Math.pow (kNormal1.getX (), 2) + Math.
                         pow (kNormal1.getY (), 2) + Math.pow (kNormal1.getZ (),
                         2));
@@ -219,7 +221,10 @@ public class Sphere_Sect extends Mesh {
                     putNormal (-kNormal2.getX (), -kNormal2.getY (), -kNormal2.
                             getZ ());
                 }
-
+                System.out.println (" kNormal1 " + kNormal1.getX () + "  " + kNormal1.
+                        getY () + "   " + kNormal1.getZ ());
+                System.out.println (" kNormal2 " + kNormal2.getX () + "  " + kNormal2.
+                        getY () + "   " + kNormal2.getZ ());
                 i++;
             }
 
@@ -349,7 +354,7 @@ public class Sphere_Sect extends Mesh {
     public double getINRadius() {
         return inrad;
     }
-    
+
     public double getOUTRadius() {
         return outrad;
     }

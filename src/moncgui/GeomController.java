@@ -73,12 +73,12 @@ public class GeomController implements Initializable {
     private TextField baseCX = new TextField ();
     private TextField baseCY = new TextField ();
     private TextField baseCZ = new TextField ();
-    private Label radIT = new Label ("Inner Radius");
-    private Label radOT = new Label ("Outer Radius");
-    private Label Theta0T = new Label ("Theta_0 (degree)");
-    private Label Theta1T = new Label ("Theta_1 (degree)");
-    private Label Phi0T = new Label ("Phi_0 (degree)");
-    private Label Phi1T = new Label ("Phi_1 (degree)");
+    private Label radIT = new Label ("Inner Rad ");
+    private Label radOT = new Label ("Outer Rad ");
+    private Label Theta0T = new Label ("Theta_0 (deg) ");
+    private Label Theta1T = new Label ("Theta_1 (deg) ");
+    private Label Phi0T = new Label ("Phi_0 (deg) ");
+    private Label Phi1T = new Label ("Phi_1 (deg) ");
     private TextField theta0 = new TextField ();
     private TextField theta1 = new TextField ();
     private TextField phi0 = new TextField ();
@@ -258,12 +258,12 @@ public class GeomController implements Initializable {
             public void handle(ActionEvent ev) {
                 double oRad = Double.parseDouble (radO.getText ());
                 double length = chkNull (Double.parseDouble (ht.getText ()));
-                double iRad = Double.parseDouble (radI.getText ());                
-                if (oRad==0.0) {
-                    resetGeom();
+                double iRad = Double.parseDouble (radI.getText ());
+                if ( oRad == 0.0 ) {
+                    resetGeom ();
                 }
-                if (iRad != 0.0) {
-                radSample = (int) (radScale * Math.sqrt (iRad) + 0.5);
+                if ( iRad != 0.0 ) {
+                    radSample = (int) (radScale * Math.sqrt (iRad) + 0.5);
                 } else {
                     radSample = 15;
                 }
@@ -301,7 +301,7 @@ public class GeomController implements Initializable {
                     paramPane.getChildren ().removeAll (vb1, radIT, radOT, radI,
                             radO, heightT, ht, objAxisT, objAxis, drawMe);
                     camV.add (tub1);
-                } else {                    
+                } else {
                     cylTest tub1 = new cylTest ("Tube_1", lenSample, radSample,
                             oRad, length, true, false, Material.
                             getShinyMaterial ().putKd (0.8));
@@ -341,55 +341,89 @@ public class GeomController implements Initializable {
     }
 
     public void drawSPH() {
-        BaseCoord.setFont (new Font ("Times New Roman", 11));
-        radIT.setFont (new Font ("Times New Roman", 11));
-        radOT.setFont (new Font ("Times New Roman", 11));
-        heightT.setFont (new Font ("Times New Roman", 11));
-        matT.setFont (new Font ("Times New Roman", 11));
+        BaseCoord.setFont (new Font ("Times New Roman", 9));
+        radIT.setFont (new Font ("Times New Roman", 9));
+        radOT.setFont (new Font ("Times New Roman", 9));
+        radI.setFont (new Font ("Times New Roman", 9));
+        radO.setFont (new Font ("Times New Roman", 9));
+        Theta0T.setFont (new Font ("Times New Roman", 9));
+        theta0.setFont (new Font ("Times New Roman", 9));
+        Theta1T.setFont (new Font ("Times New Roman", 9));
+        theta1.setFont (new Font ("Times New Roman", 9));
+        Phi0T.setFont (new Font ("Times New Roman", 9));
+        phi0.setFont (new Font ("Times New Roman", 9));
+        Phi1T.setFont (new Font ("Times New Roman", 9));
+        phi1.setFont (new Font ("Times New Roman", 9));
+        matT.setFont (new Font ("Times New Roman", 9));
         objAxisT.setFont (new Font ("Times New Roman", 9));
 
-        baseCX.setPrefColumnCount (6);
+        baseCX.setPrefColumnCount (5);
         baseCX.setAlignment (Pos.CENTER_RIGHT);
-        baseCY.setPrefColumnCount (6);
+        baseCY.setPrefColumnCount (5);
         baseCY.setAlignment (Pos.CENTER_RIGHT);
-        baseCZ.setPrefColumnCount (6);
+        baseCZ.setPrefColumnCount (5);
         baseCZ.setAlignment (Pos.CENTER_RIGHT);
-        radI.setPrefColumnCount (9);
-        radO.setPrefColumnCount (9);
-        radI.setAlignment (Pos.CENTER_RIGHT);
+
+        radO.setPrefColumnCount (5);
         radO.setAlignment (Pos.CENTER_RIGHT);
-        radI.setMaxSize (60, 1); // width height
-        radO.setMaxSize (60, 1); // width height
-        ht.setPrefColumnCount (9);
-        ht.setAlignment (Pos.CENTER_RIGHT);
-        ht.setMaxSize (60, 1); // width height
+        radO.setMaxSize (40, 1); // width height
+        radI.setAlignment (Pos.CENTER_RIGHT);
+        radI.setPrefColumnCount (5);
+        radI.setMaxSize (40, 1); // width height
+
+        theta0.setPrefColumnCount (5);
+        theta0.setAlignment (Pos.CENTER_RIGHT);
+        theta0.setMaxSize (40, 1); // width height
+        theta1.setAlignment (Pos.CENTER_RIGHT);
+        theta1.setPrefColumnCount (5);
+        theta1.setMaxSize (40, 1); // width height
+
+        phi0.setPrefColumnCount (5);
+        phi0.setAlignment (Pos.CENTER_RIGHT);
+        phi0.setMaxSize (40, 1); // width height
+        phi1.setAlignment (Pos.CENTER_RIGHT);
+        phi1.setPrefColumnCount (5);
+        phi1.setMaxSize (40, 1); // width height
+
         objAxis.setMaxSize (30, 1);
 
         HBox hb1 = new HBox (baseCX, baseCY, baseCZ);
+        HBox hb2 = new HBox (radIT, radI, radOT, radO);
+        HBox hb3 = new HBox (Theta0T, theta0);
+        HBox hb4 = new HBox (Theta1T, theta1);
+        HBox hb5 = new HBox (Phi0T, phi0);
+        HBox hb6 = new HBox (Phi1T, phi1);
         hb1.setSpacing (1); //hb1.setPadding(new Insets(2));
-        VBox vb1 = new VBox (BaseCoord, hb1);
+        hb2.setSpacing (2); hb3.setSpacing(2); hb4.setSpacing(2);
+        hb5.setSpacing (2); hb6.setSpacing(2);
+        
+        VBox vb1 = new VBox (BaseCoord, hb1, hb2, hb3, hb4, hb5, hb6);
 
         baseCX.setPromptText ("0.0");
         baseCY.setPromptText ("0.0");
         baseCZ.setPromptText ("0.0");
+        
         radI.setPromptText ("50.0");
         radO.setPromptText ("30.0");
-        ht.setPromptText ("100.0");
+        theta0.setPromptText ("0.0");
+        theta1.setPromptText ("360.0");
+        phi0.setPromptText ("0.0");
+        phi1.setPromptText ("360.0");
         objAxis.setPromptText ("X");
 
         paramPane.add (vb1, 0, 0); // col row 
-        paramPane.add (radIT, 0, 1);
-        paramPane.add (radI, 0, 2);
-        paramPane.add (radOT, 0, 3);
-        paramPane.add (radO, 0, 4);
-        paramPane.add (Theta0T, 0, 5);
-        paramPane.add (theta0, 0, 6);
-        paramPane.add (Theta1T, 0, 7);
-        paramPane.add (theta1, 0, 8);
-        paramPane.add (Phi0T, 0, 9);
-        paramPane.add (phi0, 0, 10);
-        paramPane.add (Phi1T, 0, 11);
-        paramPane.add (phi1, 0, 12);
+       // paramPane.add (radIT, 0, 1);
+        //paramPane.add (radI, 1, 1);
+        //paramPane.add (radOT, 0, 3);
+        //paramPane.add (radO, 0, 4);
+        //paramPane.add (Theta0T, 0, 5);
+        //paramPane.add (theta0, 0, 6);
+        //paramPane.add (Theta1T, 0, 7);
+        //paramPane.add (theta1, 0, 8);
+        //paramPane.add (Phi0T, 0, 9);
+        //paramPane.add (phi0, 0, 10);
+        //paramPane.add (Phi1T, 0, 11);
+        //paramPane.add (phi1, 0, 12);
         paramPane.add (objAxisT, 0, 13);
         paramPane.add (objAxis, 0, 14);
         //paramPane.add(matT, 0, 5);
@@ -476,14 +510,14 @@ public class GeomController implements Initializable {
         complete (newStage, geoScene);
     }
 
-    private void resetGeom(){
+    private void resetGeom() {
         drawPane.getItems ().clear ();
         camV.resetCam ();
     }
-    
+
     @FXML
     private void doDrawReset(MouseEvent event) {
-        resetGeom();
+        resetGeom ();
     }
 
     @FXML

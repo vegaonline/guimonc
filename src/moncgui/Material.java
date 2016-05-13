@@ -33,13 +33,13 @@ public class Material {
 		shiny.Kd = 0.5;
 		shiny.Ks = 0.8;
 		shiny.shininess = 90.0f;
-System.out.println("NEW Material " + shiny.toString());
+// System.out.println("NEW Material " + shiny.toString());
 		return shiny;
    	}
 
 	public void setColor(Vector3D color){
 		this.color = color;
-System.out.println(this);
+// System.out.println(this);
 	}
 	public Material putColor(Vector3D color){
 		this.color = color;
@@ -47,7 +47,7 @@ System.out.println(this);
 	}
 	public void setKd(double k){
 		this.Kd = k;
-System.out.println(this);
+// System.out.println(this);
 	}
 	public Material putKd(double k){
 		this.Kd = k;
