@@ -3,33 +3,16 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/home/vega/NetBeansProjects/MoncGUI/src/moncgui/CameraView.java</file>
-            <file>file:/home/vega/NetBeansProjects/MoncGUI/src/moncgui/Rod3D.java</file>
-            <file>file:/home/vega/NetBeansProjects/MoncGUI/src/moncgui/CameraTransform.java</file>
-            <file>file:/home/vega/NetBeansProjects/MoncGUI/src/moncgui/Polygon3D.java</file>
-            <file>file:/home/vega/NetBeansProjects/MoncGUI/src/moncgui/GeomController.java</file>
-            <file>file:/home/vega/NetBeansProjects/MoncGUI/src/moncgui/cubeTest.java</file>
-            <file>file:/home/vega/NetBeansProjects/MoncGUI/src/moncgui/MouseHandler.java</file>
-            <file>file:/home/vega/NetBeansProjects/MoncGUI/src/moncgui/Material.java</file>
-            <file>file:/home/vega/NetBeansProjects/MoncGUI/src/moncgui/Geom.fxml</file>
-            <file>file:/home/vega/NetBeansProjects/MoncGUI/src/moncgui/FloatCollector.java</file>
-            <file>file:/home/vega/NetBeansProjects/MoncGUI/src/moncgui/Sphere_Sect.java</file>
-            <file>file:/home/vega/NetBeansProjects/MoncGUI/src/moncgui/Vector3D.java</file>
-            <file>file:/home/vega/NetBeansProjects/MoncGUI/src/moncgui/ConfigSetController.java</file>
-            <file>file:/home/vega/NetBeansProjects/MoncGUI/src/moncgui/Sphere.java</file>
-            <file>file:/home/vega/NetBeansProjects/MoncGUI/src/moncgui/KeyHandler.java</file>
-            <file>file:/home/vega/NetBeansProjects/MoncGUI/src/moncgui/RootLayoutController.java</file>
-            <file>file:/home/vega/NetBeansProjects/MoncGUI/src/moncgui/vegaCYL.java</file>
-            <file>file:/home/vega/NetBeansProjects/MoncGUI/src/moncgui/MoncGUI.java</file>
-            <file>file:/home/vega/NetBeansProjects/MoncGUI/src/moncgui/cylTest.java</file>
-            <file>file:/home/vega/NetBeansProjects/MoncGUI/src/moncgui/Lighting3D.java</file>
-            <file>file:/home/vega/NetBeansProjects/MoncGUI/src/moncgui/tubeTest.java</file>
-            <file>file:/home/vega/NetBeansProjects/MoncGUI/src/moncgui/Vector2D.java</file>
-            <file>file:/home/vega/NetBeansProjects/MoncGUI/src/moncgui/Context3D.java</file>
-            <file>file:/home/vega/NetBeansProjects/MoncGUI/src/moncgui/AnalyzerController.java</file>
-            <file>file:/home/vega/NetBeansProjects/MoncGUI/src/moncgui/LineCube.java</file>
-            <file>file:/home/vega/NetBeansProjects/MoncGUI/src/moncgui/Mesh.java</file>
-            <file>file:/home/vega/NetBeansProjects/MoncGUI/src/moncgui/Axis3D.java</file>
+            <file>file:/home/vega/NetBeansProjects/MONCGUI/src/moncgui/tubeTest.java</file>
+            <file>file:/home/vega/NetBeansProjects/MONCGUI/src/moncgui/CameraTransform.java</file>
+            <file>file:/home/vega/NetBeansProjects/MONCGUI/src/moncgui/MoncGUI.java</file>
+            <file>file:/home/vega/NetBeansProjects/MONCGUI/src/moncgui/CameraView.java</file>
+            <file>file:/home/vega/NetBeansProjects/MONCGUI/nbproject/jfx-impl.xml</file>
+            <file>file:/home/vega/NetBeansProjects/MONCGUI/src/moncgui/GeomController.java</file>
+            <file>file:/home/vega/NetBeansProjects/MONCGUI/src/moncgui/Geom.fxml</file>
+            <file>file:/home/vega/NetBeansProjects/MONCGUI/src/moncgui/Context3D.java</file>
+            <file>file:/home/vega/NetBeansProjects/MONCGUI/src/moncgui/cylTest.java</file>
+            <file>file:/home/vega/NetBeansProjects/MONCGUI/src/moncgui/Axis3D.java</file>
         </group>
     </open-files>
 </project-private>
