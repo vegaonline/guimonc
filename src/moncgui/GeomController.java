@@ -227,8 +227,14 @@ public class GeomController implements Initializable {
         objAxis.setMaxSize(30, 1);
 
         HBox hb1 = new HBox(baseCX, baseCY, baseCZ);
+        HBox hb2 = new HBox(radIT, radI);
+        HBox hb3 = new HBox(radOT, radO);
+        HBox hb4 = new HBox(heightT, ht);
+        HBox hb5 = new HBox(objAxisT, objAxis);
         hb1.setSpacing(1); //hb1.setPadding(new Insets(2));
-        VBox vb1 = new VBox(BaseCoord, hb1);
+        
+        hb2.setSpacing(1); hb3.setSpacing(1); hb4.setSpacing(1); hb5.setSpacing(1); 
+        VBox vb1 = new VBox(BaseCoord, hb1, hb2, hb3, hb4, hb5);
 
         baseCX.setPromptText("0.0");
         baseCY.setPromptText("0.0");
@@ -239,14 +245,14 @@ public class GeomController implements Initializable {
         objAxis.setPromptText("X");
 
         paramPane.add(vb1, 0, 0); // col row 
-        paramPane.add(radIT, 0, 1);
-        paramPane.add(radI, 0, 2);
-        paramPane.add(radOT, 0, 3);
-        paramPane.add(radO, 0, 4);
-        paramPane.add(heightT, 0, 5);
-        paramPane.add(ht, 0, 6);
-        paramPane.add(objAxisT, 0, 7);
-        paramPane.add(objAxis, 0, 8);
+        // paramPane.add(radIT, 0, 1);
+        // paramPane.add(radI, 0, 2);
+        // paramPane.add(radOT, 0, 3);
+        // paramPane.add(radO, 0, 4);
+        // paramPane.add(heightT, 0, 5);
+        // paramPane.add(ht, 0, 6);
+        // paramPane.add(objAxisT, 0, 7);
+        // paramPane.add(objAxis, 0, 8);
         //paramPane.add(matT, 0, 5);
         // paramPane.add(matList, 0, 6);
         paramPane.add(drawMe, 0, 9);
