@@ -1,33 +1,17 @@
-/**
+/*
  * @(#)Cube.java
  *
  *
- * @author 
+ * @vega
  * @version 1.00 2011/10/26
  */
 
-import javafx.geometry.Bounds;
-import javafx.scene.DepthTest;
+package moncgui;
+
 import javafx.scene.Group;
-import javafx.scene.PerspectiveCamera;
-import javafx.scene.Scene;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.media.AudioClip;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.CycleMethod;
-import javafx.scene.paint.RadialGradient;
-import javafx.scene.paint.Stop;
-import javafx.scene.shape.Line;
-import javafx.scene.shape.LineBuilder;
+import javafx.scene.shape.*;
 import javafx.scene.transform.Rotate;
-import javafx.scene.transform.Scale;
-import javafx.scene.transform.Shear;
-import javafx.scene.transform.Translate;
-import javafx.stage.Stage;
-import javafx.scene.shape.StrokeLineCap;
-import javafx.scene.Node;
 
     public class LineCube extends Group {
 

@@ -17,6 +17,7 @@
          <children>
             <Button fx:id="shapeRST" mnemonicParsing="false" onAction="#doGeomReset" onMouseClicked="#doDrawReset" text="Reset" />
             <Button fx:id="geomClear" mnemonicParsing="false" onAction="#doCLS" text="clear" />
+            <Button fx:id="shapeBricks" mnemonicParsing="false" onAction="#doBrick" text="Brick" />
             <Button fx:id="shapeEllip" mnemonicParsing="false" onAction="#doShapeCirc" text="Spheroid / Ellipsoid" />
             <Button fx:id="shapeCYL" mnemonicParsing="false" onAction="#doShapeCyl" text="Tube/Disk" />
             <Button fx:id="shapeUpd" mnemonicParsing="false" onAction="#doUpdate" text="UPDATE" />
