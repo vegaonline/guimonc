@@ -2,6 +2,7 @@
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
+ * @author vega
  */
 package moncgui;
 
@@ -114,6 +115,12 @@ public class GeomController implements Initializable {
     private Button geomClear;
     @FXML
     private Button shapeBricks;
+    @FXML
+    private MenuButton shapeRepli;
+    @FXML
+    private MenuItem shapeCopy;
+    @FXML
+    private MenuItem shapeMirror;
 
     public void setMainApp(MoncGUI badGUI) {
         this.myGUI = myGUI;
@@ -254,14 +261,6 @@ public class GeomController implements Initializable {
         objAxis.setPromptText ("X");
 
         paramPane.add (vb1, 0, 0); // col row 
-        // paramPane.add(radIT, 0, 1);
-        // paramPane.add(radI, 0, 2);
-        // paramPane.add(radOT, 0, 3);
-        // paramPane.add(radO, 0, 4);
-        // paramPane.add(heightT, 0, 5);
-        // paramPane.add(ht, 0, 6);
-        // paramPane.add(objAxisT, 0, 7);
-        // paramPane.add(objAxis, 0, 8);
         //paramPane.add(matT, 0, 5);
         // paramPane.add(matList, 0, 6);
         paramPane.add (drawMe, 0, 9);
@@ -496,7 +495,6 @@ public class GeomController implements Initializable {
     @FXML
     void doShapeCyl(ActionEvent event) {
         if ( initialized == 0 ) {
-            System.out.println ("In FXML :: Processing initialized=0");
             newStage = new Stage ();
             newStage.setTitle (
                     "Geometry Editor :: Abhijit Bhattacharyya EMAIL: vega@barc.gov.in");
@@ -516,14 +514,11 @@ public class GeomController implements Initializable {
     @FXML
     private void doShapeCirc(ActionEvent event) {
         if ( initialized == 0 ) {
-            System.out.println ("In FXML :: Processing initialized=0");
             newStage = new Stage ();
             newStage.setTitle (
                     "Geometry Editor :: Abhijit Bhattacharyya EMAIL: vega@barc.gov.in");
             newStage.setResizable (true);
             geoScene = setMyScene (drawWidth, drawHeight);
-            System.out.println ("in fxml :: Scene Height = " + geoScene.
-                    getHeight () + "  Width = " + geoScene.getWidth ());
             buildCamera (geoScene);
             Context3D context = Context3D.getInstance (camV);
             lightSetting (context);
@@ -590,7 +585,7 @@ public class GeomController implements Initializable {
         HBox hb2 = new HBox (lenT, lenVal);
         HBox hb3 = new HBox (widT, widVal);
         HBox hb4 = new HBox (depT, depVal);
-        HBox hb5 = new HBox(objAxisT, objAxis);
+        HBox hb5 = new HBox (objAxisT, objAxis);
 
         hb1.setSpacing (1); //hb1.setPadding(new Insets(2));
         hb2.setSpacing (2);
@@ -613,14 +608,11 @@ public class GeomController implements Initializable {
         drawMe.setOnAction (new EventHandler<ActionEvent> () {
             @Override
             public void handle(ActionEvent ev) {
-
                 double lenV = Double.parseDouble (lenVal.getText ());
                 double widV = Double.parseDouble (widVal.getText ());
                 double depV = Double.parseDouble (depVal.getText ());
-
                 Brick brk = new Brick ("Brick", lenV, widV, depV, Material.
                         getShinyMaterial ().putKd (0.57));
-
                 if ( objAxis.getText ().matches (axisX) ) {
                     brk.setRotate (90.0);
                 }
@@ -631,7 +623,7 @@ public class GeomController implements Initializable {
                 geoTextEntry = "Brick " + "(" + baseCX.getText () + ", " +
                         baseCY.getText () + ", " + baseCZ.getText () + ") " +
                         " Length " + lenV + " Width   " + widV +
-                        " Depth " + depV +" Axis along   " + objAxis.
+                        " Depth " + depV + " Axis along   " + objAxis.
                         getText () + "\n";
                 geoEntries.appendText (geoTextEntry);
                 paramPane.getChildren ().removeAll (vb1, radIT, radOT, radI,
@@ -644,14 +636,11 @@ public class GeomController implements Initializable {
     @FXML
     private void doBrick(ActionEvent event) {
         if ( initialized == 0 ) {
-            System.out.println ("In FXML :: Processing initialized=0");
             newStage = new Stage ();
             newStage.setTitle (
                     "Geometry Editor :: Abhijit Bhattacharyya EMAIL: vega@barc.gov.in");
             newStage.setResizable (true);
             geoScene = setMyScene (drawWidth, drawHeight);
-            System.out.println ("in fxml :: Scene Height = " + geoScene.
-                    getHeight () + "  Width = " + geoScene.getWidth ());
             buildCamera (geoScene);
             Context3D context = Context3D.getInstance (camV);
             lightSetting (context);
@@ -661,5 +650,41 @@ public class GeomController implements Initializable {
         }
         drawBricks ();
         complete (newStage, geoScene);
+    }
+
+    @FXML
+    private void doCopy(ActionEvent event) {
+        if ( initialized == 0 ) {
+            newStage = new Stage ();
+            newStage.setTitle (
+                    "Geometry Editor :: Abhijit Bhattacharyya EMAIL: vega@barc.gov.in");
+            newStage.setResizable (true);
+            geoScene = setMyScene (drawWidth, drawHeight);
+            buildCamera (geoScene);
+            Context3D context = Context3D.getInstance (camV);
+            lightSetting (context);
+            axis = buildAxes ();
+            camV.add (axis);
+            initialized = 1;
+        }
+        System.out.println ("Copy operation selected");
+    }
+
+    @FXML
+    private void doMirror(ActionEvent event) {
+        if ( initialized == 0 ) {
+            newStage = new Stage ();
+            newStage.setTitle (
+                    "Geometry Editor :: Abhijit Bhattacharyya EMAIL: vega@barc.gov.in");
+            newStage.setResizable (true);
+            geoScene = setMyScene (drawWidth, drawHeight);
+            buildCamera (geoScene);
+            Context3D context = Context3D.getInstance (camV);
+            lightSetting (context);
+            axis = buildAxes ();
+            camV.add (axis);
+            initialized = 1;
+        }
+        System.out.println ("Mirror operation selected");
     }
 }

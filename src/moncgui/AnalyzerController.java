@@ -6,26 +6,25 @@
 package moncgui;
 
 import java.io.*;
-import static java.lang.Math.max;
-import static java.lang.Math.min;
+import static java.lang.Math.*;
 import java.util.*;
-import javafx.beans.property.*;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.*;
-import javafx.event.*;
-import javafx.fxml.*;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.scene.*;
 import javafx.scene.chart.*;
 import javafx.scene.control.*;
-import javafx.scene.image.*;
-import javafx.scene.layout.*;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.*;
-import org.jzy3d.chart.*;
-import org.jzy3d.chart.factories.*;
-import org.jzy3d.colors.*;
-import org.jzy3d.javafx.*;
+import org.jzy3d.chart.AWTChart;
+import org.jzy3d.chart.factories.AWTChartComponentFactory;
+import org.jzy3d.colors.Color;
+import org.jzy3d.javafx.JavaFXChartFactory;
 import org.jzy3d.maths.*;
-import org.jzy3d.plot3d.primitives.*;
-import org.jzy3d.plot3d.rendering.canvas.*;
+import org.jzy3d.plot3d.primitives.Scatter;
+import org.jzy3d.plot3d.rendering.canvas.Quality;
 
 /**
  * FXML Controller class
@@ -342,9 +341,10 @@ public class AnalyzerController { // implements Initializable
     private void configureFileChooser(
             String mytitle, String dType1, String dType2, final FileChooser fileChooser) {
         fileChooser.setTitle(mytitle);
+        File recordsDir = new File("TestData");
         fileChooser.setInitialDirectory(
-                new File(System.getProperty("user.home"))
-        );
+                //new File(System.getProperty("user.home"))
+                recordsDir);
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter(dType1, dType2)
         );
@@ -360,12 +360,11 @@ public class AnalyzerController { // implements Initializable
         String dType1 = ".dat", dType2 = "*.dat", cvsSplitBy = ",";
         String line = "";
         FileChooser fileChooser = new FileChooser();
+
         configureFileChooser(
                 "Select data file to Plot", dType1, dType2, fileChooser
         );
-        //File dataF = fileChooser.showOpenDialog(baseStage); //IT is working commented for testing
-        //File dataF = new File("/home/vega/MyApps/Flasher/DAT/Test2D.dat");
-        File dataF = new File("/home/vega/MyApps/Flasher/DAT/Test3D.dat");
+        File dataF = fileChooser.showOpenDialog(baseStage); //IT is working commented for testing
         System.out.println(dataF);
 
         Reader reader = new FileReader(dataF);

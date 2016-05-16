@@ -1,0 +1,61 @@
+C   MONC-2.0                                    $ MOnte carlo Nucleon transport Code(MONC) version
+    2000                                          $ Number of events/histories
+    1  1                                     $ Inactive and active neutron generations for the calculations of Keff
+    1   2.5301E-08                          $ Number of neutrons in one generation, weight cutoff
+    114874976                                   $ Initial random number  
+    -1.0d0         5.436E-4       5.0           $ Z(Charge),A(mass no.), E(kinetic Energy, MeV)
+C   X, Y, Z, R, Sigma, Type, Cos(teta), Sin(fi), Cos(fi) of the Beam/Particle
+    0.0  0.0  0.0  0.0  0.0  2   1.0   0.0   1.0  $ Type 1. POINT SOURCE, 2 -CIRCULAR,PENCIL BEAM, 3-GAUSSIAN, 4-NORMAL, 5-PARABOLA
+    100E-06                                       $ Beam current in Amphere
+    -1. 6.25E+7                                  $ Flag for external source (-1.0 disable), Source strength (No./sec)
+C   Geometry construction (description of bodies) MAX=10000
+    4                                             $ Number of Bodies
+C   X1,  X2,  Y1,  Y2,   Z1,    Z2    R1,      R2,   Ntype
+    0.    0.     0.0    0.0     0.0    20.0    27.02   0.0     2.3 
+    0.    0.     0.0    0.0     0.0    20.0    27.01   0.0     2.3 
+    0.    0.     0.0    0.0     0.0    20.0     5.025  0.0     2.3
+    0.    0.     0.0    0.0     0.0    20.0     5.0    0.0     2.3
+C   Geometry construction (construction of zones from bodies) MAX=10000
+    4                           $ Number of Zones:  
+1  2 1 0                        $ Zone Number, No. of bodies involved, number of repetition, repetition of lattice 
+     + 1 - 2                    $ + Union,- Subtraction,* Intersection, body number
+      0.0 0.0 0.0               $ x, y, z center of placement of zone, Radius if regular structure
+2  1 1 0                        $ First zone is black body, Second zone is Universe
+     + 2                        $ Third zone is logical body around lattice
+      0.0 0.0 0.0               
+3  -1 1 0                       $ Logical zone should be with '-' with second number
+     + 3 
+      0.0 0.0 0.0
+4  1 1 0                       $ Third number with '-' is regular bodies around a circle
+     + 4                                        
+      0.0 0.0 0.0
+C   Material description
+    1                           $  No. of Materials,A, Z, Density (g/cc)
+             181.0  73.0  16.8   04009.70c 04009.23u
+C   Material fraction in atomic density*Mass No. in all zones.
+      0.0  0.0  0.0    0.0  0.0 0.0    0.0 0.0  0.0  0.0    0.0  0.0 0.0    0.0 0.0  0.0  0.0    0.0  0.0 0.0  0.0 0.0  0.0 0.0    0.0 0.0  0.0  0.0    0.0  0.0 0.0  0.0 0.0  0.0  0.0    0.0  0.0 0.0    0.0 0.0  0.0  0.0    0.0  0.0 0.0    0.0 0.0  0.0  0.0    0.0  0.0 0.0  0.0 0.0  0.0 0.0    0.0 0.0  0.0  0.0    0.0  0.0 0.0  0.0
+      0.0  0.0  0.0    0.0  0.0 0.0    0.0 0.0  0.0  0.0    0.0  0.0 0.0    0.0 0.0  0.0  0.0    0.0  0.0 0.0  0.0 0.0  0.0 0.0    0.0 0.0  0.0  0.0    0.0  0.0 0.0  0.0 0.0  0.0  0.0    0.0  0.0 0.0    0.0 0.0  0.0  0.0    0.0  0.0 0.0    0.0 0.0  0.0  0.0    0.0  0.0 0.0  0.0 0.0  0.0 0.0    0.0 0.0  0.0  0.0    0.0  0.0 0.0  0.0
+      0.0  0.0 0.0    0.0  0.0 0.0    0.0 0.0  0.0  0.0    0.0  0.0 0.0    0.0 0.0  0.0  0.0    0.0  0.0 0.0  0.0 0.0  0.0 0.0    0.0 0.0  0.0  0.0    0.0  0.0 0.0  0.0 0.0  0.0  0.0    0.0  0.0 0.0    0.0 0.0  0.0  0.0    0.0  0.0 0.0    0.0 0.0  0.0  0.0    0.0  0.0 0.0  0.0 0.0  0.0 0.0    0.0 0.0  0.0  0.0    0.0  0.0 0.0  0.0
+      1.0  0.0  0.0    0.0  0.0 0.0    0.0 0.0  0.0  0.0    0.0  0.0 0.0    0.0 0.0  0.0  0.0    0.0  0.0 0.0  0.0 0.0  0.0 0.0    0.0 0.0  0.0  0.0    0.0  0.0 0.0  0.0 0.0  0.0  0.0    0.0  0.0 0.0    0.0 0.0  0.0  0.0    0.0  0.0 0.0    0.0 0.0  0.0  0.0    0.0  0.0 0.0  0.0 0.0  0.0 0.0    0.0 0.0  0.0  0.0    0.0  0.0 0.0  0.0
+C  Cut-off energies for transport pion,proton,deutron,triton,He-3,He-4 and Heavy nuclei
+   2. 2. 2. 2. 2. 2. 2.                        $
+C  Choice of only hadron/photon/electron-nucleus interaction =1 or Transport =2
+   2 
+C  NUMBER OF RESIDUAL NUCLEI TO BE EVAPORATED 7 default, MAX=66
+   7 
+C  Flag for very thin target (mm), step size multiplier 10 is sufficient
+   1.0  10.0                                     $ 1.0 to enable, -1.0 to disable 
+C-------------------------------------------------$ End of Input parameters
+C              Out Put Telly
+1.0    0.0    5.0     0.1    0.0    5.0         $R_bin,R_Min, R_Max,Z_bin,Z_Min,Z_Max: Total Heat
+0.1    0.0    5.0     0.1    0.0    5.0          $R_bin,R_Min, R_Max,Z_bin,Z_Min,Z_Max: Volumetric Heat in each zone
+0.1    0.0    5.0     0.1    0.0    5.0         $R_bin,R_Min, R_Max,Z_bin,Z_Min,Z_Max: Total Heat
+0.1    0.0    5.0     0.1    0.0    5.0         $R_bin,R_Min, R_Max,Z_bin,Z_Min,Z_Max: Total Heat
+-1. -1. 1. -1. -1. -1. -1. -1.                           $Input, Neutron,Neutron dist.,Residue,Heat, Heat Volumetric, Spectra, ANG. Spectra
+0.1 -1.0 5.0 0.1 -1.0 5.0                         $R_bin,R_Min, R_Max,Z_bin,Z_Min,Z_Max for dose
+0.5 -5.0 5.0 0.5 -5.0 5.0 0.5 -5.0 5.0      $X_bin,X_Min, X_Max,Y_bin,Y_Min,Y_Max Z_bin,Z_Min,Z_Max for dose
+82 207 5.0 0.0 20.0 10.0 0.0 100.0  4             $Toxic element Z, A,R_bin,R_Min, R_Max,Z_bin,Z_Min,Z_Max, flag +1/-1(enable/disable)
+C  Double differential cross-section for n, lcp, pi+- 
+5 24. 35. 55. 80. 120. 2.5                        $ No. of angles, theta, d(theta) for n
+5 54.0 68.0 90. 121. 136. 5.                      $ No. of angles, theta, d(theta) for lcp
+10 15. 20. 30. 45. 60. 75. 90. 105. 120. 135. 2.5 $ No. of angles, theta, d(theta) for pi+-
