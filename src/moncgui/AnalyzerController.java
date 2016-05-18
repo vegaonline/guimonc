@@ -25,10 +25,8 @@ import org.jzy3d.colors.*;
 import org.jzy3d.colors.colormaps.ColorMapRainbow;
 import org.jzy3d.javafx.JavaFXChartFactory;
 import org.jzy3d.maths.*;
-import org.jzy3d.plot3d.primitives.vbo.builders.VBOBuilderListCoord3d;
-import org.jzy3d.plot3d.primitives.vbo.drawable.ScatterVBO;
+import org.jzy3d.plot3d.primitives.Scatter;
 import org.jzy3d.plot3d.rendering.canvas.Quality;
-
 
 /**
  * FXML Controller class
@@ -41,7 +39,6 @@ public class AnalyzerController implements Initializable {
     private Stage plotStage;
     private Stage newStage;
     private Scene newScene;
-    private CameraView camV = new CameraView ();
     private ImageView imgView = new ImageView ();
 
     private List<double[]> dataPlot = new ArrayList<double[]> ();
@@ -171,6 +168,18 @@ public class AnalyzerController implements Initializable {
         );
     }
 
+    private double ParseDouble(String strNumber) {
+        if ( strNumber != null && strNumber.length () > 0 ) {
+            try {
+                return Double.parseDouble (strNumber);
+            } catch (Exception e) {
+                return -99999.99;   // or some value to mark this field is wrong. or make a function validates field first ...
+            }
+        } else {
+            return 0;
+        }
+    }
+
     public void openDataFile() throws FileNotFoundException {
         int i = 0, j = 0;
         int lineCount = 0;
@@ -200,7 +209,7 @@ public class AnalyzerController implements Initializable {
                 dataLen = getDataLen ();
                 double[] oneRow = new double[getDataLen ()];
                 for ( i = 0; i < getDataLen (); i++ ) {
-                    oneRow[i] = Double.parseDouble (data[i]);
+                    oneRow[i] = ParseDouble (data[i]);
                     switch (dataLen) {
                         case 2:
                             myData1.add (new myDat (oneRow[0], oneRow[1], 0.0,
@@ -230,10 +239,14 @@ public class AnalyzerController implements Initializable {
                 }
                 boolean add = dataPlot.add (oneRow); //dataPlot.add(oneRow);
                 myData.addAll (oneRow);
+                if ( dataLen == 1 ) {
+                    System.out.println (
+                            "Please delete extra blank line in the data file probably at the end.");
+                    return;
+                }
             }
             resource.close ();
             lineCount = dataPlot.size ();
-            System.out.println ("j->  " + lineCount);
             //mydata2Plot = new double[lineCount][dataLen];
             colVal = new double[7][lineCount + 1];
             switch (dataLen) {
@@ -453,106 +466,83 @@ public class AnalyzerController implements Initializable {
         plotAnchor2Plot.getChildren ().add (lineChart);
     }
 
-    private void lightSetting(Context3D context) {
-        context.lighting = new Lighting3D ();
-        context.lighting.add (Lighting3D.Type.DIFFUSE,
-                Lighting3D.Source.PARALLEL, 1.5, new Vector3D (1, 0.8, 0.6));
-        context.lighting.add (Lighting3D.Type.DIFFUSE,
-                Lighting3D.Source.PARALLEL, 1.0, new Vector3D (-1, -0.8, 0.6));
-        context.lighting.add (Lighting3D.Type.DIFFUSE,
-                Lighting3D.Source.PARALLEL, 0.5, new Vector3D (0, -0.2, -0.8));
-        // context.showLights    //-----> These generates yellow lights seem to be axes
-        // context.setShowBorders(true);  
-        // context.setShowTexts(true);  // vertex texts are shown with drawing. Don't use 
-    }
-
     private void plot3dRoutine(int colX, int colY, int colZ, String pltType) {
         newStage = new Stage ();
         newStage.setTitle (
                 "Data Analyzer :: Abhijit Bhattacharyya EMAIL: vega@barc.gov.in");
-        //Scene newScene = new Scene (camV, 800, 700, true);
-        //newScene.setCamera (new PerspectiveCamera ());
-        //Context3D context = Context3D.getInstance (camV);
-        //lightSetting (context);
         newStage.setResizable (true);
-        System.out.println (" In Plot3dRoutine after resizeable");
         JavaFXChartFactory factory = new JavaFXChartFactory ();
-        System.out.println (" In Plot3dRoutine after factory decl");
+        AWTChart chart = getChart3D (factory, colX, colY, colZ, pltType,
+                "offscreen");  // Use offscreen.  "newt" gives error for factory
+        imgView = factory.bindImageView (chart);
 
-        AWTChart chart1 = getChart3D (factory, colX, colY, colZ, pltType,"offscreen");  // newt
-        System.out.println (" In Plot3dRoutine after factory AWTCHART");
-
-        imgView = factory.bindImageView (chart1);
-        System.out.println (" In Plot3dRoutine after factory ImageView");
-        //camV.add (chart1);
-        //camV.frameCam(newStage, newScene);
         StackPane newPane = new StackPane ();
-        newPane.getChildren ().add (imgView);
-        newScene = new Scene (newPane, 800, 700, true);
-        //MouseHandler mouseHandler = new MouseHandler (vegaScene, camV);
-        //KeyHandler keyHandler = new KeyHandler (vegaStage, vegaScene, camV);
+        newScene = new Scene (newPane, 600, 470);
         newStage.setScene (newScene);
         newStage.show ();
-        newStage.setWidth (700);
-        newStage.setHeight (650);
-        //factory.addSceneSizeChangedListener (chart1, newScene);
+        newPane.getChildren ().add (imgView);
+        factory.addSceneSizeChangedListener (chart, newScene);
+    }
+
+    public static ColorMapper coloring(List<Coord3d> coords) {
+        Range zRange = Coord3d.getZRange (coords);
+        ColorMapper coloring = new ColorMapper (new ColorMapRainbow (),
+                zRange.getMin (), zRange.getMax (), new Color (1, 1, 1, .5f));
+        return coloring;
     }
 
     private AWTChart getChart3D(JavaFXChartFactory fac1, int cx, int cy, int cz,
-            String pltType, String toolkit) {
-        int xstp = 0, ystp = 0;
-        double x = -10000.0, y = x, z = x;
-        double epsa = 0.25;
-        double maxx = -100000.0, minx = -maxx, maxy = maxx, miny = minx, maxz
-                = maxx, minz = minx;
+            String pltType, String toolkit) {;
+        double x, y, z;
+        float a = 0.25f;
+        int steps = 20;
         int dlen = colVal[cx].length;
-        plotCoordList = new ArrayList<Coord3d>(dlen);
+        plotCoordList = new ArrayList<Coord3d> (dlen);
         plotCoord = new Coord3d[dlen];
         plotColor = new Color[dlen];
+        double maxx = -99999999.99, minx = -maxx, maxy = maxx, miny = minx, maxz
+                = maxx, minz = minx, maxmax = 0, minmin = 0;
+        --cx;
+        --cy;
+        --cz;
+        for ( int i = 0; i < dlen; i++ ) {
+            x = colVal[cx][i];
+            y = colVal[cy][i];
+            z = colVal[cz][i];
+            maxx = max (maxx, x);
+            minx = min (minx, x);
+            maxy = max (maxy, y);
+            miny = min (miny, y);
+            maxz = max (maxz, z);
+            minz = min (minz, z);
+            plotCoord[i] = new Coord3d (x, y, z);
+            plotColor[i] = new Color ((float) x, (float) y, (float) z, a);
+        }
+        Range rngx = new Range ((float)minx, (float)maxx);
+        Range rngy = new Range((float) miny, (float)maxy);
+        
+        //ColorMapper coloring = coloring (plotCoordList);
         if ( pltType.contains ("scatter") == true ) {
-            System.out.println ("We are in scatter...   dlen =  "+dlen);
-            for ( int i = 0; i < dlen; i++ ) {
-                x = colVal[cx][i];
-                y = colVal[cy][i];
-                z = colVal[cz][i];
-                maxx = max (maxx, x);
-                minx = min (minx, x);
-                maxy = max (maxy, y);
-                miny = min (miny, y);
-                maxz = max (maxz, z);
-                minz = min (minz, z);
-                plotCoord[i] = new Coord3d (x, y, z);
-                plotCoordList.add (new Coord3d (x, y, z));
-                plotColor[i] = new Color ((float) x, (float) y, (float) z,
-                        (float) epsa);
-            }
-            System.out.println(plotCoordList.get (dlen-5));
-            Range rngX = new Range ((float) minx, (float) maxx);
-            Range rngY = new Range ((float) miny, (float) maxy);
-            Range rngZ = new Range ((float) minz, (float) maxz);
-            xstp = (int) ((maxx - minx) / 20.0 + 0.5);
-            ystp = (int) ((maxy - miny) / 20.0 + 0.5);
-            ColorMapper coloring = coloring (plotCoordList, rngZ);
-            ScatterVBO drawable = new ScatterVBO (new VBOBuilderListCoord3d (
-                    plotCoordList, coloring));
-            System.out.println("drawable was prepared");
-            Quality quality = Quality.Advanced;
-            AWTChart chart1 = (AWTChart) fac1.newChart (quality, toolkit);
-            System.out.println (chart1.getScene ().getClass ().getName ());
-            System.out.println (" Drawable Barycentre----> " + drawable.getBarycentre ());
-            chart1.getScene ().getGraph ().add (drawable);
-            return chart1;
-        } else {
+            //ScatterVBO drawable = new ScatterVBO (new VBOBuilderListCoord3d (plotCoordList, coloring));
+            Scatter scatter = new Scatter (plotCoord, plotColor);
+            Quality quality = Quality.Nicest;
+            AWTChart chart = (AWTChart) fac1.newChart (quality, toolkit);
+            chart.getScene ().getGraph ().add (scatter);
+            return chart;
+        } else if ( pltType.contains ("surface") == true ) {            
+            //Shape surface = Builder.buildOrthonormal (rngx, steps, rngy, steps);
+            //surface.setColorMapper (new ColorMapper (new ColorMapRainbow (), surface.getBounds ().getZmin (), surface.getBounds ().getZmax (), new Color (1, 1, 1, .5f)));
+            //surface.setFaceDisplayed (true);
+            //surface.setWireframeDisplayed (false);
+
+            // Create a chart
+            AWTChart chart = (AWTChart) fac1.newChart (Quality.Advanced,toolkit);
+            //chart.getScene ().getGraph ().add (surface);
+            return chart;
+        }else {
             AWTChart chart1 = null;
             return chart1;
         }
-    }
-
-    public static ColorMapper coloring(List<Coord3d> coords, Range zRng) {
-        // Range zrange = Coord3d.getZRange (coords);
-        ColorMapper coloring = new ColorMapper (new ColorMapRainbow (),
-                zRng.getMin (), zRng.getMax (), new Color (1, 1, 1, .5f));
-        return coloring;
     }
 
     @FXML
@@ -571,7 +561,7 @@ public class AnalyzerController implements Initializable {
         colX = getCol (selectX.getValue ());
         colY = getCol (selectY.getValue ());
         colZ = getCol (selectZ.getValue ());
-
+        System.out.println ("X  " + colX + "  Y " + colY + "  Z " + colZ);
         plotTitle = plotChartTitle.getText ();
         plotTable.setEditable (true);
         if ( dataLen == 2 ) {
