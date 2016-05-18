@@ -100,20 +100,10 @@ public class MoncGUI extends Application {
             FXMLLoader loader = new FXMLLoader (getClass().getResource (
                     "Geom.fxml"));  // MoncGUI.c
             AnchorPane geomPage = (AnchorPane) loader.load ();
-             rootLayout.setCenter (geomPage);
-            
-            //Stage geoStage = new Stage();
-            //Scene geoScene = new Scene(geomPage);
-            //geoStage.setScene (geoScene);
-//            Scene geoScene = new Scene(geomPage);
-//            primaryStage.setScene(geoScene);
-            GeomController controller = loader.getController ();
-            
+             rootLayout.setCenter (geomPage);            
+            GeomController controller = loader.getController ();            
             controller.setMainApp (this);            
             controller.setMyStage (primaryStage);
-            //controller.setMyStage (geoStage);
-            //geoStage.show ();
-            //primaryStage.show();
         } catch (IOException ex) {
             System.out.println (" Problem in loading geometry set");
             Logger.getLogger (MoncGUI.class.getName ()).log (Level.SEVERE, null,
@@ -130,7 +120,7 @@ public class MoncGUI extends Application {
             rootLayout.setCenter (plotPage);
             AnalyzerController controller = loader.getController ();
             controller.setMainApp (this);
-            controller.setMyScene (rootScene);
+            controller.setMyStage (primaryStage);
             //System.out.println("Here in Call Analyze plot page routine");
         } catch (IOException ex) {
             System.out.println (" Problem in loading Plotting set");
