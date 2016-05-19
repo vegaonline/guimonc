@@ -17,6 +17,7 @@ import javafx.fxml.*;
 import javafx.scene.Scene;
 import javafx.scene.chart.*;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.*;
@@ -42,8 +43,6 @@ public class AnalyzerController implements Initializable {
     private ImageView imgView = new ImageView ();
 
     private List<double[]> dataPlot = new ArrayList<double[]> ();
-    private final ObservableList<double[]> myData = FXCollections.
-            observableArrayList ();
     private final ObservableList<myDat> myData1 = FXCollections.
             observableArrayList ();
 
@@ -52,30 +51,23 @@ public class AnalyzerController implements Initializable {
 
     private String plotTitle = null;
 
+    private double maxx = -99999999.99, minx = -maxx, maxy = maxx, miny = minx,
+            maxz = maxx, minz = minx, meanx = maxx, meany = maxy, maxmax = 0, minmin
+            = 0;
+    int colX = 0, colY = 0, colZ = 0;
+    private AnchorPane plotAnchor2Plot = new AnchorPane ();
     private NumberAxis xAxis;
     private NumberAxis yAxis;
     private LineChart<Number, Number> lineChart;
+    private AWTChart chart;
     private XYChart.Series series;
     private Coord3d[] plotCoord;
     private Color[] plotColor;
     private List<Coord3d> plotCoordList;
+    private TableView<myDat> plotTable;
 
     @FXML
     private AnchorPane plotMainAnchorPane;
-    @FXML
-    private TableView<myDat> plotTable;
-    @FXML
-    private TableColumn<myDat, ?> plotTabC1;
-    @FXML
-    private TableColumn<myDat, ?> plotTabC2;
-    @FXML
-    private TableColumn<myDat, ?> plotTabC3;
-    @FXML
-    private TableColumn<myDat, ?> plotTabC4;
-    @FXML
-    private TableColumn<myDat, ?> plotTabC5;
-    @FXML
-    private TableColumn<myDat, ?> plotTabC6;
     @FXML
     private Button plotFileOpener;
     @FXML
@@ -94,9 +86,6 @@ public class AnalyzerController implements Initializable {
     private ChoiceBox<String> selectY;
     @FXML
     private ChoiceBox<String> selectZ;
-    @FXML
-    private AnchorPane plotAnchor2Plot;
-    @FXML
     private TextField plotChartTitle;
 
     public void setMainApp(MoncGUI badGUI) {
@@ -133,9 +122,6 @@ public class AnalyzerController implements Initializable {
                 "Choose column for Y Axis -- to be activated after loading the data file"));
         selectZ.setTooltip (new Tooltip (
                 "Choose column for Z Axis -- to be activated after loading the data file"));
-        if ( plotChartTitle.getText () == null ) {
-            plotChartTitle.setText (" PLOT TITLE");
-        }
     }
 
     //****  Data File open and read related files and classes ****
@@ -183,10 +169,12 @@ public class AnalyzerController implements Initializable {
     public void openDataFile() throws FileNotFoundException {
         int i = 0, j = 0;
         int lineCount = 0;
-        myData.clear ();
         myData1.clear ();
         dataPlot.clear ();
         dataLen = 0;
+        colX = 0;
+        colY = 0;
+        colZ = 0;
         String dType1 = ".dat", dType2 = "*.dat", cvsSplitBy = ",";
         String line = "";
         FileChooser fileChooser = new FileChooser ();
@@ -194,168 +182,172 @@ public class AnalyzerController implements Initializable {
         configureFileChooser (
                 "Select data file to Plot", dType1, dType2, fileChooser
         );
-        File dataF = fileChooser.showOpenDialog (plotStage); //IT is working commented for testing
-        System.out.println (dataF);
+        File dataF = fileChooser.showOpenDialog (plotStage.getScene ().
+                getWindow ()); //IT is working commented for testing
 
-        Reader reader = new FileReader (dataF);
-        Closeable resource = reader;
-        try {
-            BufferedReader br = new BufferedReader (reader);
-            resource = br;
-            line = null;
-            while ((line = br.readLine ()) != null) {
-                String[] data = line.split (cvsSplitBy);
-                setDataLen (data.length);
-                dataLen = getDataLen ();
-                double[] oneRow = new double[getDataLen ()];
-                for ( i = 0; i < getDataLen (); i++ ) {
-                    oneRow[i] = ParseDouble (data[i]);
+        if ( dataF == null ) {
+            System.out.println ("No file has been selected.....");
+        } else {
+            Reader reader = new FileReader (dataF);
+            Closeable resource = reader;
+            try {
+                BufferedReader br = new BufferedReader (reader);
+                resource = br;
+                line = null;
+                while ((line = br.readLine ()) != null) {
+                    String[] data = line.split (cvsSplitBy);
+                    setDataLen (data.length);
+                    dataLen = getDataLen ();
+                    double[] oneRow = new double[getDataLen ()];
+                    for ( i = 0; i < getDataLen (); i++ ) {
+                        oneRow[i] = ParseDouble (data[i]);
+                    }
                     switch (dataLen) {
-                        case 2:
-                            myData1.add (new myDat (oneRow[0], oneRow[1], 0.0,
-                                    0.0,
-                                    0.0, 0.0));
+                        case 2: myData1.add (
+                                    new myDat (oneRow[0], oneRow[1], 0.0,
+                                            0.0, 0.0, 0.0));
                             break;
-                        case 3:
-                            myData1.add (new myDat (oneRow[0], oneRow[1],
-                                    oneRow[2],
-                                    0.0, 0.0, 0.0));
+                        case 3: myData1.add (
+                                    new myDat (oneRow[0], oneRow[1],
+                                            oneRow[2], 0.0, 0.0, 0.0));
                             break;
                         case 4:
                             myData1.add (new myDat (oneRow[0], oneRow[1],
-                                    oneRow[2],
-                                    oneRow[3], 0.0, 0.0));
+                                    oneRow[2], oneRow[3], 0.0, 0.0));
                             break;
                         case 5:
                             myData1.add (new myDat (oneRow[0], oneRow[1],
-                                    oneRow[2],
-                                    oneRow[3], oneRow[4], 0.0));
+                                    oneRow[2], oneRow[3], oneRow[4], 0.0));
                             break;
-                        case 6:
-                            myData1.add (new myDat (oneRow[0], oneRow[1],
-                                    oneRow[2],
-                                    oneRow[3], oneRow[4], oneRow[5]));
+                        case 6: myData1.add (
+                                    new myDat (oneRow[0], oneRow[1],
+                                            oneRow[2], oneRow[3], oneRow[4],
+                                            oneRow[5]));
+                    }
+                    boolean add = dataPlot.add (oneRow); //dataPlot.add(oneRow);
+                    if ( dataLen == 1 ) {
+                        System.out.println (
+                                "Please delete extra blank line in the data file probably at the end.");
+                        return;
                     }
                 }
-                boolean add = dataPlot.add (oneRow); //dataPlot.add(oneRow);
-                myData.addAll (oneRow);
-                if ( dataLen == 1 ) {
-                    System.out.println (
-                            "Please delete extra blank line in the data file probably at the end.");
-                    return;
-                }
-            }
-            resource.close ();
-            lineCount = dataPlot.size ();
-            //mydata2Plot = new double[lineCount][dataLen];
-            colVal = new double[7][lineCount + 1];
-            switch (dataLen) {
-                case 2:
-                    selectX.setItems (FXCollections.
-                            observableArrayList ("Col 1", "Col 2"));
-                    selectY.setItems (FXCollections.
-                            observableArrayList ("Col 1", "Col 2"));
-                    selectZ.setTooltip (new Tooltip (
-                            " NO Z value.  Data file has two columns only"));
-                    selectX.setValue ("Col 1");
-                    selectY.setValue ("Col 2");
-                    selectZ.setValue ("");
-                    break;
-                case 3:
-                    selectX.setItems (FXCollections.
-                            observableArrayList ("Col 1", "Col 2", "Col 3"));
-                    selectY.setItems (FXCollections.
-                            observableArrayList ("Col 1", "Col 2", "Col 3"));
-                    selectZ.setItems (FXCollections.
-                            observableArrayList ("Col 1", "Col 2", "Col 3"));
-                    selectX.setValue ("Col 1");
-                    selectY.setValue ("Col 2");
-                    selectZ.setValue ("Col 3");
-                    break;
-                case 4:
-                    selectX.setItems (FXCollections.
-                            observableArrayList ("Col 1", "Col 2", "Col 3",
-                                    "Col 4"));
-                    selectY.setItems (FXCollections.
-                            observableArrayList ("Col 1", "Col 2", "Col 3",
-                                    "Col 4"));
-                    selectZ.setItems (FXCollections.
-                            observableArrayList ("Col 1", "Col 2", "Col 3",
-                                    "Col 4"));
-                    selectX.setValue ("Col 1");
-                    selectY.setValue ("Col 2");
-                    selectZ.setValue ("Col 3");
-                    break;
-                case 5:
-                    selectX.setItems (FXCollections.
-                            observableArrayList ("Col 1", "Col 2", "Col 3",
-                                    "Col 4", "Col 5"));
-                    selectY.setItems (FXCollections.
-                            observableArrayList ("Col 1", "Col 2", "Col 3",
-                                    "Col 4", "Col 5"));
-                    selectZ.setItems (FXCollections.
-                            observableArrayList ("Col 1", "Col 2", "Col 3",
-                                    "Col 4", "Col 5"));
-                    selectX.setValue ("Col 1");
-                    selectY.setValue ("Col 2");
-                    selectZ.setValue ("Col 3");
-                    break;
-                case 6:
-                    selectX.setItems (FXCollections.
-                            observableArrayList ("Col 1", "Col 2", "Col 3",
-                                    "Col 4", "Col 5", "Col 6"));
-                    selectY.setItems (FXCollections.
-                            observableArrayList ("Col 1", "Col 2", "Col 3",
-                                    "Col 4", "Col 5", "Col 6"));
-                    selectZ.setItems (FXCollections.
-                            observableArrayList ("Col 1", "Col 2", "Col 3",
-                                    "Col 4", "Col 5", "Col 6"));
-                    selectX.setValue ("Col 1");
-                    selectY.setValue ("Col 2");
-                    selectZ.setValue ("Col 3");
-            }
-            for ( i = 0; i < lineCount; i++ ) {
+                resource.close ();
+                lineCount = dataPlot.size ();
+                colVal = new double[7][lineCount + 1];
                 switch (dataLen) {
                     case 2:
-                        colVal[0][i] = dataPlot.get (i)[0];
-                        colVal[1][i] = dataPlot.get (i)[1];
+                        selectX.setItems (FXCollections.
+                                observableArrayList ("Col 1", "Col 2"));
+                        selectY.setItems (FXCollections.
+                                observableArrayList ("Col 1", "Col 2"));
+                        selectZ.setTooltip (new Tooltip (
+                                " NO Z value.  Data file has two columns only"));
+                        selectX.setValue ("Col 1");
+                        selectY.setValue ("Col 2");
+                        selectZ.setValue ("");
                         break;
                     case 3:
-                        colVal[0][i] = dataPlot.get (i)[0];
-                        colVal[1][i] = dataPlot.get (i)[1];
-                        colVal[2][i] = dataPlot.get (i)[2];
+                        selectX.setItems (FXCollections.
+                                observableArrayList ("Col 1", "Col 2", "Col 3"));
+                        selectY.setItems (FXCollections.
+                                observableArrayList ("Col 1", "Col 2", "Col 3"));
+                        selectZ.setItems (FXCollections.
+                                observableArrayList ("Col 1", "Col 2", "Col 3"));
+                        selectX.setValue ("Col 1");
+                        selectY.setValue ("Col 2");
+                        selectZ.setValue ("Col 3");
                         break;
                     case 4:
-                        colVal[0][i] = dataPlot.get (i)[0];
-                        colVal[1][i] = dataPlot.get (i)[1];
-                        colVal[2][i] = dataPlot.get (i)[2];
-                        colVal[3][i] = dataPlot.get (i)[3];
+                        selectX.setItems (FXCollections.
+                                observableArrayList ("Col 1", "Col 2", "Col 3",
+                                        "Col 4"));
+                        selectY.setItems (FXCollections.
+                                observableArrayList ("Col 1", "Col 2", "Col 3",
+                                        "Col 4"));
+                        selectZ.setItems (FXCollections.
+                                observableArrayList ("Col 1", "Col 2", "Col 3",
+                                        "Col 4"));
+                        selectX.setValue ("Col 1");
+                        selectY.setValue ("Col 2");
+                        selectZ.setValue ("Col 3");
                         break;
                     case 5:
-                        colVal[0][i] = dataPlot.get (i)[0];
-                        colVal[1][i] = dataPlot.get (i)[1];
-                        colVal[2][i] = dataPlot.get (i)[2];
-                        colVal[3][i] = dataPlot.get (i)[3];
-                        colVal[4][i] = dataPlot.get (i)[4];
+                        selectX.setItems (FXCollections.
+                                observableArrayList ("Col 1", "Col 2", "Col 3",
+                                        "Col 4", "Col 5"));
+                        selectY.setItems (FXCollections.
+                                observableArrayList ("Col 1", "Col 2", "Col 3",
+                                        "Col 4", "Col 5"));
+                        selectZ.setItems (FXCollections.
+                                observableArrayList ("Col 1", "Col 2", "Col 3",
+                                        "Col 4", "Col 5"));
+                        selectX.setValue ("Col 1");
+                        selectY.setValue ("Col 2");
+                        selectZ.setValue ("Col 3");
                         break;
                     case 6:
-                        colVal[0][i] = dataPlot.get (i)[0];
-                        colVal[1][i] = dataPlot.get (i)[1];
-                        colVal[2][i] = dataPlot.get (i)[2];
-                        colVal[3][i] = dataPlot.get (i)[3];
-                        colVal[4][i] = dataPlot.get (i)[4];
-                        colVal[5][i] = dataPlot.get (i)[5];
-                        break;
+                        selectX.setItems (FXCollections.
+                                observableArrayList ("Col 1", "Col 2", "Col 3",
+                                        "Col 4", "Col 5", "Col 6"));
+                        selectY.setItems (FXCollections.
+                                observableArrayList ("Col 1", "Col 2", "Col 3",
+                                        "Col 4", "Col 5", "Col 6"));
+                        selectZ.setItems (FXCollections.
+                                observableArrayList ("Col 1", "Col 2", "Col 3",
+                                        "Col 4", "Col 5", "Col 6"));
+                        selectX.setValue ("Col 1");
+                        selectY.setValue ("Col 2");
+                        selectZ.setValue ("Col 3");
                 }
+                for ( i = 0; i < lineCount; i++ ) {
+                    switch (dataLen) {
+                        case 2:
+                            colVal[0][i] = dataPlot.get (i)[0];
+                            colVal[1][i] = dataPlot.get (i)[1];
+                            break;
+                        case 3:
+                            colVal[0][i] = dataPlot.get (i)[0];
+                            colVal[1][i] = dataPlot.get (i)[1];
+                            colVal[2][i] = dataPlot.get (i)[2];
+                            break;
+                        case 4:
+                            colVal[0][i] = dataPlot.get (i)[0];
+                            colVal[1][i] = dataPlot.get (i)[1];
+                            colVal[2][i] = dataPlot.get (i)[2];
+                            colVal[3][i] = dataPlot.get (i)[3];
+                            break;
+                        case 5:
+                            colVal[0][i] = dataPlot.get (i)[0];
+                            colVal[1][i] = dataPlot.get (i)[1];
+                            colVal[2][i] = dataPlot.get (i)[2];
+                            colVal[3][i] = dataPlot.get (i)[3];
+                            colVal[4][i] = dataPlot.get (i)[4];
+                            break;
+                        case 6:
+                            colVal[0][i] = dataPlot.get (i)[0];
+                            colVal[1][i] = dataPlot.get (i)[1];
+                            colVal[2][i] = dataPlot.get (i)[2];
+                            colVal[3][i] = dataPlot.get (i)[3];
+                            colVal[4][i] = dataPlot.get (i)[4];
+                            colVal[5][i] = dataPlot.get (i)[5];
+                            break;
+                    }
+                }
+                if ( !dataPlot.isEmpty () ) {
+                    dataPlot.clear ();
+                }
+                System.out.
+                        println ("Data file " + dataF.getName () + " loaded.");
+                plotTitle = dataF.getName ();
+            } catch (FileNotFoundException ex) {
+                System.out.println ("File " + dataF + " Not found...");
+            } catch (IOException ex) {
+                System.out.println ("File " + dataF + " Not found...");
             }
-        } catch (FileNotFoundException ex) {
-            System.out.println ("File " + dataF + " Not found...");
-        } catch (IOException ex) {
-            System.out.println ("File " + dataF + " Not found...");
         }
     }
 
-    private static class myDat {
+    public static class myDat {
 
         private final SimpleDoubleProperty d1;
         private final SimpleDoubleProperty d2;
@@ -443,27 +435,115 @@ public class AnalyzerController implements Initializable {
     }
 
     //**** Plotting data ****
-    void plot2DRoutine(int colX, int colY) {
+    private void getMaxMinData(int cx, int cy, int cz) {
+        double x, y, z;
+        int datCnt = myData1.size ();
+        for ( int ii = 0; ii < datCnt; ii++ ) {
+            if ( cx >= 0 ) {
+                x = colVal[cx][ii];
+            } else {
+                x = minx;
+            }
+            if ( cy >= 0 ) {
+                y = colVal[cy][ii];
+            } else {
+                y = miny;
+            }
+            if ( cz >= 0 ) {
+                z = colVal[cz][ii];
+            } else {
+                z = minz;
+            }
+            maxx = max (maxx, x);
+            minx = min (minx, x);
+            maxy = max (maxy, y);
+            miny = min (miny, y);
+            maxz = max (maxz, z);
+            minz = min (minz, z);
+        }
+        System.out.println (maxx + "  " + minx + "  " + maxy + "  " + miny +
+                "  " + maxz + "  " + minz);
+        meanx = 0.5 * (maxx - minx);
+        meany = 0.5 * (maxy - miny);
+        System.out.println ("meanx = " + meanx + "  meany  " + meany);
+    }
+
+    void plot2DRoutine(int cx, int cy) {
+        
+        plotTable = new TableView ();
+        plotTable.setEditable (true);
+        plotTable.setMaxHeight (250);
+        plotTable.setMaxWidth (190);
+        plotTable.setLayoutX (10);
+        plotTable.setLayoutY (185);
+        plotTable.autosize ();
+
+        TableColumn col1 = new TableColumn<myDat, Double> ("C1");
+        col1.setMinWidth (85);
+        col1.setCellValueFactory (
+                new PropertyValueFactory<myDat, Double> ("d1"));
+        TableColumn col2 = new TableColumn<myDat, Double> ("C2");
+        col2.setMinWidth (85);
+        col2.setCellValueFactory (
+                new PropertyValueFactory<myDat, Double> ("d2"));
+        TableColumn col3 = new TableColumn<myDat, Double> ("C3");
+        col3.setMinWidth (85);
+        col3.setCellValueFactory (
+                new PropertyValueFactory<myDat, Double> ("d3"));
+        TableColumn col4 = new TableColumn<myDat, Double> ("C4");
+        col4.setMinWidth (85);
+        col4.setCellValueFactory (
+                new PropertyValueFactory<myDat, Double> ("d4"));
+        TableColumn col5 = new TableColumn<myDat, Double> ("C5");
+        col5.setMinWidth (85);
+        col5.setCellValueFactory (
+                new PropertyValueFactory<myDat, Double> ("d5"));
+        TableColumn col6 = new TableColumn<myDat, Double> ("C6");
+        col6.setMinWidth (85);
+        col6.setCellValueFactory (
+                new PropertyValueFactory<myDat, Double> ("d6"));
+        TableColumn col7 = new TableColumn<myDat, Double> ("C7");
+        col7.setMinWidth (85);
+        col7.setCellValueFactory (
+                new PropertyValueFactory<myDat, Double> ("d7"));
+        int datCnt = myData1.size ();
+
+        plotTable.setItems (myData1);
+        plotTable.getColumns ().
+                addAll (col1, col2, col3, col4, col5, col6, col7);
+
         plotType.setValue ("2D");
         xAxis = new NumberAxis ();
-        xAxis.setLabel ("X");
+        xAxis.setLabel ("X * " + meanx);
         yAxis = new NumberAxis ();
-        yAxis.setLabel ("Y");
-
+        yAxis.setLabel ("Y * " + meany);
         lineChart = new LineChart<Number, Number> (xAxis, yAxis);
         series = new XYChart.Series<> ();
 
-        int datCnt = colVal[colX].length;
         for ( int i = 0; i < datCnt; i++ ) {
-            series.getData ().add (new XYChart.Data (colVal[colX][i],
-                    colVal[colY][i]));
+            series.getData ().add (new XYChart.Data (colVal[cx][i] / meanx,
+                    colVal[cy][i] / meany)); // CHANGE AXES SCALE and UNDO THIS DIVISION
+            // THIS IS ILLEGAL AND WRONG:: Abhijit Bhattacharyya
         }
         if ( plotStyle.getItems ().contains ("__") == true ) {  // nosymbol
             lineChart.setCreateSymbols (false);
+        } else {
+            lineChart.setCreateSymbols (true);
         }
+        
+        plotMainAnchorPane.getChildren ().remove (plotAnchor2Plot);
+
+        lineChart.setScaleShape (true);
         lineChart.getData ().add (series);
         lineChart.setTitle (plotTitle);
+
+        plotAnchor2Plot.setLayoutX (200);
+        plotAnchor2Plot.setLayoutY (20);
+
+        plotMainAnchorPane.getChildren ().add (plotAnchor2Plot);
+        plotAnchor2Plot.setMaxSize (2500, 250);
         plotAnchor2Plot.getChildren ().add (lineChart);
+        plotMainAnchorPane.getChildren ().add (plotTable);
     }
 
     private void plot3dRoutine(int colX, int colY, int colZ, String pltType) {
@@ -472,7 +552,8 @@ public class AnalyzerController implements Initializable {
                 "Data Analyzer :: Abhijit Bhattacharyya EMAIL: vega@barc.gov.in");
         newStage.setResizable (true);
         JavaFXChartFactory factory = new JavaFXChartFactory ();
-        AWTChart chart = getChart3D (factory, colX, colY, colZ, pltType,
+        //AWTChart chart = getChart3D (factory, colX, colY, colZ, pltType,
+        chart = getChart3D (factory, colX, colY, colZ, pltType,
                 "offscreen");  // Use offscreen.  "newt" gives error for factory
         imgView = factory.bindImageView (chart);
 
@@ -500,27 +581,16 @@ public class AnalyzerController implements Initializable {
         plotCoordList = new ArrayList<Coord3d> (dlen);
         plotCoord = new Coord3d[dlen];
         plotColor = new Color[dlen];
-        double maxx = -99999999.99, minx = -maxx, maxy = maxx, miny = minx, maxz
-                = maxx, minz = minx, maxmax = 0, minmin = 0;
-        --cx;
-        --cy;
-        --cz;
         for ( int i = 0; i < dlen; i++ ) {
             x = colVal[cx][i];
             y = colVal[cy][i];
             z = colVal[cz][i];
-            maxx = max (maxx, x);
-            minx = min (minx, x);
-            maxy = max (maxy, y);
-            miny = min (miny, y);
-            maxz = max (maxz, z);
-            minz = min (minz, z);
             plotCoord[i] = new Coord3d (x, y, z);
             plotColor[i] = new Color ((float) x, (float) y, (float) z, a);
         }
-        Range rngx = new Range ((float)minx, (float)maxx);
-        Range rngy = new Range((float) miny, (float)maxy);
-        
+        Range rngx = new Range ((float) minx, (float) maxx);
+        Range rngy = new Range ((float) miny, (float) maxy);
+
         //ColorMapper coloring = coloring (plotCoordList);
         if ( pltType.contains ("scatter") == true ) {
             //ScatterVBO drawable = new ScatterVBO (new VBOBuilderListCoord3d (plotCoordList, coloring));
@@ -529,17 +599,18 @@ public class AnalyzerController implements Initializable {
             AWTChart chart = (AWTChart) fac1.newChart (quality, toolkit);
             chart.getScene ().getGraph ().add (scatter);
             return chart;
-        } else if ( pltType.contains ("surface") == true ) {            
+        } else if ( pltType.contains ("surface") == true ) {
             //Shape surface = Builder.buildOrthonormal (rngx, steps, rngy, steps);
             //surface.setColorMapper (new ColorMapper (new ColorMapRainbow (), surface.getBounds ().getZmin (), surface.getBounds ().getZmax (), new Color (1, 1, 1, .5f)));
             //surface.setFaceDisplayed (true);
             //surface.setWireframeDisplayed (false);
 
             // Create a chart
-            AWTChart chart = (AWTChart) fac1.newChart (Quality.Advanced,toolkit);
+            AWTChart chart = (AWTChart) fac1.
+                    newChart (Quality.Advanced, toolkit);
             //chart.getScene ().getGraph ().add (surface);
             return chart;
-        }else {
+        } else {
             AWTChart chart1 = null;
             return chart1;
         }
@@ -547,12 +618,17 @@ public class AnalyzerController implements Initializable {
 
     @FXML
     private void plotItNow(ActionEvent event) {
-        int colX = 0, colY = 0, colZ = 0;
+        if ( dataLen == 0 ) {
+            System.out.println ("No Data Selected......");
+            return;
+        }
+
         boolean found2d;
         boolean found3d;
         boolean surf3d;
         boolean scat3d;
         boolean cont3d;
+
         found2d = plotType.getValue ().contains ("2D");
         found3d = plotType.getValue ().contains ("3D");
         surf3d = plotType.getValue ().contains ("Surface");
@@ -561,9 +637,11 @@ public class AnalyzerController implements Initializable {
         colX = getCol (selectX.getValue ());
         colY = getCol (selectY.getValue ());
         colZ = getCol (selectZ.getValue ());
-        System.out.println ("X  " + colX + "  Y " + colY + "  Z " + colZ);
-        plotTitle = plotChartTitle.getText ();
-        plotTable.setEditable (true);
+        --colX;
+        --colY;
+        --colZ;
+        System.out.println (colX + "  " + colY + "   " + colZ);
+        getMaxMinData (colX, colY, colZ);
         if ( dataLen == 2 ) {
             plot2DRoutine (colX, colY);
         } else if ( found2d == true ) {
@@ -575,14 +653,20 @@ public class AnalyzerController implements Initializable {
         } else if ( cont3d == true ) {
             plot3dRoutine (colX, colY, colZ, "contour");
         }
+        colX = 0;
+        colY = 0;
+        colZ = 0;
     }
 
     @FXML
     private void plotPNGJPG(ActionEvent event) {
+
     }
 
     @FXML
     private void plotClearArea(ActionEvent event) {
+        plotMainAnchorPane.getChildren ().clear();
+        fixOptionCombos();
     }
 
 }
