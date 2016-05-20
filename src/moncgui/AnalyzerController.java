@@ -8,6 +8,7 @@ package moncgui;
 import java.io.*;
 import static java.lang.Math.*;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.*;
 import java.util.logging.*;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -55,7 +56,7 @@ public class AnalyzerController implements Initializable {
             maxz = maxx, minz = minx, meanx = maxx, meany = maxy, maxmax = 0, minmin
             = 0;
     int colX = 0, colY = 0, colZ = 0;
-    private AnchorPane plotAnchor2Plot = new AnchorPane ();
+    private StackPane plotAnchor2Plot = new StackPane ();
     private NumberAxis xAxis;
     private NumberAxis yAxis;
     private LineChart<Number, Number> lineChart;
@@ -65,6 +66,7 @@ public class AnalyzerController implements Initializable {
     private Color[] plotColor;
     private List<Coord3d> plotCoordList;
     private TableView<myDat> plotTable;
+    
 
     @FXML
     private AnchorPane plotMainAnchorPane;
@@ -461,15 +463,14 @@ public class AnalyzerController implements Initializable {
             maxz = max (maxz, z);
             minz = min (minz, z);
         }
-        System.out.println (maxx + "  " + minx + "  " + maxy + "  " + miny +
-                "  " + maxz + "  " + minz);
         meanx = 0.5 * (maxx - minx);
         meany = 0.5 * (maxy - miny);
-        System.out.println ("meanx = " + meanx + "  meany  " + meany);
     }
 
     void plot2DRoutine(int cx, int cy) {
-        
+        DecimalFormat newFormat = new DecimalFormat("0.###E0");        
+        plotAnchor2Plot.getChildren().removeAll(lineChart, xAxis, yAxis);        
+        plotMainAnchorPane.getChildren ().remove (plotAnchor2Plot);
         plotTable = new TableView ();
         plotTable.setEditable (true);
         plotTable.setMaxHeight (250);
@@ -514,34 +515,31 @@ public class AnalyzerController implements Initializable {
 
         plotType.setValue ("2D");
         xAxis = new NumberAxis ();
-        xAxis.setLabel ("X * " + meanx);
+        xAxis.setLabel ("X * "+newFormat.format(meanx));
         yAxis = new NumberAxis ();
-        yAxis.setLabel ("Y * " + meany);
+        yAxis.setLabel ("Y * "+newFormat.format(meany));
         lineChart = new LineChart<Number, Number> (xAxis, yAxis);
         series = new XYChart.Series<> ();
 
         for ( int i = 0; i < datCnt; i++ ) {
-            series.getData ().add (new XYChart.Data (colVal[cx][i] / meanx,
-                    colVal[cy][i] / meany)); // CHANGE AXES SCALE and UNDO THIS DIVISION
+            series.getData ().add (new XYChart.Data (colVal[cx][i]/meanx,
+                    colVal[cy][i]/meany)); // CHANGE AXES SCALE and UNDO THIS DIVISION
             // THIS IS ILLEGAL AND WRONG:: Abhijit Bhattacharyya
         }
         if ( plotStyle.getItems ().contains ("__") == true ) {  // nosymbol
             lineChart.setCreateSymbols (false);
         } else {
             lineChart.setCreateSymbols (true);
-        }
-        
-        plotMainAnchorPane.getChildren ().remove (plotAnchor2Plot);
-
+        }                
         lineChart.setScaleShape (true);
         lineChart.getData ().add (series);
-        lineChart.setTitle (plotTitle);
+        lineChart.setTitle (plotTitle+" (col "+(cx+1)+"  :  col "+(cy+1)+") ");
 
-        plotAnchor2Plot.setLayoutX (200);
+        plotAnchor2Plot.setLayoutX (210);
         plotAnchor2Plot.setLayoutY (20);
 
         plotMainAnchorPane.getChildren ().add (plotAnchor2Plot);
-        plotAnchor2Plot.setMaxSize (2500, 250);
+        plotAnchor2Plot.setMaxSize (360, 280);
         plotAnchor2Plot.getChildren ().add (lineChart);
         plotMainAnchorPane.getChildren ().add (plotTable);
     }
