@@ -10,17 +10,12 @@ public class tubeTest extends Mesh {
     }
     private int axisSamples;
     private int radialSamples;
-    public int verts;
-
+    private int verts;
     private double outerRadius;
     private double innerRadius;
     private double height;
 
     protected boolean viewInside;
-    
-    public int getVerts() {
-        return verts;
-    }
 
     /**
      * Constructor meant for Savable use only.
@@ -60,6 +55,10 @@ public class tubeTest extends Mesh {
 
     private void setVerts(int axisSamples, int radialSamples) {
         verts = (2 * (axisSamples + 1) * (radialSamples + 1) + radialSamples * 4);
+    }
+
+    public int getVerts() {
+        return verts;
     }
 
     public int getAxisSamples() {
@@ -189,11 +188,9 @@ public class tubeTest extends Mesh {
                 putNormal(0, 1, 0);
             }
         }
-
     }
 
     private void setIndexData() {
-
         final int outerCylinder = (axisSamples + 1) * (radialSamples + 1);
         final int bottomEdge = 2 * outerCylinder;
         final int topEdge = bottomEdge + 2 * radialSamples;
@@ -283,5 +280,4 @@ public class tubeTest extends Mesh {
             setIndexData();
         }
     }
-
 }

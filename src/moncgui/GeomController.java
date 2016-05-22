@@ -7,8 +7,6 @@
 package moncgui;
 
 import java.util.*;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.*;
 import javafx.fxml.*;
 import javafx.geometry.*;
@@ -29,15 +27,20 @@ import javafx.stage.Stage;
  */
 // public class GeomController implements Initializable extends Mesh {
 public class GeomController extends Mesh {
+
+    private int totObjectNum = 1000;
     private int initialized = 0;
     private MoncGUI myGUI;
     private Stage geoStage;
     private Scene geoScene;
     private CameraView camV = new CameraView();
-
+    private Object_Array_List oal1;
+    private List<Object_Array_List> objLIST = new ArrayList<Object_Array_List>(totObjectNum);
+    private int objCnt = 0;
     private Stage newStage = new Stage();
     private Scene newScene;
     private Axis3D axis;
+    private Group objGroup;
 
     private final ScrollBar scB = new ScrollBar();
     private final SplitPane paramPane1 = new SplitPane();
@@ -55,7 +58,7 @@ public class GeomController extends Mesh {
     private double centerY;
     private double centerZ;
     private int radSample, lenSample;
-    private double radScale = 3.0;
+    private double radScale = 4.0;
     private double lenScale = 1.1;
 
     private ArrayList<Sphere> sphList;
@@ -64,7 +67,7 @@ public class GeomController extends Mesh {
     private ArrayList<PhongMaterial> MaterialList
             = new ArrayList<PhongMaterial>();
     private List<String> materialNames = new ArrayList<String>();
-    private final ObservableList<Shape3D> GeoItems = FXCollections.observableArrayList();
+    private List<tubeTest> tubeList = new ArrayList<tubeTest>(totObjectNum);
 
     private Label BaseCoord = new Label("Origin (X, Y, Z) ");
     private TextField baseCX = new TextField();
@@ -96,6 +99,8 @@ public class GeomController extends Mesh {
     private TextField copyAxisX = new TextField();
     private TextField copyAxisY = new TextField();
     private TextField copyAxisZ = new TextField();
+    private Label gapT = new Label("Gap Length ");
+    private TextField gap = new TextField();
     private Label copyNumT = new Label("Number of copies ");
     private TextField copyNum = new TextField();
     private String axisX = "[xX]";
@@ -105,6 +110,7 @@ public class GeomController extends Mesh {
     private ComboBox<String> matList = new ComboBox<String>();
     private Button drawMe = new Button("Draw ");
     private TextArea geoEntries = new TextArea();
+    private TextArea nodeList = new TextArea();
     private String geoTextEntry = null;
 
     //private Scene geoScene = setMyScene(850, 750);
@@ -149,6 +155,8 @@ public class GeomController extends Mesh {
         geoScene = setMyScene(drawWidth, drawHeight);
         MouseHandler mouseHandler = new MouseHandler(geoScene, camV);
     }
+
+    ;
 
     private Scene setMyScene(double wid, double ht) {
         Scene sc = new Scene(camV, wid, ht, true);
@@ -235,6 +243,7 @@ public class GeomController extends Mesh {
         objAxisT.setFont(new Font("Times New Roman", 10));
         willCopyT.setFont(new Font("Times New Roman", 10));
         copyNumT.setFont(new Font("Times New Roman", 10));
+        gapT.setFont(new Font("Times New Roman", 10));
 
         baseCX.setPrefColumnCount(5);
         baseCX.setAlignment(Pos.CENTER_RIGHT);
@@ -264,6 +273,8 @@ public class GeomController extends Mesh {
         copyAxisZ.setPrefColumnCount(5);
         copyAxisZ.setAlignment(Pos.CENTER_RIGHT);
         copyAxisZ.setMaxSize(50, 1);
+        gap.setMaxSize(40, 1);
+        gap.setAlignment(Pos.CENTER_RIGHT);
         copyNum.setPrefColumnCount(5);
         copyNum.setAlignment(Pos.CENTER_RIGHT);
         copyNum.setMaxSize(50, 1);
@@ -274,7 +285,8 @@ public class GeomController extends Mesh {
         HBox hb4 = new HBox(heightT, ht);
         HBox hb5 = new HBox(objAxisT, objAxis);
         HBox hb6 = new HBox(copyAxisX, copyAxisY, copyAxisZ);
-        HBox hb7 = new HBox(copyNumT, copyNum);
+        HBox hb7 = new HBox(gapT, gap);
+        HBox hb8 = new HBox(copyNumT, copyNum);
 
         hb1.setSpacing(2); //hb1.setPadding(new Insets(2));
         hb2.setSpacing(2);
@@ -283,7 +295,8 @@ public class GeomController extends Mesh {
         hb5.setSpacing(2);
         hb6.setSpacing(2);
         hb7.setSpacing(2);
-        VBox vb1 = new VBox(BaseCoord, hb1, hb2, hb3, hb4, hb5, willCopyT, hb6, hb7);
+        hb8.setSpacing(2);
+        VBox vb1 = new VBox(BaseCoord, hb1, hb2, hb3, hb4, hb5, willCopyT, hb6, hb7, hb8);
 
         baseCX.setPromptText("0.0");
         baseCY.setPromptText("0.0");
@@ -301,10 +314,13 @@ public class GeomController extends Mesh {
         drawMe.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent ev) {
+                paramPane.getChildren().removeAll(vb1, radIT, radOT, radI, radO, heightT, ht, objAxisT, objAxis, drawMe);
+                paramPane.getChildren().add(nodeList);
                 double oRad = Double.parseDouble(radO.getText());
                 double length = chkNull(Double.parseDouble(ht.getText()));
                 double iRad = Double.parseDouble(radI.getText());
                 int copyN = Integer.parseInt(copyNum.getText());
+                double gapLen = Double.parseDouble(gap.getText());
                 int isX = 0, isY = 0, isZ = 0;
                 if (copyAxisX.getText().matches(axisX)) {
                     isX = 1;
@@ -327,15 +343,16 @@ public class GeomController extends Mesh {
                 lenSample = (int) (lenScale * Math.sqrt(length) + 0.5);
 
                 if (iRad != 0.0) {
-                    tubeTest tub1 = new tubeTest("Tube_1", oRad, iRad, length, lenSample, radSample, Material.getShinyMaterial().putKd(0.8));
-                    
-                    
-                    //System.out.println("Total Number of vertex = "+verts);
-                    //for (int k = 0; k <   verts; k++) {
-                    //    System.out.println("V=" + getVertexCoord(k));
-// System.out.println("N=" + getNormalCoord(k));
-// System.out.println("");
-                    // }
+                    int iCnt = copyN;
+                    objCnt++;
+                    tubeTest tub1 = new tubeTest("Tube", oRad, iRad, length, lenSample, radSample, Material.getShinyMaterial().putKd(0.8));
+                    oal1 = new Object_Array_List(objCnt, "Tube", lenSample, radSample, oRad, iRad, length);
+                    oal1.setNVerts(tub1.getVerts());
+                    System.out.println("Number of Vertices = " + tub1.getVerts());
+                    for (int ii = 0; ii < tub1.getVerts(); ii++) {
+                        oal1.setVertCoord(tub1.getVertexCoord(ii));
+                    }
+                    objLIST.add(oal1);
 
                     //Cylinder tub1 = new Cylinder(oRad, length);
                     //GeoItems.add(tub1);
@@ -367,10 +384,13 @@ public class GeomController extends Mesh {
                         //tub2.setTranslateZ(Double.parseDouble(baseCZ.getText()));
                     }
 
-                    if (isX == 1) {
-                        int icnt = 0;
-                        icnt = copyN - 1;
-
+                    if (isX != 0 || isY != 0 || isZ != 0) {
+                        for (int jj = 0; jj < copyN; jj++) {
+                            for (int jcopy=0; jcopy < objLIST.get(objCnt).getNVerts(); jcopy++) {
+                                // ***** check tubeTest for plotting points. Also store normals
+                            }
+                            
+                        }
                     }
 
                     geoTextEntry = "TUBE " + "ORIGIN :: (" + baseCX.getText()
@@ -380,8 +400,8 @@ public class GeomController extends Mesh {
                             + "  Length " + length
                             + " Axis along   " + objAxis.getText() + "\n";
                     geoEntries.appendText(geoTextEntry);
-                    paramPane.getChildren().removeAll(vb1, radIT, radOT, radI, radO, heightT, ht, objAxisT, objAxis, drawMe);
                     camV.add(tub1);
+
                     //camV.add(tub2);
                 } else {
                     cylTest tub1 = new cylTest("Tube_1", lenSample, radSample,
@@ -718,6 +738,14 @@ public class GeomController extends Mesh {
         complete(newStage, geoScene);
     }
 
+    private void try2Copy() {
+        for (int ii = 0; ii < objCnt; ii++) {
+            for (int jj = 0; jj < objLIST.get(ii).getNVerts(); jj++) {
+                nodeList.appendText(objLIST.get(ii).getVertCoord(jj).x + "  " + objLIST.get(ii).getVertCoord(jj).y + "  " + objLIST.get(ii).getVertCoord(jj).z + "\n");    // .toString());
+            }
+        }
+    }
+
     @FXML
     private void doCopy(ActionEvent event) {
         if (initialized == 0) {
@@ -733,6 +761,7 @@ public class GeomController extends Mesh {
             camV.add(axis);
             initialized = 1;
         }
+        try2Copy();
         System.out.println("Copy operation selected");
     }
 
