@@ -787,8 +787,9 @@ public class GeomController extends Mesh {
                 double xx = event.getX ();
                 double yy = event.getY ();
                 double zz = event.getZ ();
-                pp.setXYZ (xx, yy, zz);
-                System.out.println (pp.x + " " + pp.y + "  " + pp.z);
+
+                //pp.setXYZ (xx, yy, zz);
+                //System.out.println (pp.x + " " + pp.y + "  " + pp.z);
                 // pp.setX (xx);  pp.setY (yy);    pp.setZ (zz);
                 // System.out.println (event.getX() + "  "+ event.getY());
 
@@ -798,7 +799,7 @@ public class GeomController extends Mesh {
 
         });
 
-        System.out.println (pp);
+        
 
 
         /*

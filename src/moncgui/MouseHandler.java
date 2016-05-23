@@ -15,7 +15,7 @@ public class MouseHandler {
     double mouseOldX;
     double mouseOldY;
     double mouseDeltaX;
-    double mouseDeltaY;
+    double mouseDeltaY;    
 
     public MouseHandler(Scene scene, final CameraView cameraView) {
 
@@ -30,6 +30,7 @@ public class MouseHandler {
         });
 
         scene.setOnScroll (new EventHandler<ScrollEvent> () {
+
             public void handle(ScrollEvent sc) {
                 mouseOldX = mousePosX;
                 mouseOldY = mousePosY;
@@ -52,7 +53,8 @@ public class MouseHandler {
                 }
                 cameraView.updateStatusText ();
             }
-        });
+        }
+        );
 
         scene.setOnMouseDragged (new EventHandler<MouseEvent> () {
             public void handle(MouseEvent me) {
@@ -72,8 +74,7 @@ public class MouseHandler {
                     cameraView.setRy (ryAngle + mouseDeltaX);
                     double rxAngle = cameraView.getRx ();
                     cameraView.setRx (rxAngle + mouseDeltaY);
-                }
-                else if ( me.isSecondaryButtonDown () ) {
+                } else if ( me.isSecondaryButtonDown () ) {
                     double tx = cameraView.getXTranslate ();
                     double ty = cameraView.getYTranslate ();
                     cameraView.setXTranslate (tx + mouseDeltaX);

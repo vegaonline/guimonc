@@ -3,7 +3,8 @@ package moncgui;
 
     public class Brick extends Mesh {
 
-		double l2, b2, d2;
+		private double l2, b2, d2;
+                private int verts;
 
         public Brick(String name, double length, double breadth, double depth, Material material) {
 			super(name, material);
@@ -88,6 +89,15 @@ package moncgui;
         putNormal( 0,  0,  1);
     }
 
+    
+    public void setVerts() {
+        this.verts = getVertexCount();
+    }
+
+    public int getVerts() {
+        return this.verts;
+    }
+    
     private void setIndexData() {
         setTriangleIndicesSize(6);
         putTriangleIndex(0, 3, 2, 1); //top

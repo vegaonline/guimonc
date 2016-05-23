@@ -12,6 +12,8 @@ public class cylTest extends Mesh {
     private int axisSamples;
 
     private int radialSamples;
+    
+    private int verts;
 
     private double radius;
     private double radius2;
@@ -199,6 +201,16 @@ public class cylTest extends Mesh {
         return radialSamples;
     }
 
+    
+    private void setVerts(int axisSamples, int radialSamples) {
+        verts = (2 * (axisSamples + 1) * (radialSamples + 1) + radialSamples * 4);
+    }
+
+    public int getVerts() {
+        return verts;
+    }
+    
+    
     private void allocateVertices() {
         // allocate vertices
         final int verts = axisSamples * (radialSamples + 1) + (closed ? 2 : 0);
