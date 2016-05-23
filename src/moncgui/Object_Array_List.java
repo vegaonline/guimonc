@@ -5,9 +5,6 @@
  */
 package moncgui;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  *
  * @author vega
@@ -22,13 +19,20 @@ public class Object_Array_List extends Mesh {
     private double param1 = 0.0;
     private double param2 = 0.0;
     private double param3 = 0.0;
-    private List<Vector3D> vertCoords;
-    private List<Vector3D> colorCoords;
+    private double maxX;
+    private double minX;
+    private double maxY;
+    private double minY;
+    private double maxZ;
+    private double minZ;
+    // private List<Vector3D> vertCoords;
+    // private List<Vector3D> colorCoords;
 
     public Object_Array_List() {
     }
 
-    public Object_Array_List(final int id, final String objName, final int sample1, final int sample2,
+    public Object_Array_List(final int id, final String objName,
+            final int sample1, final int sample2,
             final double param1, final double param2, final double param3) {
         this.objID = id;
         this.ObjName = objName;
@@ -39,26 +43,51 @@ public class Object_Array_List extends Mesh {
         this.param3 = param3;
     }
 
+    public void setMaxMin(final double maxx, final double minx,
+            final double maxy, final double miny, final double maxz,
+            final double minz) {
+        this.maxX = maxx;
+        this.minX = minx;
+        this.maxY = maxy;
+        this.minY = miny;
+        this.maxZ = maxz;
+        this.minZ = minz;
+    }
+
     public void setNVerts(final int vertN) {
         this.nVerts = vertN;
-        vertCoords = new ArrayList<>(this.nVerts);
-        colorCoords = new ArrayList<Vector3D>(this.nVerts);
+        // vertCoords = new ArrayList<>(this.nVerts);
+        // colorCoords = new ArrayList<Vector3D>(this.nVerts);
     }
-    
-    public int getNVerts(){
+
+    public int getNVerts() {
         return this.nVerts;
     }
-
-    public void setVertCoord(final Vector3D vecInput) {
-        this.vertCoords.add(vecInput);
+    
+    public double getMaxX(){
+        return this.maxX;
     }
-
-    public Vector3D getVertCoord(int kk) {
-        return this.vertCoords.get(kk);
+    
+    
+    public double getMaxY(){
+        return this.maxY;
     }
-
-    public void setColorCoord(final Vector3D vecInput) {
-        this.colorCoords.add(vecInput);
+    
+    
+    public double getMaxZ(){
+        return this.maxZ;
     }
-
+    
+    
+    public double getMinX(){
+        return this.minX;
+    }
+    
+    public double getMinY(){
+        return this.minY;
+    }
+    
+    public double getMinZ(){
+        return this.minZ;
+    }
 }

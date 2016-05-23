@@ -6,6 +6,7 @@
  */
 package moncgui;
 
+import static java.lang.Math.*;
 import java.util.*;
 import javafx.event.*;
 import javafx.fxml.FXML;
@@ -117,7 +118,9 @@ public class GeomController extends Mesh {
     private TextArea geoEntries = new TextArea ();
     private TextArea nodeList = new TextArea ();
     private String geoTextEntry = null;
-    
+    private double maxx = -999999.99, minx = -maxx;
+    private double maxy = maxx, miny = minx;
+    private double maxz = maxx, minz = minx;
 
     //private Scene geoScene = setMyScene(850, 750);
     // MouseHandler mouseHandler = new MouseHandler(geoScene, camV);
@@ -203,6 +206,11 @@ public class GeomController extends Mesh {
         geoMainArea.setLeft (paramPane);
         geoMainArea.setRight (drawPane);
 
+        geoMainArea.autosize ();
+        objPane.autosize ();
+        drawPane.autosize ();
+        paramPane.autosize ();
+
         // redefined for plot window
         drawWidth = 850.0;
         drawHeight = 750.0;
@@ -242,6 +250,24 @@ public class GeomController extends Mesh {
     private Axis3D buildAxes() {
         axis = new Axis3D (60.0, Color.AQUAMARINE);
         return axis;
+    }
+
+    private void maxminFunc(final double xx, final double yy, final double zz) {
+        maxx = max (maxx, xx);
+        minx = min (miny, xx);
+        maxy = max (maxy, yy);
+        miny = min (miny, yy);
+        maxz = max (maxz, zz);
+        minz = min (minz, zz);
+    }
+
+    private void maxminInit() {
+        maxx = -999999.99;
+        minx = -maxx;
+        maxy = maxx;
+        miny = minx;
+        maxz = maxx;
+        minz = minx;
     }
 
     public void drawCyl() {
@@ -360,7 +386,13 @@ public class GeomController extends Mesh {
                     System.out.println ("Tube :: Number of Vertices = " + tub1.
                             getVerts ());
                     for ( int ii = 0; ii < tub1.getVerts (); ii++ ) {
-                        oal1.setVertCoord (tub1.getVertexCoord (ii));
+                        maxminFunc (
+                                tub1.getVertexCoord (ii).getX (),
+                                tub1.getVertexCoord (ii).getY (),
+                                tub1.getVertexCoord (ii).getZ ()
+                        );
+                        oal1.setMaxMin (maxx, minx, maxy, miny, maxz, minz);
+                        maxminInit ();
                     }
                     objLIST.add (oal1);
 
@@ -420,7 +452,7 @@ public class GeomController extends Mesh {
                     System.out.println ("Tube :: Number of Vertices = " + tub.
                             getVerts ());
                     for ( int ii = 0; ii < tub.getVerts (); ii++ ) {
-                        oal1.setVertCoord (tub.getVertexCoord (ii));
+                        // oal1.setVertCoord (tub.getVertexCoord (ii));
                     }
                     objLIST.add (oal1);
                     if ( objAxis.getText ().matches (axisX) ) {
@@ -749,7 +781,7 @@ public class GeomController extends Mesh {
                 System.out.println ("Bricks :: Number of Vertices = " + brk.
                         getVertexCount ());
                 for ( int ii = 0; ii < brk.getVerts (); ii++ ) {
-                    oal1.setVertCoord (brk.getVertexCoord (ii));
+                    //oal1.setVertCoord (brk.getVertexCoord (ii));
                 }
                 objLIST.add (oal1);
 
@@ -778,37 +810,19 @@ public class GeomController extends Mesh {
     }
 
     private void try2Copy() {
-        final Vector3D pp = null;
         System.out.println ("Total number of objects = " + objCnt);
-
+        System.out.println (nodeList.getText ());
+        nodeList.clear ();
         geoScene.setOnMouseClicked (new EventHandler<MouseEvent> () {
             @Override
             public void handle(MouseEvent event) {
-                double xx = event.getX ();
-                double yy = event.getY ();
-                double zz = event.getZ ();
-
-                //pp.setXYZ (xx, yy, zz);
-                //System.out.println (pp.x + " " + pp.y + "  " + pp.z);
-                // pp.setX (xx);  pp.setY (yy);    pp.setZ (zz);
-                // System.out.println (event.getX() + "  "+ event.getY());
-
-                nodeList.appendText (xx + "  " + yy + "  " + zz + "\n");
-
+                nodeList.clear ();
+                nodeList.appendText (
+                        event.getX () + "  " + event.getY () + "  " + event.
+                        getZ ());
             }
-
         });
-
-        
-
-
-        /*
-         * for ( int ii = 0; ii < objCnt; ii++ ) { for ( int jj = 0; jj <
-         * objLIST.get (ii).getNVerts (); jj++ ) { nodeList.appendText (
-         * objLIST.get (ii).getVertCoord (jj).x + " " + objLIST. get
-         * (ii).getVertCoord (jj).y + " " + objLIST.get (ii). getVertCoord
-         * (jj).z + "\n"); // .toString()); } }
-         */
+        System.out.println (nodeList.getText ());
     }
 
     @FXML
