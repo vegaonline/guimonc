@@ -13,15 +13,17 @@ import java.util.*;
 import java.util.logging.*;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.*;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.*;
-import javafx.scene.Scene;
+import javafx.scene.*;
 import javafx.scene.chart.*;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.ImageView;
+import javafx.scene.image.*;
 import javafx.scene.layout.*;
 import javafx.stage.*;
+import javax.imageio.ImageIO;
 import org.jzy3d.chart.AWTChart;
 import org.jzy3d.colors.*;
 import org.jzy3d.colors.colormaps.ColorMapRainbow;
@@ -66,7 +68,6 @@ public class AnalyzerController implements Initializable {
     private Color[] plotColor;
     private List<Coord3d> plotCoordList;
     private TableView<myDat> plotTable;
-    
 
     @FXML
     private AnchorPane plotMainAnchorPane;
@@ -108,14 +109,14 @@ public class AnalyzerController implements Initializable {
 
     //**** Fix option for plotting using combobox
     private void fixOptionCombos() {
-        plotType.getItems ().setAll ("2D ", "2D + ErrorBar", "3D Surface",
-                " 3D Scatter", "3D Contour");
+        // plotType.getItems ().setAll ("2D ", "2D + ErrorBar", "3D Surface"," 3D Scatter", "3D Contour");
+        plotType.getItems ().setAll ("2D ", " 3D Scatter");
         plotType.setValue ("2D");
 
         plotStyle.getItems ().setAll ("__", "-o-");
         plotStyle.setValue ("__");
 
-        plotExport.getItems ().setAll ("JPG", "PNG");
+        plotExport.getItems ().setAll ("Export to : JPG", "Export to : PNG");
         plotExport.setValue ("PNG");
 
         selectX.setTooltip (new Tooltip (
@@ -468,8 +469,8 @@ public class AnalyzerController implements Initializable {
     }
 
     void plot2DRoutine(int cx, int cy) {
-        DecimalFormat newFormat = new DecimalFormat("0.###E0");        
-        plotAnchor2Plot.getChildren().removeAll(lineChart, xAxis, yAxis);        
+        DecimalFormat newFormat = new DecimalFormat ("0.###E0");
+        plotAnchor2Plot.getChildren ().removeAll (lineChart, xAxis, yAxis);
         plotMainAnchorPane.getChildren ().remove (plotAnchor2Plot);
         plotTable = new TableView ();
         plotTable.setEditable (true);
@@ -515,25 +516,26 @@ public class AnalyzerController implements Initializable {
 
         plotType.setValue ("2D");
         xAxis = new NumberAxis ();
-        xAxis.setLabel ("X * "+newFormat.format(meanx));
+        xAxis.setLabel ("X * " + newFormat.format (meanx));
         yAxis = new NumberAxis ();
-        yAxis.setLabel ("Y * "+newFormat.format(meany));
+        yAxis.setLabel ("Y * " + newFormat.format (meany));
         lineChart = new LineChart<Number, Number> (xAxis, yAxis);
         series = new XYChart.Series<> ();
 
         for ( int i = 0; i < datCnt; i++ ) {
-            series.getData ().add (new XYChart.Data (colVal[cx][i]/meanx,
-                    colVal[cy][i]/meany)); // CHANGE AXES SCALE and UNDO THIS DIVISION
-            // THIS IS ILLEGAL AND WRONG:: Abhijit Bhattacharyya
+            series.getData ().add (new XYChart.Data (colVal[cx][i] / meanx,
+                    colVal[cy][i] / meany)); // CHANGE AXES SCALE and UNDO THIS DIVISION
+            // THIS MAY BE ILLEGAL AND WRONG:: Abhijit Bhattacharyya
         }
         if ( plotStyle.getItems ().contains ("__") == true ) {  // nosymbol
             lineChart.setCreateSymbols (false);
         } else {
             lineChart.setCreateSymbols (true);
-        }                
+        }
         lineChart.setScaleShape (true);
         lineChart.getData ().add (series);
-        lineChart.setTitle (plotTitle+" (col "+(cx+1)+"  :  col "+(cy+1)+") ");
+        lineChart.setTitle (plotTitle + " (col " + (cx + 1) + "  :  col " +
+                (cy + 1) + ") ");
 
         plotAnchor2Plot.setLayoutX (210);
         plotAnchor2Plot.setLayoutY (20);
@@ -656,15 +658,54 @@ public class AnalyzerController implements Initializable {
         colZ = 0;
     }
 
+    private void saveAsPng(LineChart lc, String fName) {
+        WritableImage fImage = lineChart.snapshot (new SnapshotParameters (),
+                null);
+        File iFile = new File (fName);
+        try {
+            ImageIO.
+                    write (SwingFXUtils.fromFXImage (fImage, null), "png", iFile);
+        } catch (IOException ex) {
+            Logger.getLogger (AnalyzerController.class.getName ()).
+                    log (Level.SEVERE, null, ex);
+        }
+    }
+
     @FXML
     private void plotPNGJPG(ActionEvent event) {
-
+        String fName = null;
+        if ( plotExport.getValue ().contains ("PNG") ) {
+            fName = plotTitle + ".png";
+            File fImage = new File (fName);
+            if ( plotType.getValue ().contains ("3D") ) {
+                try {
+                    chart.screenshot (fImage);
+                } catch (IOException ex) {
+                    Logger.getLogger (AnalyzerController.class.getName ()).
+                            log (Level.SEVERE, null, ex);
+                }
+            } else if ( plotType.getValue ().contains ("2D") ) {
+                saveAsPng (lineChart, fName);
+            }
+        } else if ( plotExport.getValue ().contains ("JPG") ) {
+            fName = plotTitle + ".jpg";
+            File fImage = new File (fName);
+            if ( plotType.getValue ().contains ("3D") ) {
+                try {
+                    chart.screenshot (fImage);
+                } catch (IOException ex) {
+                    Logger.getLogger (AnalyzerController.class.getName ()).
+                            log (Level.SEVERE, null, ex);
+                }
+            }
+        }
+        plotExport.setValue ("PNG");
     }
 
     @FXML
     private void plotClearArea(ActionEvent event) {
-        plotMainAnchorPane.getChildren ().clear();
-        fixOptionCombos();
+        plotMainAnchorPane.getChildren ().clear ();
+        fixOptionCombos ();
     }
 
 }
