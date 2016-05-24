@@ -162,9 +162,8 @@ public class GeomController extends Mesh {
         buildScene ();
         geoScene = setMyScene (drawWidth, drawHeight);
         MouseHandler mouseHandler = new MouseHandler (geoScene, camV);
+        buildMaterial ();
     }
-
-    ;
 
     private Scene setMyScene(double wid, double ht) {
         Scene sc = new Scene (camV, wid, ht, true);
@@ -218,6 +217,14 @@ public class GeomController extends Mesh {
 
     private void buildCamera(Scene scene) {
         scene.setCamera (new PerspectiveCamera ());
+    }
+
+    private void buildMaterial() {
+        matList.getItems ().add ("Copper");
+        matList.getItems ().add ("Rubber");
+        matList.getItems ().add ("Brass");
+        matList.getItems ().add ("Glass");
+        matList.getItems ().add ("Plastic");
     }
 
     private void lightSetting(Context3D context) {
@@ -320,6 +327,7 @@ public class GeomController extends Mesh {
         HBox hb3 = new HBox (radOT, radO);
         HBox hb4 = new HBox (heightT, ht);
         HBox hb5 = new HBox (objAxisT, objAxis);
+        HBox hb6 = new HBox (matT, matList);
         //HBox hb6 = new HBox(copyAxisX, copyAxisY, copyAxisZ);
         //HBox hb7 = new HBox(gapT, gap);
         //HBox hb8 = new HBox(copyNumT, copyNum);
@@ -329,11 +337,11 @@ public class GeomController extends Mesh {
         hb3.setSpacing (2);
         hb4.setSpacing (2);
         hb5.setSpacing (2);
-        // hb6.setSpacing(2);
+        hb6.setSpacing (2);
         // hb7.setSpacing(2);
         // hb8.setSpacing(2);
         // VBox vb1 = new VBox(BaseCoord, hb1, hb2, hb3, hb4, hb5, willCopyT, hb6, hb7, hb8);
-        VBox vb1 = new VBox (BaseCoord, hb1, hb2, hb3, hb4, hb5);
+        VBox vb1 = new VBox (BaseCoord, hb1, hb2, hb3, hb4, hb5, hb6);
 
         baseCX.setPromptText ("0.0");
         baseCY.setPromptText ("0.0");
@@ -376,9 +384,24 @@ public class GeomController extends Mesh {
                 lenSample = (int) (lenScale * Math.sqrt (length) + 0.5);
 
                 if ( iRad != 0.0 ) {
-                    tubeTest tub1 = new tubeTest ("Tube", oRad, iRad, length,
-                            lenSample, radSample, Material.getShinyMaterial ().
-                            putKd (0.8));
+                    tubeTest tub1 = null;
+                    if ( matList.getValue ().contains ("Copper") ) {
+                        tub1 = new tubeTest ("Tube", oRad, iRad, length,
+                                lenSample, radSample, Material.Copper ());
+                    } else if ( matList.getValue ().contains ("Rubber") ) {
+                        tub1 = new tubeTest ("Tube", oRad, iRad, length,
+                                lenSample, radSample, Material.Rubber ());
+                    } else if ( matList.getValue ().contains ("Brass") ) {
+                        tub1 = new tubeTest ("Tube", oRad, iRad, length,
+                                lenSample, radSample, Material.Brass ());
+                    } else if ( matList.getValue ().contains ("Glass") ) {
+                        tub1 = new tubeTest ("Tube", oRad, iRad, length,
+                                lenSample, radSample, Material.Glass ());
+                    } else {
+                        tub1 = new tubeTest ("Tube", oRad, iRad, length,
+                                lenSample, radSample, Material.Plastic ());
+                    }
+
                     objCnt++;
                     oal1 = new Object_Array_List (objCnt, "Tube", lenSample,
                             radSample, oRad, iRad, length);
@@ -442,9 +465,24 @@ public class GeomController extends Mesh {
                 } else {
                     paramPane.getChildren ().removeAll (vb1, radIT, radOT, radI,
                             radO, heightT, ht, objAxisT, objAxis, drawMe);
-                    cylTest tub = new cylTest ("Tube_1", lenSample, radSample,
-                            oRad, length, true, false, Material.
-                            getShinyMaterial ().putKd (0.8));
+                    cylTest tub = null;
+                    if ( matList.getValue ().contains ("Copper") ) {
+                        tub = new cylTest ("Tube_1", lenSample, radSample,
+                                oRad, length, true, false, Material.Copper ());
+                    } else if ( matList.getValue ().contains ("Rubber") ) {
+                        tub = new cylTest ("Tube_1", lenSample, radSample,
+                                oRad, length, true, false, Material.Rubber ());
+                    } else if ( matList.getValue ().contains ("Brass") ) {
+                        tub = new cylTest ("Tube_1", lenSample, radSample,
+                                oRad, length, true, false, Material.Brass ());
+                    } else if ( matList.getValue ().contains ("Glass") ) {
+                        tub = new cylTest ("Tube_1", lenSample, radSample,
+                                oRad, length, true, false, Material.Glass ());
+                    } else {
+                        tub = new cylTest ("Tube_1", lenSample, radSample,
+                                oRad, length, true, false, Material.Plastic ());
+                    }
+
                     objCnt++;
                     oal1 = new Object_Array_List (objCnt, "Tube", lenSample,
                             radSample, oRad, iRad, length);
@@ -553,15 +591,17 @@ public class GeomController extends Mesh {
         // HBox hb4 = new HBox (Theta1T, theta1);
         // HBox hb5 = new HBox (Phi0T, phi0);
         // HBox hb6 = new HBox (Phi1T, phi1);
+        HBox hb7 = new HBox(matT, matList);
         hb1.setSpacing (2); //hb1.setPadding(new Insets(2));
         hb2.setSpacing (2);
         // hb3.setSpacing (2);
         // hb4.setSpacing (2);
         // hb5.setSpacing (2);
         // hb6.setSpacing (2);
+        hb7.setSpacing (2);
 
         // VBox vb1 = new VBox (BaseCoord, hb1, hb2, hb3, hb4, hb5, hb6);
-        VBox vb1 = new VBox (BaseCoord, hb1, hb2);
+        VBox vb1 = new VBox (BaseCoord, hb1, hb2, hb7);
 
         baseCX.setPromptText ("0.0");
         baseCY.setPromptText ("0.0");
@@ -595,10 +635,20 @@ public class GeomController extends Mesh {
                 // double fi1 = Double.parseDouble (phi1.getText ());
                 // radSample = (int) (radScale * Math.sqrt (iRad) + 0.5);
                 lenSample = 5;
+                Sphere sph1 = null;
+                if ( matList.getValue ().contains ("Copper") ) {
+                    sph1 = new Sphere ("Sphere", 20, 20, oRad);
+                } else if ( matList.getValue ().contains ("Rubber") ) {
+                    sph1 = new Sphere ("Sphere", 20, 20, oRad);
+                } else if ( matList.getValue ().contains ("Brass") ) {
+                    sph1 = new Sphere ("Sphere", 20, 20, oRad);
+                } else if ( matList.getValue ().contains ("Glass") ) {
+                    sph1 = new Sphere ("Sphere", 20, 20, oRad);
+                } else {
+                    sph1 = new Sphere ("Sphere", 20, 20, oRad);
+                }
 
                 // Sphere_Sect sph1 = new Sphere_Sect("Spherical_1", lenSample,radSample, iRad, oRad, tht0, tht1, fi0, fi1);
-                Sphere sph1 = new Sphere ("Sphere", 20, 20, oRad);
-
                 if ( objAxis.getText ().matches (axisX) ) {
                     sph1.setRotate (90.0);
                 }
@@ -730,13 +780,16 @@ public class GeomController extends Mesh {
         HBox hb3 = new HBox (widT, widVal);
         HBox hb4 = new HBox (depT, depVal);
         HBox hb5 = new HBox (objAxisT, objAxis);
+        HBox hb6 = new HBox(matT, matList);
 
         hb1.setSpacing (1); //hb1.setPadding(new Insets(2));
         hb2.setSpacing (2);
         hb3.setSpacing (2);
         hb4.setSpacing (2);
+        hb5.setSpacing(2);
+        hb6.setSpacing(2);
 
-        VBox vb1 = new VBox (BaseCoord, hb1, hb2, hb3, hb4, hb5);
+        VBox vb1 = new VBox (BaseCoord, hb1, hb2, hb3, hb4, hb5, hb6);
 
         baseCX.setPromptText ("0.0");
         baseCY.setPromptText ("0.0");
@@ -757,8 +810,24 @@ public class GeomController extends Mesh {
                 double lenV = Double.parseDouble (lenVal.getText ());
                 double widV = Double.parseDouble (widVal.getText ());
                 double depV = Double.parseDouble (depVal.getText ());
-                Brick brk = new Brick ("Brick", lenV, widV, depV, Material.
-                        getShinyMaterial ().putKd (0.57));
+                Brick brk = null;
+                if ( matList.getValue ().contains ("Copper") ) {
+                    brk = new Brick ("Brick", lenV, widV, depV, Material.
+                            Copper ());
+                } else if ( matList.getValue ().contains ("Rubber") ) {
+                    brk = new Brick ("Brick", lenV, widV, depV, Material.
+                            Rubber ());
+                } else if ( matList.getValue ().contains ("Brass") ) {
+                    brk = new Brick ("Brick", lenV, widV, depV, Material.
+                            Brass ());
+                } else if ( matList.getValue ().contains ("Glass") ) {
+                    brk = new Brick ("Brick", lenV, widV, depV, Material.
+                            Glass ());
+                } else {
+                    brk = new Brick ("Brick", lenV, widV, depV, Material.
+                            Plastic ());
+                }
+
                 if ( objAxis.getText ().matches (axisX) ) {
                     brk.setRotate (90.0);
                 }

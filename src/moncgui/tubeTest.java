@@ -27,16 +27,17 @@ public class tubeTest extends Mesh {
     //        final int axisSamples, final int radialSamples) {
     //	this(name, outerRadius, innerRadius,height,  axisSamples, radialSamples);
     //}
-    public tubeTest(final String name, final double outerRadius, final double innerRadius, final double height,
+    public tubeTest(final String name, final double outerRadius,
+            final double innerRadius, final double height,
             final int axisSamples, final int radialSamples, Material material) {
-        super(material);
+        super (material);
         this.outerRadius = outerRadius;
         this.innerRadius = innerRadius;
         this.height = height;
         this.axisSamples = axisSamples;
         this.radialSamples = radialSamples;
-        allocateVertices();
-        createTriangles();
+        allocateVertices ();
+        createTriangles ();
     }
 
     //public tubeTest(final String name, final double outerRadius, final double innerRadius, final double height) {
@@ -44,17 +45,19 @@ public class tubeTest extends Mesh {
     //}
     private void allocateVertices() {
         //viewInside = true;       
-        setVerts(axisSamples, radialSamples);
-        setVertexCoordsSize(verts);
-        setNormalCoordsSize(verts);
+        setVerts (axisSamples, radialSamples);
+        setVertexCoordsSize (verts);
+        setNormalCoordsSize (verts);
         final int tris = (4 * radialSamples * (1 + axisSamples));
-        setTriangleIndicesSize(tris);
-        setGeometryData();
-        setIndexData();
+        setTriangleIndicesSize (tris);
+        setGeometryData ();
+        setIndexData ();
     }
 
     private void setVerts(int axisSamples, int radialSamples) {
-        verts = (2 * (axisSamples + 1) * (radialSamples + 1) + radialSamples * 4);
+        verts
+                = (2 * (axisSamples + 1) * (radialSamples + 1) + radialSamples *
+                4);
     }
 
     public int getVerts() {
@@ -67,7 +70,7 @@ public class tubeTest extends Mesh {
 
     public void setAxisSamples(final int axisSamples) {
         this.axisSamples = axisSamples;
-        allocateVertices();
+        allocateVertices ();
     }
 
     public int getRadialSamples() {
@@ -76,7 +79,7 @@ public class tubeTest extends Mesh {
 
     public void setRadialSamples(final int radialSamples) {
         this.radialSamples = radialSamples;
-        allocateVertices();
+        allocateVertices ();
     }
 
     public double getOuterRadius() {
@@ -85,7 +88,7 @@ public class tubeTest extends Mesh {
 
     public void setOuterRadius(final double outerRadius) {
         this.outerRadius = outerRadius;
-        allocateVertices();
+        allocateVertices ();
     }
 
     public double getInnerRadius() {
@@ -94,7 +97,7 @@ public class tubeTest extends Mesh {
 
     public void setInnerRadius(final double innerRadius) {
         this.innerRadius = innerRadius;
-        allocateVertices();
+        allocateVertices ();
     }
 
     public double getHeight() {
@@ -103,7 +106,7 @@ public class tubeTest extends Mesh {
 
     public void setHeight(final double height) {
         this.height = height;
-        allocateVertices();
+        allocateVertices ();
     }
 
     private void setGeometryData() {
@@ -116,76 +119,78 @@ public class tubeTest extends Mesh {
         final double[] sin = new double[radialSamples];
         final double[] cos = new double[radialSamples];
 
-        for (int radialCount = 0; radialCount < radialSamples; radialCount++) {
+        for ( int radialCount = 0; radialCount < radialSamples; radialCount++ ) {
             final double angle = 2 * Math.PI * inverseRadial * radialCount;
-            cos[radialCount] = Math.cos(angle);
-            sin[radialCount] = Math.sin(angle);
+            cos[radialCount] = Math.cos (angle);
+            sin[radialCount] = Math.sin (angle);
         }
 
         // outer cylinder
-        for (int radialCount = 0; radialCount < radialSamples + 1; radialCount++) {
-            for (int axisCount = 0; axisCount < axisSamples + 1; axisCount++) {
-                putVertex((cos[radialCount % radialSamples] * outerRadius),
+        for ( int radialCount = 0; radialCount < radialSamples + 1;
+                radialCount++ ) {
+            for ( int axisCount = 0; axisCount < axisSamples + 1; axisCount++ ) {
+                putVertex ((cos[radialCount % radialSamples] * outerRadius),
                         (axisStep * axisCount - halfHeight),
                         (sin[radialCount % radialSamples] * outerRadius));
-                if (viewInside) {
-                    putNormal(-cos[radialCount % radialSamples],
+                if ( viewInside ) {
+                    putNormal (-cos[radialCount % radialSamples],
                             0.0,
                             -sin[radialCount % radialSamples]);
                 } else {
-                    putNormal(cos[radialCount % radialSamples],
+                    putNormal (cos[radialCount % radialSamples],
                             0.0,
                             sin[radialCount % radialSamples]);
                 }
             }
         }
         // inner cylinder
-        for (int radialCount = 0; radialCount < radialSamples + 1; radialCount++) {
-            for (int axisCount = 0; axisCount < axisSamples + 1; axisCount++) {
-                putVertex((cos[radialCount % radialSamples] * innerRadius),
+        for ( int radialCount = 0; radialCount < radialSamples + 1;
+                radialCount++ ) {
+            for ( int axisCount = 0; axisCount < axisSamples + 1; axisCount++ ) {
+                putVertex ((cos[radialCount % radialSamples] * innerRadius),
                         (axisStep * axisCount - halfHeight),
                         (sin[radialCount % radialSamples] * innerRadius));
-                if (viewInside) {
-                    putNormal(cos[radialCount % radialSamples],
+                if ( viewInside ) {
+                    putNormal (cos[radialCount % radialSamples],
                             0.0,
                             sin[radialCount % radialSamples]);
                 } else {
-                    putNormal(-cos[radialCount % radialSamples],
+                    putNormal (-cos[radialCount % radialSamples],
                             0.0,
                             -sin[radialCount % radialSamples]);
                 }
             }
         }
         // bottom edge
-        for (int radialCount = 0; radialCount < radialSamples; radialCount++) {
-            putVertex((cos[radialCount] * outerRadius),
+        for ( int radialCount = 0; radialCount < radialSamples; radialCount++ ) {
+            putVertex ((cos[radialCount] * outerRadius),
                     -halfHeight,
                     (sin[radialCount] * outerRadius));
-            putVertex((cos[radialCount] * innerRadius),
+            putVertex ((cos[radialCount] * innerRadius),
                     -halfHeight,
                     (sin[radialCount] * innerRadius));
-            if (viewInside) {
-                putNormal(0, 1, 0);
-                putNormal(0, 1, 0);
+            if ( viewInside ) {
+                putNormal (0, 1, 0);
+                putNormal (0, 1, 0);
             } else {
-                putNormal(0, -1, 0);
-                putNormal(0, -1, 0);
+                putNormal (0, -1, 0);
+                putNormal (0, -1, 0);
             }
         }
         // top edge
-        for (int radialCount = 0; radialCount < radialSamples; radialCount++) {
-            putVertex((cos[radialCount] * outerRadius),
+        for ( int radialCount = 0; radialCount < radialSamples; radialCount++ ) {
+            putVertex ((cos[radialCount] * outerRadius),
                     halfHeight,
                     (sin[radialCount] * outerRadius));
-            putVertex((cos[radialCount] * innerRadius),
+            putVertex ((cos[radialCount] * innerRadius),
                     halfHeight,
                     (sin[radialCount] * innerRadius));
-            if (viewInside) {
-                putNormal(0, -1, 0);
-                putNormal(0, -1, 0);
+            if ( viewInside ) {
+                putNormal (0, -1, 0);
+                putNormal (0, -1, 0);
             } else {
-                putNormal(0, 1, 0);
-                putNormal(0, 1, 0);
+                putNormal (0, 1, 0);
+                putNormal (0, 1, 0);
             }
         }
     }
@@ -195,74 +200,77 @@ public class tubeTest extends Mesh {
         final int bottomEdge = 2 * outerCylinder;
         final int topEdge = bottomEdge + 2 * radialSamples;
         // inner cylinder
-        for (int radialCount = 0; radialCount < radialSamples; radialCount++) {
-            for (int axisCount = 0; axisCount < axisSamples; axisCount++) {
+        for ( int radialCount = 0; radialCount < radialSamples; radialCount++ ) {
+            for ( int axisCount = 0; axisCount < axisSamples; axisCount++ ) {
                 final int index0 = axisCount + (axisSamples + 1) * radialCount;
                 final int index1 = index0 + 1;
                 final int index2 = index0 + (axisSamples + 1);
                 final int index3 = index2 + 1;
-                if (viewInside) {
-                    putTriangleIndex(index0, index1, index2);
-                    putTriangleIndex(index1, index3, index2);
+                if ( viewInside ) {
+                    putTriangleIndex (index0, index1, index2);
+                    putTriangleIndex (index1, index3, index2);
                 } else {
-                    putTriangleIndex(index0, index2, index1);
-                    putTriangleIndex(index1, index2, index3);
+                    putTriangleIndex (index0, index2, index1);
+                    putTriangleIndex (index1, index2, index3);
                 }
             }
         }
 
         // outer cylinder
-        for (int radialCount = 0; radialCount < radialSamples; radialCount++) {
-            for (int axisCount = 0; axisCount < axisSamples; axisCount++) {
-                final int index0 = outerCylinder + axisCount + (axisSamples + 1) * radialCount;
+        for ( int radialCount = 0; radialCount < radialSamples; radialCount++ ) {
+            for ( int axisCount = 0; axisCount < axisSamples; axisCount++ ) {
+                final int index0 = outerCylinder + axisCount +
+                        (axisSamples + 1) * radialCount;
                 final int index1 = index0 + 1;
                 final int index2 = index0 + (axisSamples + 1);
                 final int index3 = index2 + 1;
-                if (viewInside) {
-                    putTriangleIndex(index0, index2, index1);
-                    putTriangleIndex(index1, index2, index3);
+                if ( viewInside ) {
+                    putTriangleIndex (index0, index2, index1);
+                    putTriangleIndex (index1, index2, index3);
                 } else {
-                    putTriangleIndex(index0, index1, index2);
-                    putTriangleIndex(index1, index3, index2);
+                    putTriangleIndex (index0, index1, index2);
+                    putTriangleIndex (index1, index3, index2);
                 }
             }
         }
 
         // bottom edge
-        for (int radialCount = 0; radialCount < radialSamples; radialCount++) {
+        for ( int radialCount = 0; radialCount < radialSamples; radialCount++ ) {
             final int index0 = bottomEdge + 2 * radialCount;
             final int index1 = index0 + 1;
-            final int index2 = bottomEdge + 2 * ((radialCount + 1) % radialSamples);
+            final int index2 = bottomEdge + 2 * ((radialCount + 1) %
+                    radialSamples);
             final int index3 = index2 + 1;
-            if (viewInside) {
-                putTriangleIndex(index0, index2, index1);
-                putTriangleIndex(index1, index2, index3);
+            if ( viewInside ) {
+                putTriangleIndex (index0, index2, index1);
+                putTriangleIndex (index1, index2, index3);
             } else {
-                putTriangleIndex(index0, index1, index2);
-                putTriangleIndex(index1, index3, index2);
+                putTriangleIndex (index0, index1, index2);
+                putTriangleIndex (index1, index3, index2);
             }
         }
 
         // top edge
-        for (int radialCount = 0; radialCount < radialSamples; radialCount++) {
+        for ( int radialCount = 0; radialCount < radialSamples; radialCount++ ) {
             final int index0 = topEdge + 2 * radialCount;
             final int index1 = index0 + 1;
             final int index2 = topEdge + 2 * ((radialCount + 1) % radialSamples);
             final int index3 = index2 + 1;
-            if (viewInside) {
-                putTriangleIndex(index0, index1, index2);
-                putTriangleIndex(index1, index3, index2);
+            if ( viewInside ) {
+                putTriangleIndex (index0, index1, index2);
+                putTriangleIndex (index1, index3, index2);
             } else {
-                putTriangleIndex(index0, index2, index1);
-                putTriangleIndex(index1, index2, index3);
+                putTriangleIndex (index0, index2, index1);
+                putTriangleIndex (index1, index2, index3);
             }
         }
     }
 
     /**
      *
-     * @return true if the normals are inverted to point into the torus so that the face is oriented for a viewer inside
-     * the torus. false (the default) for exterior viewing.
+     * @return true if the normals are inverted to point into the torus so that
+     * the face is oriented for a viewer inside the torus. false (the default)
+     * for exterior viewing.
      */
     public boolean isViewFromInside() {
         return viewInside;
@@ -270,14 +278,15 @@ public class tubeTest extends Mesh {
 
     /**
      *
-     * @param viewInside if true, the normals are inverted to point into the torus so that the face is oriented for a
-     * viewer inside the torus. Default is false (for outside viewing)
+     * @param viewInside if true, the normals are inverted to point into the
+     * torus so that the face is oriented for a viewer inside the torus. Default
+     * is false (for outside viewing)
      */
     public void setViewFromInside(final boolean viewInside) {
-        if (viewInside != viewInside) {
+        if ( viewInside != viewInside ) {
             this.viewInside = viewInside;
-            setGeometryData();
-            setIndexData();
+            setGeometryData ();
+            setIndexData ();
         }
     }
 }
