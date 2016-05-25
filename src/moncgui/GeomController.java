@@ -25,9 +25,6 @@ import javafx.scene.text.Font;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 import javax.imageio.ImageIO;
-import moncgui.Material;
-import moncgui.Mesh;
-import moncgui.Sphere;
 
 /**
  * FXML Controller class
@@ -122,7 +119,8 @@ public class GeomController extends Mesh {
     private ComboBox<String> matList = new ComboBox<String> ();
     private Button drawMe = new Button ("Draw ");
     private TextArea geoEntries = new TextArea ();
-    private TextArea nodeList = new TextArea ();
+    // private TextArea nodeList = new TextArea ();
+    private TextField nodeList = new TextField();
     private String geoTextEntry = null;
     private double maxx = -999999.99, minx = -maxx;
     private double maxy = maxx, miny = minx;
@@ -219,6 +217,8 @@ public class GeomController extends Mesh {
         // redefined for plot window
         drawWidth = 850.0;
         drawHeight = 750.0;
+        nodeList.setFont(new Font("Times New Roman", 12));
+        nodeList.setMaxSize(drawWidth, 200);
     }
 
     private void buildCamera(Scene scene) {
@@ -464,7 +464,7 @@ public class GeomController extends Mesh {
                             "  " + objAxis.getText () + "  " + matList.
                             getValue () + "\n";
                     geoEntries.appendText (geoTextEntry);
-                    nodeList.appendText (geoTextEntry);
+                    nodeList.setText("Tube added");
                     camV.add (tub1);
 
                     //camV.add(tub2);
@@ -532,7 +532,7 @@ public class GeomController extends Mesh {
                             "  " + objAxis.getText () + "  " + matList.
                             getValue () + "\n";
                     geoEntries.appendText (geoTextEntry);
-                    nodeList.appendText (geoTextEntry);
+                    nodeList.setText("Tube added");
                     camV.add (tub);
 
                 }
@@ -690,7 +690,7 @@ public class GeomController extends Mesh {
                         "  " + objAxis.getText () + "  " + matList.getValue () +
                         "\n";
                 geoEntries.appendText (geoTextEntry);
-                nodeList.appendText (geoTextEntry);
+                nodeList.setText("Sphere added");
                 camV.add (sph1);
             }
         });
@@ -761,7 +761,7 @@ public class GeomController extends Mesh {
     private void doUpdate(ActionEvent event) {
         // It updates geometry specs in configurator and makes a snapshot of geometry
         String txtList = null;
-        txtList = nodeList.getText ();
+        txtList = geoEntries.getText();
         myGUI.setTxtIT (txtList);
         geoSnapCnt++;
         WritableImage fImage = camV.snapshot (new SnapshotParameters (), null);
@@ -772,6 +772,7 @@ public class GeomController extends Mesh {
             Logger.getLogger (GeomController.class.getName()).
                     log (Level.SEVERE, null, ex);
         }
+        nodeList.setText("Config Updated and Geometry snapshot stored in PNG file.");
     }
 
     @FXML
@@ -873,7 +874,7 @@ public class GeomController extends Mesh {
                         "  " + depV + "  " + objAxis.
                         getText () + matList.getValue () + "\n";
                 geoEntries.appendText (geoTextEntry);
-                nodeList.appendText (geoTextEntry);
+                nodeList.setText("Brick added");
 
                 objCnt++;
                 oal1 = new Object_Array_List (objCnt, "Brick", 0,

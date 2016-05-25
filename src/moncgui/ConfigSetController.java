@@ -39,6 +39,8 @@ public class ConfigSetController implements Initializable {
     private TextField chargeZ = new TextField ();
     private Label massAL = new Label ("Mass Number (A)");
     private TextField massA = new TextField ();
+    private Button saveButton = new Button("Save");
+    private Button cleanButton = new Button("Clean");
 
     public Label geoL = new Label (" Geometrical Configuration ");
     public TextArea geoArea = new TextArea ();
@@ -98,10 +100,15 @@ public class ConfigSetController implements Initializable {
         HBox hb4 = new HBox(chargeZL,chargeZ, massAL, massA);
         hb4.setSpacing (10);
         HBox hb99 = new HBox(geoL);
+        HBox hb100 = new HBox(saveButton, cleanButton);
 
-        VBox vb1 = new VBox (hb1, hb2, hb3, hb4, hb99, geoArea);
+        //VBox vb1 = new VBox (hb1, hb2, hb3, hb4, hb99, geoArea);
+        VBox vb1 = new VBox (hb1, hb2, hb3, hb4, hb99, geoArea, hb100);
 
+        
+       // saveButton.setLayoutX(100); saveButton.setLayoutY(350);
         configPane.setPrefWidth (850);
-        configPane.getChildren ().add (vb1);
+        //configPane.getChildren ().addAll (vb1,saveButton);
+        configPane.getChildren ().addAll (vb1);
     }
 }
