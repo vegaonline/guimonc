@@ -659,7 +659,7 @@ public class AnalyzerController implements Initializable {
     }
 
     private void saveAsPng(LineChart lc, String fName) {
-        WritableImage fImage = lineChart.snapshot (new SnapshotParameters (),
+        WritableImage fImage = lc.snapshot (new SnapshotParameters (),
                 null);
         File iFile = new File (fName);
         try {

@@ -29,12 +29,13 @@ public class MoncGUI extends Application {
     public JavaFXChartFactory factory;
     public AWTChart chart;
     public ImageView imageView;
+    private String txtIT = null;
 
     //final CameraView cameraView = new CameraView();
     @Override
     public void start(Stage pStage) throws Exception {
-        this.primaryStage=pStage;
-        
+        this.primaryStage = pStage;
+
         primaryStage.setTitle ("MONC GUI :: Abhijit Bhattacharyya");
         FXMLLoader loader = new FXMLLoader (MoncGUI.class.getResource (
                 "RootLayout.fxml"));
@@ -70,12 +71,21 @@ public class MoncGUI extends Application {
         this.thisNode = myPane;
     }
 
+    public void setTxtIT(String str) {
+        this.txtIT = str;        
+    }
+    
     public void callConfig() {
         try {
             FXMLLoader loader = new FXMLLoader (MoncGUI.class.getResource (
                     "configSet.fxml"));
             AnchorPane confPage = (AnchorPane) loader.load ();
             rootLayout.setCenter (confPage);
+            ConfigSetController controller = loader.getController ();
+            controller.setMainApp (this);
+            if (txtIT !=null) {
+                controller.geoArea.appendText (txtIT);
+            }
         } catch (IOException ex) {
             System.out.println (" Problem in loading config set");
             Logger.getLogger (MoncGUI.class.getName ()).log (Level.SEVERE, null,
@@ -97,12 +107,12 @@ public class MoncGUI extends Application {
 
     public void GeomStart() {
         try {
-            FXMLLoader loader = new FXMLLoader (getClass().getResource (
+            FXMLLoader loader = new FXMLLoader (getClass ().getResource (
                     "Geom.fxml"));  // MoncGUI.c
             AnchorPane geomPage = (AnchorPane) loader.load ();
-             rootLayout.setCenter (geomPage);            
-            GeomController controller = loader.getController ();            
-            controller.setMainApp (this);            
+            rootLayout.setCenter (geomPage);
+            GeomController controller = loader.getController ();
+            controller.setMainApp (this);
             controller.setMyStage (primaryStage);
         } catch (IOException ex) {
             System.out.println (" Problem in loading geometry set");

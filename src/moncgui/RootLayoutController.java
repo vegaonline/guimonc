@@ -7,8 +7,9 @@ package moncgui;
 
 import java.io.IOException;
 import javafx.event.*;
-import javafx.fxml.*;
+import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.layout.AnchorPane;
 
 /**
  * FXML Controller class
@@ -16,21 +17,14 @@ import javafx.scene.control.*;
  * @author vega
  */
 public class RootLayoutController { // implements Initializable 
-
     @FXML
     private Menu doConfig;
     @FXML
     private MenuItem doConfigNew;
     @FXML
-    private MenuItem doConfigOpen;
-    @FXML
-    private MenuItem doConfigSave;
-    @FXML
     private MenuItem doQuit;
     @FXML
     private Menu doGeom;
-    @FXML
-    private MenuItem doGeomClear;
     @FXML
     private Menu doRun;
     @FXML
@@ -39,8 +33,12 @@ public class RootLayoutController { // implements Initializable
     private MenuItem analyzePlot;
     @FXML
     private MenuItem doGeomStart;
-
+    @FXML
+    private AnchorPane configPane;    
+    
+    
     private MoncGUI myGUI;        
+
     public void setMainApp(MoncGUI myGUI){
         this.myGUI = myGUI;
     }
@@ -51,26 +49,19 @@ public class RootLayoutController { // implements Initializable
     //@Override
     public void initialize() {//URL url, ResourceBundle rb
         // TODO
+        
     }    
 
-    
     public static void main(String[] args) {
         //launch(args);
     }
     
     
     @FXML
-    private void confNew(ActionEvent event) throws IOException {
-        myGUI.callConfig();
+    private void confNew(ActionEvent event) throws IOException {  
+       myGUI.callConfig(); 
     }
 
-    @FXML
-    private void confOpen(ActionEvent event) {
-    }
-
-    @FXML
-    private void confSave(ActionEvent event) {
-    }
 
     @FXML
     private void handleExit(ActionEvent event) {
@@ -90,5 +81,4 @@ public class RootLayoutController { // implements Initializable
     private void GeomInitialize(ActionEvent event) {
         myGUI.GeomStart();
     }
-    
 }

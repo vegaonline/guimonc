@@ -6,13 +6,17 @@
  */
 package moncgui;
 
+import java.io.*;
 import static java.lang.Math.*;
 import java.util.*;
+import java.util.logging.*;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.*;
 import javafx.fxml.FXML;
 import javafx.geometry.*;
 import javafx.scene.*;
 import javafx.scene.control.*;
+import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.*;
@@ -20,6 +24,7 @@ import javafx.scene.shape.*;
 import javafx.scene.text.Font;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
+import javax.imageio.ImageIO;
 import moncgui.Material;
 import moncgui.Mesh;
 import moncgui.Sphere;
@@ -32,6 +37,7 @@ import moncgui.Sphere;
 // public class GeomController implements Initializable extends Mesh {
 public class GeomController extends Mesh {
 
+    private int geoSnapCnt = 0;
     private int totObjectNum = 1000;
     private int initialized = 0;
     private MoncGUI myGUI;
@@ -64,7 +70,7 @@ public class GeomController extends Mesh {
     private double centerY;
     private double centerZ;
     private int radSample, lenSample;
-    private double radScale = 4.0;
+    private double radScale = 6.0;
     private double lenScale = 1.1;
 
     private ArrayList<Sphere> sphList;
@@ -146,7 +152,7 @@ public class GeomController extends Mesh {
     private MenuItem shapeMirror;
 
     public void setMainApp(MoncGUI badGUI) {
-        this.myGUI = myGUI;
+        this.myGUI = badGUI;
     }
 
     public void setMyStage(Stage stage) {
@@ -451,12 +457,12 @@ public class GeomController extends Mesh {
                         //tub2.setTranslateZ(Double.parseDouble(baseCZ.getText()));
                     }
 
-                    geoTextEntry = "TUBE " + "ORIGIN :: (" + baseCX.getText () +
-                            ", " +
-                            baseCY.getText () + ", " + baseCZ.getText () + ") " +
-                            " Outer Rad " + oRad + " Inner Rad " + iRad +
-                            "  Length " + length + " Axis along   " + objAxis.
-                            getText () + "\n";
+                    geoTextEntry = "TUBE" + "  " + baseCX.getText () +
+                            "  " + baseCY.getText () + "  " + baseCZ.getText () +
+                            "  " +
+                            "  " + iRad + "  " + oRad + "  " + length +
+                            "  " + objAxis.getText () + "  " + matList.
+                            getValue () + "\n";
                     geoEntries.appendText (geoTextEntry);
                     nodeList.appendText (geoTextEntry);
                     camV.add (tub1);
@@ -520,12 +526,11 @@ public class GeomController extends Mesh {
                                 parseDouble (baseCZ.getText ()));
                     }
 
-                    geoTextEntry = "TUBE " + "ORIGIN :: (" + baseCX.getText () +
-                            ", " + baseCY.getText () + ", " + baseCZ.getText () +
-                            ") " +
-                            " Outer Rad " + oRad + " Inner Rad " + iRad +
-                            "  Length " + length + " Axis along   " + objAxis.
-                            getText () + "\n";
+                    geoTextEntry = "TUBE" + "  " + baseCX.getText () +
+                            "  " + baseCY.getText () + "  " + baseCZ.getText () +
+                            "  " + "  " + iRad + "  " + oRad + "  " + length +
+                            "  " + objAxis.getText () + "  " + matList.
+                            getValue () + "\n";
                     geoEntries.appendText (geoTextEntry);
                     nodeList.appendText (geoTextEntry);
                     camV.add (tub);
@@ -591,7 +596,7 @@ public class GeomController extends Mesh {
         // HBox hb4 = new HBox (Theta1T, theta1);
         // HBox hb5 = new HBox (Phi0T, phi0);
         // HBox hb6 = new HBox (Phi1T, phi1);
-        HBox hb7 = new HBox(matT, matList);
+        HBox hb7 = new HBox (matT, matList);
         hb1.setSpacing (2); //hb1.setPadding(new Insets(2));
         hb2.setSpacing (2);
         // hb3.setSpacing (2);
@@ -628,6 +633,10 @@ public class GeomController extends Mesh {
                 paramPane.getChildren ().removeAll (vb1, radIT, radOT, radI,
                         radO, heightT, ht, objAxisT, objAxis, drawMe);
                 double oRad = Double.parseDouble (radO.getText ());
+                double oX = Double.parseDouble (baseCX.getText ());
+                double oY = Double.parseDouble (baseCY.getText ());
+                double oZ = Double.parseDouble (baseCZ.getText ());
+
                 // double iRad = Double.parseDouble (radI.getText ());
                 // double tht0 = Double.parseDouble (theta0.getText ());
                 //  double tht1 = Double.parseDouble (theta1.getText ());
@@ -636,16 +645,24 @@ public class GeomController extends Mesh {
                 // radSample = (int) (radScale * Math.sqrt (iRad) + 0.5);
                 lenSample = 5;
                 Sphere sph1 = null;
+
+                Vector3D sphCent = new Vector3D (oX, oY, oZ);
+
                 if ( matList.getValue ().contains ("Copper") ) {
-                    sph1 = new Sphere ("Sphere", 20, 20, oRad);
+                    sph1 = new Sphere ("Sphere", sphCent, 20, 20, oRad,
+                            Material.Copper ());
                 } else if ( matList.getValue ().contains ("Rubber") ) {
-                    sph1 = new Sphere ("Sphere", 20, 20, oRad);
+                    sph1 = new Sphere ("Sphere", sphCent, 20, 20, oRad,
+                            Material.Rubber ());
                 } else if ( matList.getValue ().contains ("Brass") ) {
-                    sph1 = new Sphere ("Sphere", 20, 20, oRad);
+                    sph1 = new Sphere ("Sphere", sphCent, 20, 20, oRad,
+                            Material.Brass ());
                 } else if ( matList.getValue ().contains ("Glass") ) {
-                    sph1 = new Sphere ("Sphere", 20, 20, oRad);
+                    sph1 = new Sphere ("Sphere", sphCent, 20, 20, oRad,
+                            Material.Glass ());
                 } else {
-                    sph1 = new Sphere ("Sphere", 20, 20, oRad);
+                    sph1 = new Sphere ("Sphere", sphCent, 20, 20, oRad,
+                            Material.Plastic ());
                 }
 
                 // Sphere_Sect sph1 = new Sphere_Sect("Spherical_1", lenSample,radSample, iRad, oRad, tht0, tht1, fi0, fi1);
@@ -664,13 +681,14 @@ public class GeomController extends Mesh {
                  * tub1.getVerts (); ii++ ) { oal1.setVertCoord
                  * (tub1.getVertexCoord (ii)); } objLIST.add (oal1);
                  */
-                geoTextEntry = "Sphere " + "(" + baseCX.getText () + ", " +
-                        baseCY.getText () + ", " + baseCZ.getText () + ") " +
+                geoTextEntry = "Sphere" + "  " + baseCX.getText () + "  " +
+                        baseCY.getText () + "  " + baseCZ.getText () + "  " +
                         // " Outer Rad " + oRad + " Inner Rad   " + iRad +
-                        " Outer Rad " + oRad +
+                        "  " + oRad +
                         // " Theta 1 " + tht0 + " Theta 2  " + tht1 + " Phi 1   " +
                         //   fi0 + "  Phi 2  " + fi1 + 
-                        " Axis along   " + objAxis.getText () + "\n";
+                        "  " + objAxis.getText () + "  " + matList.getValue () +
+                        "\n";
                 geoEntries.appendText (geoTextEntry);
                 nodeList.appendText (geoTextEntry);
                 camV.add (sph1);
@@ -679,6 +697,7 @@ public class GeomController extends Mesh {
     }
 
     void complete(Stage vegaStage, Scene vegaScene) {
+
         camV.frameCam (vegaStage, vegaScene);
         //  MouseHandler mouseHandler = new MouseHandler(vegaScene, camV);
         KeyHandler keyHandler = new KeyHandler (vegaStage, vegaScene, camV);
@@ -740,6 +759,19 @@ public class GeomController extends Mesh {
 
     @FXML
     private void doUpdate(ActionEvent event) {
+        // It updates geometry specs in configurator and makes a snapshot of geometry
+        String txtList = null;
+        txtList = nodeList.getText ();
+        myGUI.setTxtIT (txtList);
+        geoSnapCnt++;
+        WritableImage fImage = camV.snapshot (new SnapshotParameters (), null);
+        File iFile = new File ("geometrySnap"+geoSnapCnt+".png");
+        try{
+            ImageIO.write(SwingFXUtils.fromFXImage (fImage, null),"png",iFile);
+        } catch (IOException ex) {
+            Logger.getLogger (GeomController.class.getName()).
+                    log (Level.SEVERE, null, ex);
+        }
     }
 
     @FXML
@@ -780,14 +812,14 @@ public class GeomController extends Mesh {
         HBox hb3 = new HBox (widT, widVal);
         HBox hb4 = new HBox (depT, depVal);
         HBox hb5 = new HBox (objAxisT, objAxis);
-        HBox hb6 = new HBox(matT, matList);
+        HBox hb6 = new HBox (matT, matList);
 
         hb1.setSpacing (1); //hb1.setPadding(new Insets(2));
         hb2.setSpacing (2);
         hb3.setSpacing (2);
         hb4.setSpacing (2);
-        hb5.setSpacing(2);
-        hb6.setSpacing(2);
+        hb5.setSpacing (2);
+        hb6.setSpacing (2);
 
         VBox vb1 = new VBox (BaseCoord, hb1, hb2, hb3, hb4, hb5, hb6);
 
@@ -835,11 +867,11 @@ public class GeomController extends Mesh {
                 brk.setTranslateY (Double.parseDouble (baseCY.getText ()));
                 brk.setTranslateZ (Double.parseDouble (baseCZ.getText ()));
 
-                geoTextEntry = "Brick " + "(" + baseCX.getText () + ", " +
-                        baseCY.getText () + ", " + baseCZ.getText () + ") " +
-                        " Length " + lenV + " Width   " + widV +
-                        " Depth " + depV + " Axis along   " + objAxis.
-                        getText () + "\n";
+                geoTextEntry = "Brick" + "  " + baseCX.getText () + "  " +
+                        baseCY.getText () + "  " + baseCZ.getText () + "  " +
+                        "  " + lenV + "  " + widV +
+                        "  " + depV + "  " + objAxis.
+                        getText () + matList.getValue () + "\n";
                 geoEntries.appendText (geoTextEntry);
                 nodeList.appendText (geoTextEntry);
 
