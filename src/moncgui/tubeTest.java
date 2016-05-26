@@ -1,6 +1,10 @@
 // Tube model
 package moncgui;
 
+/**
+ *
+ * @author vega
+ */
 public class tubeTest extends Mesh {
 
     private static final long serialVersionUID = 1L;

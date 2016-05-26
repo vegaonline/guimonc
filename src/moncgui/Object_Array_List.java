@@ -63,31 +63,28 @@ public class Object_Array_List extends Mesh {
     public int getNVerts() {
         return this.nVerts;
     }
-    
-    public double getMaxX(){
+
+    public double getMaxX() {
         return this.maxX;
     }
-    
-    
-    public double getMaxY(){
+
+    public double getMaxY() {
         return this.maxY;
     }
-    
-    
-    public double getMaxZ(){
+
+    public double getMaxZ() {
         return this.maxZ;
     }
-    
-    
-    public double getMinX(){
+
+    public double getMinX() {
         return this.minX;
     }
-    
-    public double getMinY(){
+
+    public double getMinY() {
         return this.minY;
     }
-    
-    public double getMinZ(){
+
+    public double getMinZ() {
         return this.minZ;
     }
 }

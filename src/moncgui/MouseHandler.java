@@ -6,6 +6,10 @@ import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.input.*;
 
+/**
+ *
+ * @author vega
+ */
 public class MouseHandler {
 
     //Scene scene;
@@ -15,7 +19,7 @@ public class MouseHandler {
     double mouseOldX;
     double mouseOldY;
     double mouseDeltaX;
-    double mouseDeltaY;    
+    double mouseDeltaY;
 
     public MouseHandler(Scene scene, final CameraView cameraView) {
 

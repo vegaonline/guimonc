@@ -7,6 +7,10 @@ import javafx.geometry.Point3D;
  * Sphere represents a 3D object with all points equi-distance from a center
  * point.
  */
+/**
+ *
+ * @author vega
+ */
 public class Sphere_Sect extends Mesh {
 
     private static final long serialVersionUID = 1L;
@@ -221,9 +225,11 @@ public class Sphere_Sect extends Mesh {
                     putNormal (-kNormal2.getX (), -kNormal2.getY (), -kNormal2.
                             getZ ());
                 }
-                System.out.println (" kNormal1 " + kNormal1.getX () + "  " + kNormal1.
+                System.out.println (" kNormal1 " + kNormal1.getX () + "  " +
+                        kNormal1.
                         getY () + "   " + kNormal1.getZ ());
-                System.out.println (" kNormal2 " + kNormal2.getX () + "  " + kNormal2.
+                System.out.println (" kNormal2 " + kNormal2.getX () + "  " +
+                        kNormal2.
                         getY () + "   " + kNormal2.getZ ());
                 i++;
             }

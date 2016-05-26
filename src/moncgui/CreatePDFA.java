@@ -8,7 +8,7 @@ package moncgui;
 import java.io.*;
 import javax.xml.transform.TransformerException;
 import org.apache.pdfbox.pdmodel.*;
-import org.apache.pdfbox.pdmodel.common.PDMetadata;
+import org.apache.pdfbox.pdmodel.common.*;
 import org.apache.pdfbox.pdmodel.font.*;
 import org.apache.pdfbox.pdmodel.graphics.color.PDOutputIntent;
 import org.apache.xmpbox.XMPMetadata;
@@ -40,7 +40,7 @@ public class CreatePDFA {
 
     public void doPDF() throws IOException, TransformerException {
         try {
-            PDPage page = new PDPage ();
+            PDPage page = new PDPage (PDRectangle.A4);
             doc.addPage (page);
 
             PDFont font = PDType1Font.HELVETICA;  // PDType0Font.load (doc, new File (fontFile));

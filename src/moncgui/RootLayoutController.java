@@ -104,6 +104,6 @@ public class RootLayoutController { // implements Initializable
 
     @FXML
     private void doRPT(ActionEvent event) throws IOException {
-
+        myGUI.makeReport ();
     }
 }

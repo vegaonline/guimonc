@@ -1,6 +1,10 @@
 // store of material characteristics
 package moncgui;
 
+/**
+ *
+ * @author vega
+ */
 public class Material {
 
 //	Vector3D Ke; //emmissive color,

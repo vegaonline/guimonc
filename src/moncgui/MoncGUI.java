@@ -141,4 +141,18 @@ public class MoncGUI extends Application {
                     ex);
         }
     }
+    
+    public void makeReport() {
+        try {
+            FXMLLoader loader = new FXMLLoader (MoncGUI.class.getResource (  
+                    "reporter.fxml"));
+            BorderPane reportPage = (BorderPane)loader.load ();
+            rootLayout.setCenter(reportPage);
+            reportController controller = loader.getController ();
+            controller.setMainApp(this);
+        } catch (IOException ex) {
+            Logger.getLogger (MoncGUI.class.getName()).log (Level.SEVERE, null,
+                    ex);
+        }
+    }
 }

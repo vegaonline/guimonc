@@ -8,6 +8,10 @@ import javafx.scene.text.Text;
 import javafx.scene.transform.*;
 import javafx.stage.Stage;
 
+/**
+ *
+ * @author vega
+ */
 class CameraView extends CameraTransform {
 
     final CameraTransform cam = new CameraTransform ();
@@ -241,7 +245,7 @@ class CameraView extends CameraTransform {
         cam.t.setX (-pivotX);
         cam.t.setY (-pivotY);
         updateStatusText ();
-       //  System.out.println (" pivotX " + pivotX + " pivotY " + pivotY);
+        //  System.out.println (" pivotX " + pivotX + " pivotY " + pivotY);
     }
 
     public void resetCam() {

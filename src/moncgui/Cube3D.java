@@ -1,6 +1,10 @@
 // Cube model
 package moncgui;
 
+/**
+ *
+ * @author vega
+ */
 public class Cube3D extends Mesh {
 
     //double half;
