@@ -5,8 +5,10 @@
  */
 package moncgui;
 
+import java.io.*;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.logging.*;
 import javafx.beans.binding.BooleanBinding;
 import javafx.event.*;
 import javafx.fxml.*;
@@ -17,7 +19,7 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
-import javafx.stage.Stage;
+import javafx.stage.*;
 
 /**
  * FXML Controller class
@@ -56,7 +58,9 @@ public class ConfigSetController implements Initializable {
 
     private final GridPane objPane = new GridPane ();
     private DropShadow shadow = new DropShadow ();
-    private ScrollPane sp = new ScrollPane();
+    private ScrollPane sp = new ScrollPane ();
+
+    private String configFName = null;
 
     @FXML
     private AnchorPane configPane;
@@ -77,7 +81,6 @@ public class ConfigSetController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         buildScreen ();
-        cleanMe ();
         actionButtonProperties ();
     }
 
@@ -123,11 +126,11 @@ public class ConfigSetController implements Initializable {
         HBox hb100 = new HBox (saveButton, cleanButton);
         vb1.getChildren ().addAll (hb1, hb2, hb3, hb4, hb99, geoArea);
         sp.setContent (vb1);
-        hb100.setLayoutY (configPane.getPrefHeight ()+10);
-        configPane.getChildren ().addAll (sp,hb100);
+        hb100.setLayoutY (configPane.getPrefHeight () + 10);
+        configPane.getChildren ().addAll (sp, hb100);
     }
 
-    private void actionButtonProperties() {        
+    private void actionButtonProperties() {
         sp.setHbarPolicy (ScrollPane.ScrollBarPolicy.NEVER);
         sp.setVbarPolicy (ScrollPane.ScrollBarPolicy.ALWAYS);
 
@@ -188,7 +191,40 @@ public class ConfigSetController implements Initializable {
     }
 
     private void saveMe() {
-        System.out.println ("   Saved....");
+        FileChooser fileChooser = new FileChooser ();
+        File recordsDir = new File ("configSet");
+        if ( !recordsDir.exists () ) {
+            recordsDir.mkdirs ();
+        }
+        fileChooser.setInitialDirectory (recordsDir);
+        FileChooser.ExtensionFilter extFilter
+                = new FileChooser.ExtensionFilter ("Configuration File (.inp)",
+                        "*.inp");
+        fileChooser.getExtensionFilters ().add (extFilter);
+        fileChooser.setTitle ("Saving the Configuration");
+        configFName = fileChooser.showSaveDialog (confStage).getPath ();
+        if ( configFName != null ) {
+            File file = new File (configFName);
+            try ( FileWriter fw = new FileWriter (file) ) {
+                fw.write("C    MONC-2.0       $ Monte Carlo Nucleon Transport Code");
+                fw.write (projT.getText () + "$ Project Title \n");
+                fw.write (eventNT.getText () + "$ Number of events \n");
+                fw.write (inactN.getText () + "$ Inactive Neutron Generation \n");
+                fw.write (actN.getText () + "$ Active Neutron Generation \n");
+                fw.write (neut1Gen.getText () + "$ Number of neutron in one generation \n");
+                fw.write (wtCutoff.getText () + "$ weight cutoff \n");
+                fw.write (randSeed.getText () + "$ Initial Random Number \n");
+                fw.write (chargeZ.getText () + "$ Charge (Z) \n");
+                fw.write (massA.getText () + "$ Mass Number (A) \n");
+
+                fw.write ("C    ------------ GEOMETRY DATA ---------- ");
+                fw.write (geoArea.getText () + "\n");
+                fw.close ();
+            } catch (IOException ex) {
+                Logger.getLogger (ConfigSetController.class.getName ()).
+                        log (Level.SEVERE, null, ex);
+            }
+        }
     }
 
     private void cleanMe() {

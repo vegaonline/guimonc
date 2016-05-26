@@ -26,7 +26,7 @@
             <Menu fx:id="anaLyzePlot" mnemonicParsing="false" text="Analyze and Report">
                <items>
                   <MenuItem fx:id="analyzePlot" mnemonicParsing="false" onAction="#doPlot" text="Plot" />
-                  <MenuItem mnemonicParsing="false" text="Prepare Report" />
+                  <MenuItem fx:id="makeReport" mnemonicParsing="false" onAction="#doRPT" text="Prepare Report" />
                </items></Menu>
         </menus>
       </MenuBar>

@@ -25,6 +25,9 @@ import javafx.scene.text.Font;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 import javax.imageio.ImageIO;
+import moncgui.Material;
+import moncgui.Mesh;
+import moncgui.Sphere;
 
 /**
  * FXML Controller class
@@ -625,7 +628,7 @@ public class GeomController extends Mesh {
         paramPane.add (objAxis, 0, 2);
         //paramPane.add(matT, 0, 5);
         // paramPane.add(matList, 0, 6);
-        paramPane.add (drawMe, 0, 15);
+        paramPane.add (drawMe, 0, 3);  //15
 
         drawMe.setOnAction (new EventHandler<ActionEvent> () {
             @Override
