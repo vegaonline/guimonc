@@ -7,4 +7,12 @@
 <?import javafx.scene.layout.*?>
 
 
-<AnchorPane id="AnchorPane" fx:id="configPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="moncgui.ConfigSetController" />
+<BorderPane fx:id="bPane" maxHeight="-Infinity" maxWidth="-Infinity" 
+            minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" 
+            prefWidth="600.0" xmlns="http://javafx.com/javafx/8" 
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="moncgui.ConfigSetController">
+   <center>
+      <AnchorPane fx:id="configPane" prefHeight="400.0" prefWidth="600.0" 
+                  BorderPane.alignment="CENTER" />
+   </center>
+</BorderPane>

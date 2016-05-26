@@ -32,6 +32,6 @@
       </MenuBar>
    </top>
    <center>
-      <AnchorPane fx:id="configPane" BorderPane.alignment="CENTER" />
+      <AnchorPane fx:id="rootConfigPane" BorderPane.alignment="CENTER" />
    </center>
 </BorderPane>

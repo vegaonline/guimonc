@@ -7,11 +7,17 @@ package moncgui;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.beans.binding.BooleanBinding;
+import javafx.event.*;
 import javafx.fxml.*;
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
+import javafx.stage.Stage;
 
 /**
  * FXML Controller class
@@ -21,6 +27,8 @@ import javafx.scene.text.Font;
 public class ConfigSetController implements Initializable {
 
     private MoncGUI myGUI;
+    private Scene confScene;
+    private Stage confStage;
     private Label projTL = new Label ("Title");
     private TextField projT = new TextField ();
     private Label eventNTL = new Label ("Event Number");
@@ -39,19 +47,28 @@ public class ConfigSetController implements Initializable {
     private TextField chargeZ = new TextField ();
     private Label massAL = new Label ("Mass Number (A)");
     private TextField massA = new TextField ();
-    private Button saveButton = new Button("Save");
-    private Button cleanButton = new Button("Clean");
+    private Button saveButton = new Button ("Save");
+    private Button cleanButton = new Button ("Clean");
 
     public Label geoL = new Label (" Geometrical Configuration ");
     public TextArea geoArea = new TextArea ();
+    private VBox vb1 = new VBox ();
 
     private final GridPane objPane = new GridPane ();
+    private DropShadow shadow = new DropShadow ();
+    private ScrollPane sp = new ScrollPane();
 
     @FXML
     private AnchorPane configPane;
+    @FXML
+    private BorderPane bPane;
 
     public void setMainApp(MoncGUI badGUI) {
-        this.myGUI = myGUI;
+        this.myGUI = badGUI;
+    }
+
+    public void setMyStage(Stage stage) {
+        this.confStage = stage;
     }
 
     /**
@@ -59,11 +76,13 @@ public class ConfigSetController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
         buildScreen ();
+        cleanMe ();
+        actionButtonProperties ();
     }
 
     private void buildScreen() {
+        configPane.setPrefWidth (850);
         geoArea.setMaxHeight (150);
         geoArea.autosize ();
         objPane.autosize ();
@@ -77,19 +96,20 @@ public class ConfigSetController implements Initializable {
         randSeedL.setFont (new Font ("Times New Roman", 12));
         chargeZL.setFont (new Font ("Times New Roman", 12));
         massAL.setFont (new Font ("Times New Roman", 12));
-        
+
         geoL.setFont (new Font ("Times New Roman", 14));
         geoL.setAlignment (Pos.CENTER);
         geoL.setTranslateX (200);
 
-        projT.setMaxSize (600, 1); 
+        projT.setMaxSize (600, 1);
         eventNT.setMaxSize (70, 1);
         inactN.setMaxSize (50, 1);
         actN.setMaxSize (50, 1);
         neut1Gen.setMaxSize (50, 1);
         wtCutoff.setMaxSize (60, 1);
         randSeed.setMaxSize (90, 1);
-        chargeZ.setMaxSize(40,1);   massA.setMaxSize(40,1);
+        chargeZ.setMaxSize (40, 1);
+        massA.setMaxSize (40, 1);
 
         HBox hb1 = new HBox (projTL, projT, eventNTL, eventNT);
         hb1.setSpacing (10);
@@ -97,18 +117,89 @@ public class ConfigSetController implements Initializable {
         hb2.setSpacing (10);
         HBox hb3 = new HBox (wtCutoffL, wtCutoff, randSeedL, randSeed);
         hb3.setSpacing (10);
-        HBox hb4 = new HBox(chargeZL,chargeZ, massAL, massA);
+        HBox hb4 = new HBox (chargeZL, chargeZ, massAL, massA);
         hb4.setSpacing (10);
-        HBox hb99 = new HBox(geoL);
-        HBox hb100 = new HBox(saveButton, cleanButton);
+        HBox hb99 = new HBox (geoL);
+        HBox hb100 = new HBox (saveButton, cleanButton);
+        vb1.getChildren ().addAll (hb1, hb2, hb3, hb4, hb99, geoArea);
+        sp.setContent (vb1);
+        hb100.setLayoutY (configPane.getPrefHeight ()+10);
+        configPane.getChildren ().addAll (sp,hb100);
+    }
 
-        //VBox vb1 = new VBox (hb1, hb2, hb3, hb4, hb99, geoArea);
-        VBox vb1 = new VBox (hb1, hb2, hb3, hb4, hb99, geoArea, hb100);
+    private void actionButtonProperties() {        
+        sp.setHbarPolicy (ScrollPane.ScrollBarPolicy.NEVER);
+        sp.setVbarPolicy (ScrollPane.ScrollBarPolicy.ALWAYS);
 
-        
-       // saveButton.setLayoutX(100); saveButton.setLayoutY(350);
-        configPane.setPrefWidth (850);
-        //configPane.getChildren ().addAll (vb1,saveButton);
-        configPane.getChildren ().addAll (vb1);
+        BooleanBinding boolBind = projT.textProperty ().isEmpty ()
+                .or (eventNT.textProperty ().isEmpty ())
+                .or (chargeZ.textProperty ().isEmpty ())
+                .or (massA.textProperty ().isEmpty ())
+                .or (geoArea.textProperty ().isEmpty ());
+
+        saveButton.disableProperty ().bind (boolBind);
+        cleanButton.disableProperty ().bind (boolBind);
+
+        saveButton.setOnAction (new EventHandler<ActionEvent> () {
+            @Override
+            public void handle(ActionEvent evt) {
+                saveMe ();
+            }
+        });
+
+        saveButton.addEventHandler (MouseEvent.MOUSE_ENTERED,
+                new EventHandler<MouseEvent> () {
+            @Override
+            public void handle(MouseEvent me) {
+                saveButton.setEffect (shadow);
+            }
+        });
+
+        saveButton.addEventHandler (MouseEvent.MOUSE_EXITED,
+                new EventHandler<MouseEvent> () {
+            @Override
+            public void handle(MouseEvent me) {
+                saveButton.setEffect (null);
+            }
+        });
+
+        cleanButton.setOnAction (new EventHandler<ActionEvent> () {
+            @Override
+            public void handle(ActionEvent evt) {
+                cleanMe ();
+            }
+        });
+
+        cleanButton.addEventHandler (MouseEvent.MOUSE_ENTERED,
+                new EventHandler<MouseEvent> () {
+            @Override
+            public void handle(MouseEvent me) {
+                cleanButton.setEffect (shadow);
+            }
+        });
+
+        cleanButton.addEventHandler (MouseEvent.MOUSE_EXITED,
+                new EventHandler<MouseEvent> () {
+            @Override
+            public void handle(MouseEvent me) {
+                cleanButton.setEffect (null);
+            }
+        });
+    }
+
+    private void saveMe() {
+        System.out.println ("   Saved....");
+    }
+
+    private void cleanMe() {
+        projT.clear ();
+        eventNT.clear ();
+        inactN.clear ();
+        actN.clear ();
+        neut1Gen.clear ();
+        wtCutoff.clear ();
+        randSeed.clear ();
+        chargeZ.clear ();
+        massA.clear ();
     }
 }

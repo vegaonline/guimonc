@@ -21,6 +21,7 @@ public class MoncGUI extends Application {
 
     private Stage primaryStage;
     private BorderPane rootLayout;
+
     public Scene rootScene;
     public AnchorPane thisNode;
     public double rootWidth = 600.0;
@@ -72,18 +73,20 @@ public class MoncGUI extends Application {
     }
 
     public void setTxtIT(String str) {
-        this.txtIT = str;        
+        this.txtIT = str;
     }
-    
+
     public void callConfig() {
         try {
             FXMLLoader loader = new FXMLLoader (MoncGUI.class.getResource (
                     "configSet.fxml"));
-            AnchorPane confPage = (AnchorPane) loader.load ();
+            // AnchorPane confPage = (AnchorPane) loader.load ();
+            BorderPane confPage = (BorderPane) loader.load ();
             rootLayout.setCenter (confPage);
             ConfigSetController controller = loader.getController ();
             controller.setMainApp (this);
-            if (txtIT !=null) {
+            controller.setMyStage (primaryStage);
+            if ( txtIT != null ) {
                 controller.geoArea.appendText (txtIT);
             }
         } catch (IOException ex) {
