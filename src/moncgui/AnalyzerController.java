@@ -55,8 +55,8 @@ public class AnalyzerController implements Initializable {
     private String plotTitle = null;
 
     private double maxx = -99999999.99, minx = -maxx, maxy = maxx, miny = minx,
-            maxz = maxx, minz = minx, meanx = maxx, meany = maxy, maxmax = 0, minmin
-            = 0;
+            maxz = maxx, minz = minx, meanx = maxx, meany = maxy, maxmax = 0, 
+            minmin = 0;
     int colX = 0, colY = 0, colZ = 0;
     private StackPane plotAnchor2Plot = new StackPane ();
     private NumberAxis xAxis;
@@ -110,7 +110,7 @@ public class AnalyzerController implements Initializable {
     //**** Fix option for plotting using combobox
     private void fixOptionCombos() {
         // plotType.getItems ().setAll ("2D ", "2D + ErrorBar", "3D Surface"," 3D Scatter", "3D Contour");
-        plotType.getItems ().setAll ("2D ", " 3D Scatter");
+        plotType.getItems ().setAll ("2D ", "3D Scatter");
         plotType.setValue ("2D");
 
         plotStyle.getItems ().setAll ("__", "-o-");
@@ -150,7 +150,7 @@ public class AnalyzerController implements Initializable {
             String mytitle, String dType1, String dType2,
             final FileChooser fileChooser) {
         fileChooser.setTitle (mytitle);
-        File recordsDir = new File ("TestData");
+        File recordsDir = new File ("data");
         fileChooser.setInitialDirectory (recordsDir);  //new File(System.getProperty("user.home"))
         fileChooser.getExtensionFilters ().addAll (
                 new FileChooser.ExtensionFilter (dType1, dType2)
@@ -230,7 +230,8 @@ public class AnalyzerController implements Initializable {
                     boolean add = dataPlot.add (oneRow); //dataPlot.add(oneRow);
                     if ( dataLen == 1 ) {
                         System.out.println (
-                                "Please delete extra blank line in the data file probably at the end.");
+                                "Please delete extra blank line in the data " +
+                                        "file probably at the end.");
                         return;
                     }
                 }
@@ -351,7 +352,6 @@ public class AnalyzerController implements Initializable {
     }
 
     public static class myDat {
-
         private final SimpleDoubleProperty d1;
         private final SimpleDoubleProperty d2;
         private final SimpleDoubleProperty d3;
@@ -640,7 +640,6 @@ public class AnalyzerController implements Initializable {
         --colX;
         --colY;
         --colZ;
-        System.out.println (colX + "  " + colY + "   " + colZ);
         getMaxMinData (colX, colY, colZ);
         if ( dataLen == 2 ) {
             plot2DRoutine (colX, colY);
@@ -675,7 +674,8 @@ public class AnalyzerController implements Initializable {
     private void plotPNGJPG(ActionEvent event) {
         String fName = null;
         if ( plotExport.getValue ().contains ("PNG") ) {
-            fName = plotTitle + ".png";
+            fName = "data/"+ plotTitle.replace (".dat", "")+ ".png";
+            System.out.println(fName);
             File fImage = new File (fName);
             if ( plotType.getValue ().contains ("3D") ) {
                 try {
@@ -688,7 +688,7 @@ public class AnalyzerController implements Initializable {
                 saveAsPng (lineChart, fName);
             }
         } else if ( plotExport.getValue ().contains ("JPG") ) {
-            fName = plotTitle + ".jpg";
+            fName = "data/"+plotTitle.replace (".dat", "") + ".jpg";
             File fImage = new File (fName);
             if ( plotType.getValue ().contains ("3D") ) {
                 try {

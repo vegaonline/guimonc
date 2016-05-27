@@ -773,7 +773,7 @@ public class GeomController extends Mesh {
         myGUI.setTxtIT (txtList);
         geoSnapCnt++;
         WritableImage fImage = camV.snapshot (new SnapshotParameters (), null);
-        File iFile = new File ("geometrySnap" + geoSnapCnt + ".png");
+        File iFile = new File ("Images/"+"geometrySnap" + geoSnapCnt + ".png");
         try {
             ImageIO.
                     write (SwingFXUtils.fromFXImage (fImage, null), "png", iFile);

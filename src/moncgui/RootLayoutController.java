@@ -141,7 +141,13 @@ public class RootLayoutController { // implements Initializable
                 "Contact: Dr. Abhijit Bhattacharyya \n" +
                 "Nuclear Physics Division \nBhabha Atomic Resarch Centre \n" +
                 "INDIA \n" +
-                "EMAIL: vega@barc.gov.in,   abhihere@gmail.com";
+                "EMAIL: vega@barc.gov.in,   abhihere@gmail.com" +
+                "\n\n" +
+                "Upcoming Features:\n" +
+                "1. Part of Sphere and Cylinder specifying angles\n" +
+                "2. Boolean operation on geometries\n" +
+                "3. Copying of geometry along 1D/2D to make arrays\n" +
+                "and much more ........";
                 
         String titleBar = " ABOUT THE CODE ";
         
