@@ -11,12 +11,32 @@ public class Material {
 //	Vector3D Ka; //ambient reflectance
 //	Vector3D Kd; //diffuse color,
 //	Vector3D Ks; //specular color
+    int matID;
+    
+    // matID must conform to MONC code. Periodic table related elements 
+    // should come from MONC. Compounds are indexed from ID::300
+    // ID 1   onwards ---> periodic table elements
+    // ID 200 onwards ---> non metals
+    // ID 600 onwards ---> metals
+    // ID 1111 onwards ---> ODD items
+
     Vector3D color; //emmissive color,
     double Ka; //ambient reflectance
     double Kd; //diffuse reflectance,
     double Ks; //specular reflectance
     double shininess;
     double maxShininess;
+    // These properties are to be taken from the MONC code 
+    // material dictionary for usefulness.
+    // Let us put a Material ID number that should conform to the material
+    // ID of the MONC code
+    // I feel placing the property here is REQUIRED  :: DISCUSS HARPHOOL
+    
+    /*
+    double atNum;
+    double massNum;
+    double density;
+    */ 
     String name;
 
     public Material() {
@@ -34,6 +54,7 @@ public class Material {
 
     public static Material getShinyMaterial() {
         Material shiny = new Material ();
+        shiny.matID = 1111;
         shiny.name = "Shiny";
         shiny.color = new Vector3D (1.0, 0.0, 0.0);
         shiny.Ka = 0.4;
@@ -46,6 +67,7 @@ public class Material {
 
     public static Material Copper() {
         Material copper = new Material ();
+        copper.matID = 600;
         copper.name = "Copper";
         copper.color = new Vector3D (0.8672, 0.3047, 0.1016);
         copper.Ka = 0.3;
@@ -57,17 +79,19 @@ public class Material {
 
     public static Material Rubber() {
         Material Rubber = new Material ();
+        Rubber.matID = 200;
         Rubber.name = "Rubber";
         Rubber.color = new Vector3D (0.4336, 0.3750, 0.3516);
         Rubber.Ka = 0.3;
         Rubber.Kd = 0.7;
         Rubber.Ks = 0.0;
-        Rubber.shininess = 10.0f;
+        Rubber.shininess = 10.0f;        
         return Rubber;
     }
 
     public static Material Brass() {
         Material Brass = new Material ();
+        Brass.matID = 601;
         Brass.name = "Brass";
         Brass.color = new Vector3D (0.8789, 0.7148, 0.2695);
         Brass.Ka = 0.3;
@@ -79,6 +103,7 @@ public class Material {
 
     public static Material Glass() {
         Material Glass = new Material ();
+        Glass.matID = 201;
         Glass.name = "Glass";
         Glass.color = new Vector3D (0.8203, 0.9023, 0.9180);
         Glass.Ka = 0.3;
@@ -89,16 +114,41 @@ public class Material {
     }
 
     public static Material Plastic() {
-        Material Glass = new Material ();
-        Glass.name = "Glass";
-        Glass.color = new Vector3D (0.7305, 0.7383, 0.6914);
-        Glass.Ka = 0.3;
-        Glass.Kd = 0.9;
-        Glass.Ks = 0.9;
-        Glass.shininess = 10.0f;
-        return Glass;
+        Material Plastic = new Material ();
+        Plastic.matID = 202;
+        Plastic.name = "Plastic";
+        Plastic.color = new Vector3D (0.7305, 0.7383, 0.6914);
+        Plastic.Ka = 0.3;
+        Plastic.Kd = 0.9;
+        Plastic.Ks = 0.9;
+        Plastic.shininess = 10.0f;
+        return Plastic;
     }
 
+    public static Material Hydrogen() {
+        Material Hydrogen = new Material();
+        Hydrogen.matID = 1;
+        Hydrogen.name = "Hydrogen";
+        Hydrogen.color = new Vector3D(0.94, 0.82, 0.92);
+        Hydrogen.Ka = 0.1;
+        Hydrogen.Kd = 0.6;
+        Hydrogen.Ks = 0.5;
+        Hydrogen.shininess = 4.0f;
+        return Hydrogen;
+    }
+    
+    public static Material Deuterium() {
+        Material Deuterium = new Material();
+        Deuterium.matID = 2;
+        Deuterium.name = "Deuterium";
+        Deuterium.color = new Vector3D(0.94, 0.82, 0.92);
+        Deuterium.Ka = 0.1;
+        Deuterium.Kd = 0.6;
+        Deuterium.Ks = 0.5;
+        Deuterium.shininess = 4.0f;
+        return Deuterium;
+    }
+    
     public void setColor(Vector3D color) {
         this.color = color;
         System.out.println (this);

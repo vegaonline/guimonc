@@ -125,7 +125,6 @@ public class MoncGUI extends Application {
     }
 
     public void callAnalyze() {
-
         try {
             FXMLLoader loader = new FXMLLoader (MoncGUI.class.getResource (
                     "Analyzer.fxml"));

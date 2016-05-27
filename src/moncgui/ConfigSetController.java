@@ -31,6 +31,7 @@ public class ConfigSetController implements Initializable {
     private MoncGUI myGUI;
     private Scene confScene;
     private Stage confStage;
+    
     private Label projTL = new Label ("Title");
     private TextField projT = new TextField ();
     private Label eventNTL = new Label ("Event Number");
@@ -49,9 +50,13 @@ public class ConfigSetController implements Initializable {
     private TextField chargeZ = new TextField ();
     private Label massAL = new Label ("Mass Number (A)");
     private TextField massA = new TextField ();
+    private Label numBodyL = new Label("Number of Bodies");
+    public TextField numBody = new TextField();
+    
     private Button saveButton = new Button ("Save");
     private Button cleanButton = new Button ("Clean");
 
+    
     public Label geoL = new Label (" Geometrical Configuration ");
     public TextArea geoArea = new TextArea ();
     private VBox vb1 = new VBox ();
@@ -99,7 +104,6 @@ public class ConfigSetController implements Initializable {
         randSeedL.setFont (new Font ("Times New Roman", 12));
         chargeZL.setFont (new Font ("Times New Roman", 12));
         massAL.setFont (new Font ("Times New Roman", 12));
-
         geoL.setFont (new Font ("Times New Roman", 14));
         geoL.setAlignment (Pos.CENTER);
         geoL.setTranslateX (200);

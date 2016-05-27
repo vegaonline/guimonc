@@ -18,14 +18,11 @@ import javafx.scene.text.Font;
  * @author vega
  */
 public class RootLayoutController { // implements Initializable 
-    
 
     @FXML
     private Menu doConfig;
     @FXML
     private MenuItem doConfigNew;
-    @FXML
-    private MenuItem doQuit;
     @FXML
     private Menu doGeom;
     @FXML
@@ -38,16 +35,25 @@ public class RootLayoutController { // implements Initializable
     private MenuItem doGeomStart;
     @FXML
     private AnchorPane rootConfigPane;
+    @FXML
+    private MenuItem makeReport;
+    @FXML
+    private Menu HOME;
+    @FXML
+    private MenuItem help;
+    @FXML
+    private MenuItem exit;
+    @FXML
+    private MenuItem about;
+
+    
+    private MoncGUI myGUI;
 
     private Label welcome1;
     private Label welcome2;
     private Label welcome3;
     private Label welcome4;
     private Label welcome5;
-
-    private MoncGUI myGUI;
-    @FXML
-    private MenuItem makeReport;
 
     public void setMainApp(MoncGUI myGUI) {
         this.myGUI = myGUI;
@@ -105,5 +111,40 @@ public class RootLayoutController { // implements Initializable
     @FXML
     private void doRPT(ActionEvent event) throws IOException {
         myGUI.makeReport ();
+    }
+
+    @FXML
+    private void doHELP(ActionEvent event) {
+        String mesg = "1. Generate Geometry.\n" +
+                "2. Complete geometry by clicking UPDATE\n" +
+                "3. Complete Configuration and save\n" +
+                "4. Run MONC\n" +
+                "5. In Analyzer, plot data\n" +
+                "6. Select Data file\n" +
+                "7. Select 2/3D plot\n" +
+                "8. Select columns to be plotted for X, Y and Z axis\n" +
+                "9. Data table may be checked to see any superflous data\n" +
+                "10. plot data\n" +
+                "11. Plot may be exported to PNG/JPG.\n" +
+                "12. An executive summary may be produced.\n" +
+                "13. Report file may include image automatically produced\n" +
+                " from UPDATE button of geometry production.";
+        String titleBar = " HELP";
+        popupMsg.infoBox (mesg, titleBar);                
+    }
+
+    @FXML
+    private void doAbout(ActionEvent event) {
+        String mesg= 
+                "This is code developed using Java JDK 1.8\n" +
+                "                        VERSION 1.0 \n" +
+                "Contact: Dr. Abhijit Bhattacharyya \n" +
+                "Nuclear Physics Division \nBhabha Atomic Resarch Centre \n" +
+                "INDIA \n" +
+                "EMAIL: vega@barc.gov.in,   abhihere@gmail.com";
+                
+        String titleBar = " ABOUT THE CODE ";
+        
+        popupMsg.infoBox (mesg, titleBar);
     }
 }

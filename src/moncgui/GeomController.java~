@@ -41,7 +41,6 @@ public class GeomController extends Mesh {
     private int totObjectNum = 1000;
     private int initialized = 0;
     private int isDrawMePressed = 0;
-    private int numGeom = 0;
 
     private MoncGUI myGUI;
     private Stage geoStage;
@@ -368,8 +367,10 @@ public class GeomController extends Mesh {
         paramPane.add (vb1, 0, 0); // col row 
         //paramPane.add(matT, 0, 5);
         // paramPane.add(matList, 0, 6);
-        paramPane.add (drawMe, 0, 9);
-
+        if ( isDrawMePressed == 0 ) {
+            paramPane.add (drawMe, 0, 9);
+            isDrawMePressed = 1;
+        }
         drawMe.setOnAction (new EventHandler<ActionEvent> () {
             @Override
             public void handle(ActionEvent ev) {
@@ -474,7 +475,7 @@ public class GeomController extends Mesh {
                     geoEntries.appendText (geoTextEntry);
                     nodeList.setText ("Tube added");
                     camV.add (tub1);
-                    numGeom++;;
+                    isDrawMePressed = 0;
                     paramPane.getChildren ().clear ();
                     //camV.add(tub2);
                 } else {
@@ -543,11 +544,12 @@ public class GeomController extends Mesh {
                     geoEntries.appendText (geoTextEntry);
                     nodeList.setText ("Tube added");
                     camV.add (tub);
-                    numGeom++;
+                    isDrawMePressed = 0;
                     paramPane.getChildren ().clear ();
                 }
             }
-        });
+        }
+        );
     }
 
     public void drawSPH() {
@@ -632,7 +634,10 @@ public class GeomController extends Mesh {
         paramPane.add (objAxis, 0, 2);
         //paramPane.add(matT, 0, 5);
         // paramPane.add(matList, 0, 6);
-        paramPane.add (drawMe, 0, 3);  //15
+        if ( isDrawMePressed == 0 ) {
+            paramPane.add (drawMe, 0, 3);  //15
+            isDrawMePressed = 1;
+        }
         drawMe.setOnAction (new EventHandler<ActionEvent> () {
             @Override
             public void handle(ActionEvent ev) {
@@ -698,7 +703,7 @@ public class GeomController extends Mesh {
                 geoEntries.appendText (geoTextEntry);
                 nodeList.setText ("Sphere added");
                 camV.add (sph1);
-                numGeom++;
+                isDrawMePressed = 0;
                 paramPane.getChildren ().clear ();
             }
         });
@@ -844,7 +849,10 @@ public class GeomController extends Mesh {
 
         //paramPane.add(matT, 0, 5);
         // paramPane.add(matList, 0, 6);
-        paramPane.add (drawMe, 0, 15);
+        if ( isDrawMePressed == 0 ) {
+            paramPane.add (drawMe, 0, 15);
+            isDrawMePressed = 0;
+        }
         drawMe.setOnAction (new EventHandler<ActionEvent> () {
             @Override
             public void handle(ActionEvent ev) {
@@ -897,7 +905,7 @@ public class GeomController extends Mesh {
                 }
                 objLIST.add (oal1);
                 camV.add (brk);
-                numGeom++;
+                isDrawMePressed = 0;
                 paramPane.getChildren ().clear ();
             }
         });
