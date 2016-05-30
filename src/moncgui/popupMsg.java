@@ -10,14 +10,15 @@ import javax.swing.JOptionPane;
 /**
  *
  * @author vega
- *
- * @param String infoMesg : Message to be displayed
- *
- * @param String titleBar : The titleBar
- *
  */
 public class popupMsg {
 
+    /**
+     * @param String infoMesg : Message to be displayed
+     *
+     * @param String titleBar : The titleBar
+     *
+     */
     public static void infoBox(String infoMesg, String titleBar) {
         {
             JOptionPane.showMessageDialog (null, infoMesg, "InfoBox: " +

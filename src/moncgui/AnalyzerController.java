@@ -44,6 +44,7 @@ public class AnalyzerController implements Initializable {
     private Stage newStage;
     private Scene newScene;
     private ImageView imgView = new ImageView ();
+    FileChooser fileChooser = new FileChooser ();
 
     private List<double[]> dataPlot = new ArrayList<double[]> ();
     private final ObservableList<myDat> myData1 = FXCollections.
@@ -55,7 +56,7 @@ public class AnalyzerController implements Initializable {
     private String plotTitle = null;
 
     private double maxx = -99999999.99, minx = -maxx, maxy = maxx, miny = minx,
-            maxz = maxx, minz = minx, meanx = maxx, meany = maxy, maxmax = 0, 
+            maxz = maxx, minz = minx, meanx = maxx, meany = maxy, maxmax = 0,
             minmin = 0;
     int colX = 0, colY = 0, colZ = 0;
     private StackPane plotAnchor2Plot = new StackPane ();
@@ -68,6 +69,15 @@ public class AnalyzerController implements Initializable {
     private Color[] plotColor;
     private List<Coord3d> plotCoordList;
     private TableView<myDat> plotTable;
+    private TextField plotChartTitle;
+
+    String dirName = "data";
+    String descr1 = "Image File (.png)";
+    String descr2 = "Image File (.jpg)";
+    String ext1 = ".png";
+    String ext2 = ".jpg";
+    String op1 = "open";
+    String op2 = "save";
 
     @FXML
     private AnchorPane plotMainAnchorPane;
@@ -89,7 +99,7 @@ public class AnalyzerController implements Initializable {
     private ChoiceBox<String> selectY;
     @FXML
     private ChoiceBox<String> selectZ;
-    private TextField plotChartTitle;
+    
 
     public void setMainApp(MoncGUI badGUI) {
         this.myGUI = badGUI;
@@ -150,8 +160,12 @@ public class AnalyzerController implements Initializable {
             String mytitle, String dType1, String dType2,
             final FileChooser fileChooser) {
         fileChooser.setTitle (mytitle);
-        File recordsDir = new File ("data");
+        File recordsDir = new File (dirName);
+        if ( !recordsDir.exists () ) {
+            recordsDir.mkdirs ();
+        }
         fileChooser.setInitialDirectory (recordsDir);  //new File(System.getProperty("user.home"))
+        fileChooser.getExtensionFilters ().clear ();
         fileChooser.getExtensionFilters ().addAll (
                 new FileChooser.ExtensionFilter (dType1, dType2)
         );
@@ -180,7 +194,7 @@ public class AnalyzerController implements Initializable {
         colZ = 0;
         String dType1 = ".dat", dType2 = "*.dat", cvsSplitBy = ",";
         String line = "";
-        FileChooser fileChooser = new FileChooser ();
+        //FileChooser fileChooser = new FileChooser ();
 
         configureFileChooser (
                 "Select data file to Plot", dType1, dType2, fileChooser
@@ -231,7 +245,7 @@ public class AnalyzerController implements Initializable {
                     if ( dataLen == 1 ) {
                         System.out.println (
                                 "Please delete extra blank line in the data " +
-                                        "file probably at the end.");
+                                "file probably at the end.");
                         return;
                     }
                 }
@@ -352,6 +366,7 @@ public class AnalyzerController implements Initializable {
     }
 
     public static class myDat {
+
         private final SimpleDoubleProperty d1;
         private final SimpleDoubleProperty d2;
         private final SimpleDoubleProperty d3;
@@ -658,12 +673,15 @@ public class AnalyzerController implements Initializable {
     }
 
     private void saveAsPng(LineChart lc, String fName) {
+        System.out.println ("After saveAsPng B4 writable");
         WritableImage fImage = lc.snapshot (new SnapshotParameters (),
                 null);
         File iFile = new File (fName);
         try {
+            System.out.println ("B4 ImageIO");
             ImageIO.
                     write (SwingFXUtils.fromFXImage (fImage, null), "png", iFile);
+            System.out.println ("After ImageIO");
         } catch (IOException ex) {
             Logger.getLogger (AnalyzerController.class.getName ()).
                     log (Level.SEVERE, null, ex);
@@ -673,30 +691,61 @@ public class AnalyzerController implements Initializable {
     @FXML
     private void plotPNGJPG(ActionEvent event) {
         String fName = null;
-        if ( plotExport.getValue ().contains ("PNG") ) {
-            fName = "data/"+ plotTitle.replace (".dat", "")+ ".png";
-            System.out.println(fName);
-            File fImage = new File (fName);
-            if ( plotType.getValue ().contains ("3D") ) {
-                try {
-                    chart.screenshot (fImage);
-                } catch (IOException ex) {
-                    Logger.getLogger (AnalyzerController.class.getName ()).
-                            log (Level.SEVERE, null, ex);
+        int cnt = 0;
+        if ( plotExport.getValue ().contains ("PNG") && cnt ==0) {
+            cnt++;
+            fName = null;
+            plotExport.setValue ("PNG");
+            fileChooser.getExtensionFilters ().clear ();
+            FileChooser.ExtensionFilter extFilt
+                    = new FileChooser.ExtensionFilter (descr1, ext1);
+            fileChooser.getExtensionFilters ().add (extFilt);
+            fileChooser.setTitle (op2);
+            fName = fileChooser.showSaveDialog (plotStage).getPath ();
+            if ( fName != null ) {
+                System.out.println (fName);
+                File fImage = new File (fName);
+                if ( plotType.getValue ().contains ("3D") ) {
+                    try {
+                        chart.screenshot (fImage);
+                    } catch (IOException ex) {
+                        Logger.getLogger (AnalyzerController.class.getName ()).
+                                log (Level.SEVERE, null, ex);
+                    }
+                } else if ( plotType.getValue ().contains ("2D") ) {
+                    System.out.println ("B4 saveAsPng");
+                    saveAsPng (lineChart, fName);
+                    System.out.println ("return from saveAsPng");
                 }
-            } else if ( plotType.getValue ().contains ("2D") ) {
-                saveAsPng (lineChart, fName);
+            } else {
+                popupMsg.infoBox ("No file selected",
+                        "File Saving Procedure not successful");
+                return;
             }
         } else if ( plotExport.getValue ().contains ("JPG") ) {
-            fName = "data/"+plotTitle.replace (".dat", "") + ".jpg";
-            File fImage = new File (fName);
-            if ( plotType.getValue ().contains ("3D") ) {
-                try {
-                    chart.screenshot (fImage);
-                } catch (IOException ex) {
-                    Logger.getLogger (AnalyzerController.class.getName ()).
-                            log (Level.SEVERE, null, ex);
+            cnt++;
+            System.out.println ("return from saveAsPng and entering jpg routine");
+            fName = null;
+            fileChooser.getExtensionFilters ().clear ();
+            FileChooser.ExtensionFilter extFilt
+                    = new FileChooser.ExtensionFilter (descr2, ext2);
+            fileChooser.getExtensionFilters ().add (extFilt);
+            fileChooser.setTitle (op2);
+            fName = fileChooser.showSaveDialog (plotStage).getPath ();
+            if ( fName != null ) {
+                File fImage = new File (fName);
+                if ( plotType.getValue ().contains ("3D") ) {
+                    try {
+                        chart.screenshot (fImage);
+                    } catch (IOException ex) {
+                        Logger.getLogger (AnalyzerController.class.getName ()).
+                                log (Level.SEVERE, null, ex);
+                    }
                 }
+            } else {
+                popupMsg.infoBox ("No file selected",
+                        "File Saving Procedure not successful");
+                return;
             }
         }
         plotExport.setValue ("PNG");
