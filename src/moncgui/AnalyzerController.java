@@ -99,7 +99,6 @@ public class AnalyzerController implements Initializable {
     private ChoiceBox<String> selectY;
     @FXML
     private ChoiceBox<String> selectZ;
-    
 
     public void setMainApp(MoncGUI badGUI) {
         this.myGUI = badGUI;
@@ -126,8 +125,7 @@ public class AnalyzerController implements Initializable {
         plotStyle.getItems ().setAll ("__", "-o-");
         plotStyle.setValue ("__");
 
-        plotExport.getItems ().setAll ("Export to : JPG", "Export to : PNG");
-        plotExport.setValue ("PNG");
+        plotExport.setValue ("EXPORT TO:");
 
         selectX.setTooltip (new Tooltip (
                 "Choose column for X Axis -- to be activated after loading the data file"));
@@ -655,6 +653,14 @@ public class AnalyzerController implements Initializable {
         --colX;
         --colY;
         --colZ;
+        if ( found2d == true ) {
+            plotExport.getItems ().clear ();
+            plotExport.getItems ().setAll ("Export to PNG");
+        }
+        if ( found3d == true ) {
+            plotExport.getItems ().clear ();
+            plotExport.getItems ().setAll ("Export to PNG", "Export to JPG");
+        }
         getMaxMinData (colX, colY, colZ);
         if ( dataLen == 2 ) {
             plot2DRoutine (colX, colY);
@@ -673,15 +679,12 @@ public class AnalyzerController implements Initializable {
     }
 
     private void saveAsPng(LineChart lc, String fName) {
-        System.out.println ("After saveAsPng B4 writable");
         WritableImage fImage = lc.snapshot (new SnapshotParameters (),
                 null);
         File iFile = new File (fName);
         try {
-            System.out.println ("B4 ImageIO");
             ImageIO.
                     write (SwingFXUtils.fromFXImage (fImage, null), "png", iFile);
-            System.out.println ("After ImageIO");
         } catch (IOException ex) {
             Logger.getLogger (AnalyzerController.class.getName ()).
                     log (Level.SEVERE, null, ex);
@@ -691,19 +694,15 @@ public class AnalyzerController implements Initializable {
     @FXML
     private void plotPNGJPG(ActionEvent event) {
         String fName = null;
-        int cnt = 0;
-        if ( plotExport.getValue ().contains ("PNG") && cnt ==0) {
-            cnt++;
+        if ( plotExport.getValue ().contains ("PNG") ) {
             fName = null;
-            plotExport.setValue ("PNG");
             fileChooser.getExtensionFilters ().clear ();
             FileChooser.ExtensionFilter extFilt
                     = new FileChooser.ExtensionFilter (descr1, ext1);
             fileChooser.getExtensionFilters ().add (extFilt);
             fileChooser.setTitle (op2);
-            fName = fileChooser.showSaveDialog (plotStage).getPath ();
+            fName = fileChooser.showSaveDialog (newStage).getPath ();
             if ( fName != null ) {
-                System.out.println (fName);
                 File fImage = new File (fName);
                 if ( plotType.getValue ().contains ("3D") ) {
                     try {
@@ -713,9 +712,7 @@ public class AnalyzerController implements Initializable {
                                 log (Level.SEVERE, null, ex);
                     }
                 } else if ( plotType.getValue ().contains ("2D") ) {
-                    System.out.println ("B4 saveAsPng");
                     saveAsPng (lineChart, fName);
-                    System.out.println ("return from saveAsPng");
                 }
             } else {
                 popupMsg.infoBox ("No file selected",
@@ -723,8 +720,6 @@ public class AnalyzerController implements Initializable {
                 return;
             }
         } else if ( plotExport.getValue ().contains ("JPG") ) {
-            cnt++;
-            System.out.println ("return from saveAsPng and entering jpg routine");
             fName = null;
             fileChooser.getExtensionFilters ().clear ();
             FileChooser.ExtensionFilter extFilt
@@ -741,6 +736,8 @@ public class AnalyzerController implements Initializable {
                         Logger.getLogger (AnalyzerController.class.getName ()).
                                 log (Level.SEVERE, null, ex);
                     }
+                } else if ( plotType.getValue ().contains ("2D") ) {
+
                 }
             } else {
                 popupMsg.infoBox ("No file selected",
@@ -748,7 +745,6 @@ public class AnalyzerController implements Initializable {
                 return;
             }
         }
-        plotExport.setValue ("PNG");
     }
 
     @FXML

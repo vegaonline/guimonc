@@ -225,6 +225,8 @@ public class ConfigSetController implements Initializable {
                 fw.write (geoArea.getText () + "\n");
                 fw.close ();
             } catch (IOException ex) {
+                 popupMsg.infoBox ("No file selected",
+                        "File Saving Procedure not successful");
                 Logger.getLogger (ConfigSetController.class.getName ()).
                         log (Level.SEVERE, null, ex);
             }

@@ -23,7 +23,7 @@ import javafx.scene.paint.*;
 import javafx.scene.shape.*;
 import javafx.scene.text.Font;
 import javafx.scene.transform.Rotate;
-import javafx.stage.Stage;
+import javafx.stage.*;
 import javax.imageio.ImageIO;
 import moncgui.Material;
 import moncgui.Mesh;
@@ -61,6 +61,8 @@ public class GeomController extends Mesh {
     private final SplitPane drawPane = new SplitPane ();
     private final GridPane paramPane = new GridPane ();
     private final GridPane objPane = new GridPane ();
+
+    FileChooser fileChooser = new FileChooser ();
 
     private double cx = 0.0, cy = 0.0, cz = 0.0;
     private double xoffset = 20.0, yoffset = 20.0;
@@ -768,16 +770,31 @@ public class GeomController extends Mesh {
     @FXML
     private void doUpdate(ActionEvent event) {
         // It updates geometry specs in configurator and makes a snapshot of geometry
+        String fName = null;
+        String dirName = "Images";
+        File recordsDir = new File (dirName);
+        if ( !recordsDir.exists () ) {
+            recordsDir.mkdirs ();
+        }
+
+        WritableImage fImage = camV.snapshot (new SnapshotParameters (), null);
+
+        //*****  Updating config box ******
         String txtList = null;
         txtList = geoEntries.getText ();
         myGUI.setTxtIT (txtList);
+        //****** Updating config box ends ******
+
         geoSnapCnt++;
-        WritableImage fImage = camV.snapshot (new SnapshotParameters (), null);
-        File iFile = new File ("Images/"+"geometrySnap" + geoSnapCnt + ".png");
+        fName = recordsDir + "/" + "geometrySnap" + geoSnapCnt + ".png";
+
+        File iFile = new File (fName);
         try {
             ImageIO.
                     write (SwingFXUtils.fromFXImage (fImage, null), "png", iFile);
         } catch (IOException ex) {
+            popupMsg.infoBox ("Problem in saving the Geometry snapshot..",
+                    "Geometry saving ERROR");
             Logger.getLogger (GeomController.class.getName ()).
                     log (Level.SEVERE, null, ex);
         }
@@ -882,7 +899,7 @@ public class GeomController extends Mesh {
                         baseCY.getText () + "  " + baseCZ.getText () + "  " +
                         "  " + lenV + "  " + widV +
                         "  " + depV + "  " + objAxis.
-                        getText () + matList.getValue () + "\n";
+                        getText () + "   " +  matList.getValue () + "\n";
                 geoEntries.appendText (geoTextEntry);
                 nodeList.setText ("Brick added");
 
