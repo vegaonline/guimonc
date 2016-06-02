@@ -11,9 +11,16 @@
     <top>
         <MenuBar BorderPane.alignment="CENTER">
             <menus>
+                <Menu fx:id="doMat" mnemonicParsing="false" text="Material Manager"> 
+                    <items>
+                        <MenuItem fx:id="doManageMat" mnemonicParsing="false" onAction="#manageMat" 
+                                  text="Manage Material"/>
+                    </items>
+                </Menu>
                 <Menu fx:id="doGeom" mnemonicParsing="false" text="Geometry">
                     <items>
-                        <MenuItem fx:id="doGeomStart" mnemonicParsing="false" onAction="#GeomInitialize" text="Start Design" />
+                        <MenuItem fx:id="doGeomStart" mnemonicParsing="false" onAction="#GeomInitialize" 
+                                  text="Start Design" />
                     </items>
                 </Menu>
                 <Menu fx:id="doConfig" mnemonicParsing="false" text="Configure">

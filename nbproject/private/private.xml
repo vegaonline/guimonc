@@ -6,6 +6,7 @@
             <file>file:/home/vega/NetBeansProjects/MoncGUI/src/moncgui/CameraView.java</file>
             <file>file:/home/vega/NetBeansProjects/MoncGUI/src/moncgui/Rod3D.java</file>
             <file>file:/home/vega/NetBeansProjects/MoncGUI/src/moncgui/CameraTransform.java</file>
+            <file>file:/home/vega/NetBeansProjects/MoncGUI/src/moncgui/MatGenerator.fxml</file>
             <file>file:/home/vega/NetBeansProjects/MoncGUI/src/moncgui/Polygon3D.java</file>
             <file>file:/home/vega/NetBeansProjects/MoncGUI/src/moncgui/CreatePDFA.java</file>
             <file>file:/home/vega/NetBeansProjects/MoncGUI/src/moncgui/GeomController.java</file>
@@ -31,6 +32,7 @@
             <file>file:/home/vega/NetBeansProjects/MoncGUI/src/moncgui/Cube3D.java</file>
             <file>file:/home/vega/NetBeansProjects/MoncGUI/src/moncgui/Analyzer.fxml</file>
             <file>file:/home/vega/NetBeansProjects/MoncGUI/src/moncgui/Vector2D.java</file>
+            <file>file:/home/vega/NetBeansProjects/MoncGUI/src/moncgui/MatGeneratorController.java</file>
             <file>file:/home/vega/NetBeansProjects/MoncGUI/src/moncgui/Context3D.java</file>
             <file>file:/home/vega/NetBeansProjects/MoncGUI/src/moncgui/LineCube.java</file>
             <file>file:/home/vega/NetBeansProjects/MoncGUI/src/moncgui/AnalyzerController.java</file>

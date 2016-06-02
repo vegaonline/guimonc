@@ -32,23 +32,6 @@ public class MoncGUI extends Application {
     public ImageView imageView;
     private String txtIT = null;
 
-    //final CameraView cameraView = new CameraView();
-    @Override
-    public void start(Stage pStage) throws Exception {
-        this.primaryStage = pStage;
-
-        primaryStage.setTitle ("MONC GUI :: Abhijit Bhattacharyya");
-        FXMLLoader loader = new FXMLLoader (MoncGUI.class.getResource (
-                "RootLayout.fxml"));
-        rootLayout = (BorderPane) loader.load ();
-        //Scene scene = new Scene(rootLayout);
-        rootScene = new Scene (rootLayout);
-        primaryStage.setScene (rootScene);
-        RootLayoutController controller = loader.getController ();
-        controller.setMainApp (this);
-        primaryStage.show ();
-    }
-
     /**
      * Returns the main stage
      */
@@ -74,6 +57,37 @@ public class MoncGUI extends Application {
 
     public void setTxtIT(String str) {
         this.txtIT = str;
+    }
+
+    @Override
+    public void start(Stage pStage) throws Exception {
+        this.primaryStage = pStage;
+
+        primaryStage.setTitle ("MONC GUI :: Abhijit Bhattacharyya");
+        FXMLLoader loader = new FXMLLoader (MoncGUI.class.getResource (
+                "RootLayout.fxml"));
+        rootLayout = (BorderPane) loader.load ();
+        //Scene scene = new Scene(rootLayout);
+        rootScene = new Scene (rootLayout);
+        primaryStage.setScene (rootScene);
+        RootLayoutController controller = loader.getController ();
+        controller.setMainApp (this);
+        primaryStage.show ();
+    }
+
+    public void manageMat() {
+        try {
+            FXMLLoader loader = new FXMLLoader (getClass ().getResource (
+                    "MatGenerator.fxml"));
+            AnchorPane matGenPage = (AnchorPane) loader.load ();
+            rootLayout.setCenter (matGenPage);
+            MatGeneratorController controller = loader.getController ();
+            controller.setMainApp (this);
+            controller.setMyStage (primaryStage);
+        } catch (IOException ex) {
+            Logger.getLogger (MoncGUI.class.getName ()).log (Level.SEVERE, null,
+                    ex);
+        }
     }
 
     public void callConfig() {
@@ -140,17 +154,17 @@ public class MoncGUI extends Application {
                     ex);
         }
     }
-    
+
     public void makeReport() {
         try {
-            FXMLLoader loader = new FXMLLoader (MoncGUI.class.getResource (  
+            FXMLLoader loader = new FXMLLoader (MoncGUI.class.getResource (
                     "reporter.fxml"));
-            BorderPane reportPage = (BorderPane)loader.load ();
-            rootLayout.setCenter(reportPage);
+            BorderPane reportPage = (BorderPane) loader.load ();
+            rootLayout.setCenter (reportPage);
             reportController controller = loader.getController ();
-            controller.setMainApp(this);
+            controller.setMainApp (this);
         } catch (IOException ex) {
-            Logger.getLogger (MoncGUI.class.getName()).log (Level.SEVERE, null,
+            Logger.getLogger (MoncGUI.class.getName ()).log (Level.SEVERE, null,
                     ex);
         }
     }

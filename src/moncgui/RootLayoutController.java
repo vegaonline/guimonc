@@ -45,8 +45,13 @@ public class RootLayoutController { // implements Initializable
     private MenuItem exit;
     @FXML
     private MenuItem about;
-
+    @FXML
+    private Menu doMat;
+    @FXML
+    private MenuItem doManageMat;
     
+    
+
     private MoncGUI myGUI;
 
     private Label welcome1;
@@ -54,6 +59,8 @@ public class RootLayoutController { // implements Initializable
     private Label welcome3;
     private Label welcome4;
     private Label welcome5;
+
+    
 
     public void setMainApp(MoncGUI myGUI) {
         this.myGUI = myGUI;
@@ -86,7 +93,7 @@ public class RootLayoutController { // implements Initializable
     }
 
     @FXML
-    private void confNew(ActionEvent event) throws IOException {
+    private void confNew(ActionEvent event){// throws IOException {
         myGUI.callConfig ();
     }
 
@@ -99,7 +106,7 @@ public class RootLayoutController { // implements Initializable
     //    myGUI.callAnalyze();
     //}
     @FXML
-    private void doPlot(Event event) throws IOException {
+    private void doPlot(Event event) { // throws IOException {
         myGUI.callAnalyze ();
     }
 
@@ -130,13 +137,12 @@ public class RootLayoutController { // implements Initializable
                 "13. Report file may include image automatically produced\n" +
                 " from UPDATE button of geometry production.";
         String titleBar = " HELP";
-        popupMsg.infoBox (mesg, titleBar);                
+        popupMsg.infoBox (mesg, titleBar);
     }
 
     @FXML
     private void doAbout(ActionEvent event) {
-        String mesg= 
-                "This is code developed using Java JDK 1.8\n" +
+        String mesg = "This is code developed using Java JDK 1.8\n" +
                 "                        VERSION 1.0 \n" +
                 "Contact: Dr. Abhijit Bhattacharyya \n" +
                 "Nuclear Physics Division \nBhabha Atomic Resarch Centre \n" +
@@ -148,9 +154,15 @@ public class RootLayoutController { // implements Initializable
                 "2. Boolean operation on geometries\n" +
                 "3. Copying of geometry along 1D/2D to make arrays\n" +
                 "and much more ........";
-                
+
         String titleBar = " ABOUT THE CODE ";
-        
+
         popupMsg.infoBox (mesg, titleBar);
     }
+
+    @FXML
+    private void manageMat(ActionEvent event) {
+        myGUI.manageMat();
+    }
+
 }
