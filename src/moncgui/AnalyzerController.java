@@ -192,7 +192,7 @@ public class AnalyzerController implements Initializable {
         colZ = 0;
         String dType1 = ".dat", dType2 = "*.dat", cvsSplitBy = ",";
         String line = "";
-        //FileChooser fileChooser = new FileChooser ();
+
 
         configureFileChooser(
                 "Select data file to Plot", dType1, dType2, fileChooser
@@ -654,25 +654,10 @@ public class AnalyzerController implements Initializable {
         --colX;
         --colY;
         --colZ;
-<<<<<<< HEAD
+
         plotExport.getItems().clear();
         plotExport.getItems ().setAll ("Export to PNG");
-        /*
-        if ( found2d == true ) {
-            plotExport.getItems ().clear ();
-            plotExport.getItems ().setAll ("Export to PNG");
-=======
-        if (found2d == true) {
-            plotExport.getItems().clear();
-            plotExport.getItems().setAll("Export to PNG");
->>>>>>> f4075c2159eec1ac404a9931593676b5782a9ea3
-        }
-        if (found3d == true) {
-            plotExport.getItems().clear();
-            plotExport.getItems().setAll("Export to PNG", "Export to JPG");
-        }
-<<<<<<< HEAD
-        */ 
+
         getMaxMinData (colX, colY, colZ);
         if ( dataLen == 2 ) {
             plot2DRoutine (colX, colY);
@@ -684,19 +669,6 @@ public class AnalyzerController implements Initializable {
             plot3dRoutine (colX, colY, colZ, "scatter");
         } else if ( cont3d == true ) {
             plot3dRoutine (colX, colY, colZ, "contour");
-=======
-        getMaxMinData(colX, colY, colZ);
-        if (dataLen == 2) {
-            plot2DRoutine(colX, colY);
-        } else if (found2d == true) {
-            plot2DRoutine(colX, colY);
-        } else if (surf3d == true) {
-            plot3dRoutine(colX, colY, colZ, "surface");
-        } else if (scat3d == true) {
-            plot3dRoutine(colX, colY, colZ, "scatter");
-        } else if (cont3d == true) {
-            plot3dRoutine(colX, colY, colZ, "contour");
->>>>>>> f4075c2159eec1ac404a9931593676b5782a9ea3
         }
         colX = 0;
         colY = 0;
@@ -722,8 +694,8 @@ public class AnalyzerController implements Initializable {
         if (plotExport.getValue().contains("PNG")) {
             fName = null;
             fileChooser.getExtensionFilters().clear();
+
             FileChooser.ExtensionFilter extFilt
-<<<<<<< HEAD
                     = new FileChooser.ExtensionFilter (descr1, ext1);
             fileChooser.getExtensionFilters ().add (extFilt);
             fileChooser.setTitle (op2);
@@ -732,18 +704,9 @@ public class AnalyzerController implements Initializable {
                 File fImagePNG = new File (fName);
                 if ( plotType.getValue ().contains ("3D") ) {
                     try {
+			if (fImagePNG.exists()) {
                         chart.screenshot (fImagePNG);
-=======
-                    = new FileChooser.ExtensionFilter(descr1, ext1);
-            fileChooser.getExtensionFilters().add(extFilt);
-            fileChooser.setTitle(op2);
-            fName = fileChooser.showSaveDialog(newStage).getPath();
-            if (fName != null) {
-                File fImage = new File(fName);
-                if (plotType.getValue().contains("3D")) {
-                    try {
-                        chart.screenshot(fImage);
->>>>>>> f4075c2159eec1ac404a9931593676b5782a9ea3
+			}
                     } catch (IOException ex) {
                         Logger.getLogger(AnalyzerController.class.getName()).
                                 log(Level.SEVERE, null, ex);
@@ -756,48 +719,8 @@ public class AnalyzerController implements Initializable {
                         "File Saving Procedure not successful");
                 return;
             }
-        } else if (plotExport.getValue().contains("JPG")) {
-            fName = null;
-            fileChooser.getExtensionFilters().clear();
-            FileChooser.ExtensionFilter extFilt
-<<<<<<< HEAD
-                    = new FileChooser.ExtensionFilter (descr2, ext2);
-            fileChooser.getExtensionFilters ().add (extFilt);
-            fileChooser.setTitle (op2);
-            fName = fileChooser.showSaveDialog (newStage).getPath ();
-            if ( fName != null ) {
-                File fImage = new File (fName);
-                System.out.println ("filename = " + fName + "\nDoes fImage exists ? " + fImage.exists ());
-                if ( plotType.getValue ().contains ("3D") ) {
-                    try {
-                        if ( fImage.exists () ) {
-                            chart.screenshot (fImage);
-                        }
-=======
-                    = new FileChooser.ExtensionFilter(descr2, ext2);
-            fileChooser.getExtensionFilters().add(extFilt);
-            fileChooser.setTitle(op2);
-            fName = fileChooser.showSaveDialog(plotStage).getPath();
-            if (fName != null) {
-                File fImage = new File(fName);
-                if (plotType.getValue().contains("3D")) {
-                    try {
-                        chart.screenshot(fImage);
->>>>>>> f4075c2159eec1ac404a9931593676b5782a9ea3
-                    } catch (IOException ex) {
-                        Logger.getLogger(AnalyzerController.class.getName()).
-                                log(Level.SEVERE, null, ex);
-                    }
-                } else if (plotType.getValue().contains("2D")) {
-
-                }
-            } else {
-                popupMsg.infoBox("No file selected",
-                        "File Saving Procedure not successful");
-                return;
-            }
-        }
-    }
+        } 
+  }
 
     @FXML
     private void plotClearArea(ActionEvent event) {
@@ -805,3 +728,4 @@ public class AnalyzerController implements Initializable {
         fixOptionCombos();
     }
 }
+

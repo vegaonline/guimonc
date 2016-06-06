@@ -25,6 +25,9 @@ import javafx.scene.text.Font;
 import javafx.scene.transform.Rotate;
 import javafx.stage.*;
 import javax.imageio.ImageIO;
+import moncgui.Material;
+import moncgui.Mesh;
+import moncgui.Sphere;
 
 /**
  * FXML Controller class
@@ -289,8 +292,6 @@ public class GeomController extends Mesh {
     }
 
     public void drawCyl() {
-
-<<<<<<< HEAD
         BaseCoord.setFont (new Font ("Times New Roman", 10));
         radIT.setFont (new Font ("Times New Roman", 10));
         radOT.setFont (new Font ("Times New Roman", 10));
@@ -368,86 +369,8 @@ public class GeomController extends Mesh {
         objAxis.setPromptText ("X");
 
         paramPane.getChildren ().clear ();
-        paramPane.add (vb1, 0, 0); // col row 
-=======
-        BaseCoord.setFont(new Font("Times New Roman", 10));
-        radIT.setFont(new Font("Times New Roman", 10));
-        radOT.setFont(new Font("Times New Roman", 10));
-        heightT.setFont(new Font("Times New Roman", 10));
-        matT.setFont(new Font("Times New Roman", 10));
-        objAxisT.setFont(new Font("Times New Roman", 10));
-        willCopyT.setFont(new Font("Times New Roman", 10));
-        copyNumT.setFont(new Font("Times New Roman", 10));
-        gapT.setFont(new Font("Times New Roman", 10));
-
-        baseCX.setPrefColumnCount(5);
-        baseCX.setAlignment(Pos.CENTER_RIGHT);
-        baseCX.setMaxSize(40, 1);
-        baseCY.setPrefColumnCount(5);
-        baseCY.setAlignment(Pos.CENTER_RIGHT);
-        baseCY.setMaxSize(40, 1);
-        baseCZ.setPrefColumnCount(5);
-        baseCZ.setAlignment(Pos.CENTER_RIGHT);
-        baseCZ.setMaxSize(40, 1);
-        radI.setPrefColumnCount(5);
-        radO.setPrefColumnCount(5);
-        radI.setAlignment(Pos.CENTER_RIGHT);
-        radO.setAlignment(Pos.CENTER_RIGHT);
-        radI.setMaxSize(40, 1); // width height
-        radO.setMaxSize(40, 1); // width height
-        ht.setPrefColumnCount(5);
-        ht.setAlignment(Pos.CENTER_RIGHT);
-        ht.setMaxSize(40, 1); // width height
-        objAxis.setMaxSize(30, 1);
-        copyAxisX.setPrefColumnCount(5);
-        copyAxisX.setAlignment(Pos.CENTER_RIGHT);
-        copyAxisX.setMaxSize(50, 1);
-        copyAxisY.setPrefColumnCount(5);
-        copyAxisY.setAlignment(Pos.CENTER_RIGHT);
-        copyAxisY.setMaxSize(50, 1);
-        copyAxisZ.setPrefColumnCount(5);
-        copyAxisZ.setAlignment(Pos.CENTER_RIGHT);
-        copyAxisZ.setMaxSize(50, 1);
-        gap.setMaxSize(40, 1);
-        gap.setAlignment(Pos.CENTER_RIGHT);
-        copyNum.setPrefColumnCount(5);
-        copyNum.setAlignment(Pos.CENTER_RIGHT);
-        copyNum.setMaxSize(50, 1);
-
-        HBox hb1 = new HBox(baseCX, baseCY, baseCZ);
-        HBox hb2 = new HBox(radIT, radI);
-        HBox hb3 = new HBox(radOT, radO);
-        HBox hb4 = new HBox(heightT, ht);
-        HBox hb5 = new HBox(objAxisT, objAxis);
-        HBox hb6 = new HBox(matT, matList);
-        //HBox hb6 = new HBox(copyAxisX, copyAxisY, copyAxisZ);
-        //HBox hb7 = new HBox(gapT, gap);
-        //HBox hb8 = new HBox(copyNumT, copyNum);
-
-        hb1.setSpacing(2); //hb1.setPadding(new Insets(2));
-        hb2.setSpacing(2);
-        hb3.setSpacing(2);
-        hb4.setSpacing(2);
-        hb5.setSpacing(2);
-        hb6.setSpacing(2);
-        // hb7.setSpacing(2);
-        // hb8.setSpacing(2);
-        // VBox vb1 = new VBox(BaseCoord, hb1, hb2, hb3, hb4, hb5, willCopyT, hb6, hb7, hb8);
-        VBox vb1 = new VBox(BaseCoord, hb1, hb2, hb3, hb4, hb5, hb6);
-
-        baseCX.setPromptText("0.0");
-        baseCY.setPromptText("0.0");
-        baseCZ.setPromptText("0.0");
-        radI.setPromptText("50.0");
-        radO.setPromptText("30.0");
-        ht.setPromptText("100.0");
-        objAxis.setPromptText("X");
-
-        paramPane.getChildren().clear();
-        paramPane.add(vb1, 0, 0); // col row 
->>>>>>> f4075c2159eec1ac404a9931593676b5782a9ea3
-        //paramPane.add(matT, 0, 5);
-        // paramPane.add(matList, 0, 6);
+      
+        paramPane.add (vb1, 0, 0); // col row                 
         paramPane.add(drawMe, 0, 9);
 
         drawMe.setOnAction(new EventHandler<ActionEvent>() {
@@ -456,7 +379,7 @@ public class GeomController extends Mesh {
                 paramPane.getChildren().removeAll(vb1, radIT, radOT, radI,
                         radO, heightT, ht, objAxisT, objAxis, drawMe);
 
-<<<<<<< HEAD
+
                 double oRad, iRad, length, tht0, tht1;
                 if ( !radO.getText ().isEmpty () ) {
                     oRad = Double.parseDouble (radO.getText ());
@@ -483,11 +406,6 @@ public class GeomController extends Mesh {
                 } else {
                     tht1 = 2.0 * Math.PI;
                 }
-=======
-                double oRad = Double.parseDouble(radO.getText());
-                double length = chkNull(Double.parseDouble(ht.getText()));
-                double iRad = Double.parseDouble(radI.getText());
->>>>>>> f4075c2159eec1ac404a9931593676b5782a9ea3
                 /*
                  * int copyN = Integer.parseInt(copyNum.getText()); double
                  * gapLen = Double.parseDouble(gap.getText()); int isX = 0, isY
@@ -504,17 +422,9 @@ public class GeomController extends Mesh {
                 } else {
                     radSample = 15;
                 }
-<<<<<<< HEAD
-                lenSample = 2; // (int) (lenScale * Math.sqrt (length) + 0.5);
-
-                System.out.println (radSample + "   " + lenSample);
-=======
-                lenSample = (int) (lenScale * Math.sqrt(length) + 0.5);
->>>>>>> f4075c2159eec1ac404a9931593676b5782a9ea3
-
+                lenSample = 2; // (int) (lenScale * Math.sqrt (length) + 0.5);                
                 if (iRad != 0.0) {
                     tubeTest tub1 = null;
-<<<<<<< HEAD
                     if ( matList.getValue ().contains ("Copper") ) {
                         tub1 = new tubeTest ("Tube", oRad, iRad, length,
                                 tht0, tht1, lenSample, radSample, Material.
@@ -535,23 +445,6 @@ public class GeomController extends Mesh {
                         tub1 = new tubeTest ("Tube", oRad, iRad, length,
                                 tht0, tht1, lenSample, radSample, Material.
                                 Plastic ());
-=======
-                    if (matList.getValue().contains("Copper")) {
-                        tub1 = new tubeTest("Tube", oRad, iRad, length,
-                                lenSample, radSample, Material.Copper());
-                    } else if (matList.getValue().contains("Rubber")) {
-                        tub1 = new tubeTest("Tube", oRad, iRad, length,
-                                lenSample, radSample, Material.Rubber());
-                    } else if (matList.getValue().contains("Brass")) {
-                        tub1 = new tubeTest("Tube", oRad, iRad, length,
-                                lenSample, radSample, Material.Brass());
-                    } else if (matList.getValue().contains("Glass")) {
-                        tub1 = new tubeTest("Tube", oRad, iRad, length,
-                                lenSample, radSample, Material.Glass());
-                    } else {
-                        tub1 = new tubeTest("Tube", oRad, iRad, length,
-                                lenSample, radSample, Material.Plastic());
->>>>>>> f4075c2159eec1ac404a9931593676b5782a9ea3
                     }
 
                     objCnt++;
@@ -603,7 +496,6 @@ public class GeomController extends Mesh {
                         //tub2.setTranslateZ(Double.parseDouble(baseCZ.getText()));
                     }
 
-<<<<<<< HEAD
                     geoTextEntry = "TUBE" + "  " + baseCX.getText () +
                             "  " + baseCY.getText () + "  " + baseCZ.getText () +
                             "  " +
@@ -614,17 +506,6 @@ public class GeomController extends Mesh {
                     geoEntries.appendText (geoTextEntry);
                     nodeList.setText ("Tube added");
                     camV.add (tub1);
-=======
-                    geoTextEntry = "TUBE" + "  " + baseCX.getText()
-                            + "  " + baseCY.getText() + "  " + baseCZ.getText()
-                            + "  "
-                            + "  " + iRad + "  " + oRad + "  " + length
-                            + "  " + objAxis.getText() + "  " + matList.
-                            getValue() + "\n";
-                    geoEntries.appendText(geoTextEntry);
-                    nodeList.setText("Tube added");
-                    camV.add(tub1);
->>>>>>> f4075c2159eec1ac404a9931593676b5782a9ea3
                     numGeom++;;
                     paramPane.getChildren().clear();
                     //camV.add(tub2);
@@ -1040,7 +921,7 @@ public class GeomController extends Mesh {
                 if (objAxis.getText().matches(axisX)) {
                     brk.setRotate(90.0);
                 }
-<<<<<<< HEAD
+
                 brk.setTranslateX (Double.parseDouble (baseCX.getText ()));
                 brk.setTranslateY (Double.parseDouble (baseCY.getText ()));
                 brk.setTranslateZ (Double.parseDouble (baseCZ.getText ()));
@@ -1052,19 +933,7 @@ public class GeomController extends Mesh {
                         getText () + "   " + matList.getValue () + "\n";
                 geoEntries.appendText (geoTextEntry);
                 nodeList.setText ("Brick added");
-=======
-                brk.setTranslateX(Double.parseDouble(baseCX.getText()));
-                brk.setTranslateY(Double.parseDouble(baseCY.getText()));
-                brk.setTranslateZ(Double.parseDouble(baseCZ.getText()));
 
-                geoTextEntry = "Brick" + "  " + baseCX.getText() + "  "
-                        + baseCY.getText() + "  " + baseCZ.getText() + "  "
-                        + "  " + lenV + "  " + widV
-                        + "  " + depV + "  " + objAxis.
-                        getText() + "   " + matList.getValue() + "\n";
-                geoEntries.appendText(geoTextEntry);
-                nodeList.setText("Brick added");
->>>>>>> f4075c2159eec1ac404a9931593676b5782a9ea3
 
                 objCnt++;
                 oal1 = new Object_Array_List(objCnt, "Brick", 0,
