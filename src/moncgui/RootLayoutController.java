@@ -119,7 +119,8 @@ public class RootLayoutController { // implements Initializable
 
     @FXML
     private void doRPT(ActionEvent event) throws IOException {
-        myGUI.makeReport ();
+        popupMsg.infoBox("Feature is under development. Please have patience. Thank You.", "Feature is under developemnt");
+        //myGUI.makeReport ();
     }
 
     @FXML

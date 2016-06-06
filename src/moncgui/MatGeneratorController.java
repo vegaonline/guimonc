@@ -25,7 +25,7 @@ public class MatGeneratorController implements Initializable {
     private MoncGUI myGUI;
     private Stage matStage;
     private Scene matScene;
-    FileChooser fileChooser = new FileChooser ();
+    FileChooser fileChooser = new FileChooser();
     public FileWriter fileWriter;
     String fName = null;
 
@@ -34,8 +34,8 @@ public class MatGeneratorController implements Initializable {
     private Menu delMat;
     private Menu seeMat;
 
-    private Label matNameL = new Label ("Material Name");
-    private TextField matName = new TextField ();
+    private Label matNameL = new Label("Material Name");
+    private TextField matName = new TextField();
 
     @FXML
     private AnchorPane matGenPane;
@@ -53,62 +53,63 @@ public class MatGeneratorController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        menuBar = new MenuBar ();
-        newMat = new Menu ("Create Material");
-        delMat = new Menu ("Delete Material");
-        seeMat = new Menu ("Review Material");
-        menuBar.getMenus ().addAll (newMat, delMat, seeMat);
-        matGenPane.getChildren ().add (menuBar);
+        menuBar = new MenuBar();
+        newMat = new Menu("Create Material");
+        delMat = new Menu("Delete Material");
+        seeMat = new Menu("Review Material");
+        menuBar.getMenus().addAll(newMat, delMat, seeMat);
+        matGenPane.getChildren().add(menuBar);
 
-        newMat.setOnAction (new EventHandler<ActionEvent> () {
+        newMat.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent ev) {
-                makeNewMat ();
+                makeNewMat();
             }
         });
 
-        delMat.setOnAction (new EventHandler<ActionEvent> () {
+        delMat.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent ev) {
-                deleteMat ();
+                deleteMat();
             }
         });
 
-        seeMat.setOnAction (new EventHandler<ActionEvent> () {
+        seeMat.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent ev) {
-                reviewMat ();
+                reviewMat();
             }
         });
     }
 
     public String matFileHandler(int act) {
         String fileName = null;
-        File recordsDir = new File ("Materials");
-        if ( !recordsDir.exists () ) {
-            recordsDir.mkdirs ();
+        File recordsDir = new File("Materials");
+        if (!recordsDir.exists()) {
+            recordsDir.mkdirs();
         }
-        fileChooser.setInitialDirectory (recordsDir);
-        FileChooser.ExtensionFilter extFilt = new FileChooser.ExtensionFilter (
+        fileChooser.setInitialDirectory(recordsDir);
+        FileChooser.ExtensionFilter extFilt = new FileChooser.ExtensionFilter(
                 "Material Database (.MDB)", ".MDB");
-        fileChooser.getExtensionFilters ().add (extFilt);
+        fileChooser.getExtensionFilters().add(extFilt);
         while (fileName == null && act == 1) { // open file
-            fileName = fileChooser.showOpenDialog (matStage).getPath ();
+            fileName = fileChooser.showOpenDialog(matStage).getPath();
         }
         while (fileName == null && act == 0) { // save file
-            fileName = fileChooser.showSaveDialog (matStage).getPath ();
+            fileName = fileChooser.showSaveDialog(matStage).getPath();
         }
         return fileName;
     }
 
     public void makeNewMat() {
-        matGenPane.getChildren ().clear ();
-        matGenPane.getChildren ().add (menuBar);
+        popupMsg.infoBox("Material management is under development. Please have patience. Thank You", "Feature is under development");
+        matGenPane.getChildren().clear();
+        matGenPane.getChildren().add(menuBar);
 
     }
 
     public void deleteMat() {
-
+        popupMsg.infoBox("Material management is under development. Please have patience. Thank You", "Feature is under development");
     }
 
     public void reviewMat() {
-
+        popupMsg.infoBox("Material management is under development. Please have patience. Thank You", "Feature is under development");
     }
 }
