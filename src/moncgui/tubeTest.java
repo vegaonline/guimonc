@@ -19,9 +19,8 @@ public class tubeTest extends Mesh {
     private double innerRadius;
     private double height;
     private double theta0;
-    private double theta1;
-
-    protected boolean viewInside;
+    private double theta1;    
+    private boolean viewInside;
 
     /**
      * Constructor meant for Savable use only.
@@ -29,24 +28,41 @@ public class tubeTest extends Mesh {
     public tubeTest() {
     }
 
-
     /**
-     * 
+     *
      * @param name name of the Tube
      * @param outerRadius Outer Radius (> Inner Radius)
      * @param innerRadius Inner Radius
-     * @param height  Height
-     * @param axisSamples  Sampling number along length for triangularization
-     * @param radialSamples Sampling number radially 
+     * @param height Height
+     * @param axisSamples Sampling number along length for triangularization
+     * @param radialSamples Sampling number radially
      * @param material Material
      */
     public tubeTest(final String name, final double outerRadius,
-            final double innerRadius, final double height, final int axisSamples, 
+            final double innerRadius, final double height, final int axisSamples,
             final int radialSamples, Material material) {
         this (name, outerRadius, innerRadius, height, 0.0, 2.0 * Math.PI,
-                axisSamples, radialSamples, material );
+                axisSamples, radialSamples, true, material);
     }
-    
+
+    /**
+     * 
+     * @param name
+     * @param outerRadius
+     * @param innerRadius
+     * @param height
+     * @param axisSamples
+     * @param radialSamples
+     * @param viewInside true means can see inside i.e. not closed
+     * @param material 
+     */
+    public tubeTest(final String name, final double outerRadius,
+            final double innerRadius, final double height, final int axisSamples,
+            final int radialSamples, final boolean closed, Material material) {
+        this (name, outerRadius, innerRadius, height, 0.0, 2.0 * Math.PI,
+                axisSamples, radialSamples, closed, material);
+    }
+
     /**
      * 
      * @param name
@@ -59,11 +75,32 @@ public class tubeTest extends Mesh {
      * @param radialSamples
      * @param material 
      */
-
     public tubeTest(final String name, final double outerRadius,
             final double innerRadius, final double height, final double ang0,
             final double ang1, final int axisSamples, final int radialSamples,
             Material material) {
+        this (name, outerRadius, innerRadius, height, ang0, ang1, axisSamples,
+                radialSamples, true, material);
+    }
+
+    /**
+     * 
+     * @param name
+     * @param outerRadius
+     * @param innerRadius
+     * @param height
+     * @param ang0
+     * @param ang1
+     * @param axisSamples
+     * @param radialSamples
+     * @param viewInside true means can see inside i.e. not closed
+     * @param material 
+     */
+    
+    public tubeTest(final String name, final double outerRadius,
+            final double innerRadius, final double height, final double ang0,
+            final double ang1, final int axisSamples, final int radialSamples,
+            final boolean closed, Material material) {
         super (material);
         this.outerRadius = outerRadius;
         this.innerRadius = innerRadius;
@@ -72,13 +109,12 @@ public class tubeTest extends Mesh {
         this.radialSamples = radialSamples;
         this.theta0 = ang0;
         this.theta1 = ang1;
+        this.viewInside = closed;
         allocateVertices ();
         createTriangles ();
     }
 
-
-    private void allocateVertices() {
-        //viewInside = true;       
+    private void allocateVertices() {        
         setVerts (axisSamples, radialSamples);
         setVertexCoordsSize (verts);
         setNormalCoordsSize (verts);
@@ -89,8 +125,8 @@ public class tubeTest extends Mesh {
     }
 
     private void setVerts(int axisSamples, int radialSamples) {
-        verts = (2 * (axisSamples + 1) * (radialSamples + 1) 
-                + radialSamples * 4);
+        verts = (2 * (axisSamples + 1) * (radialSamples + 1) +
+                radialSamples * 4);
     }
 
     public int getVerts() {
@@ -146,6 +182,8 @@ public class tubeTest extends Mesh {
 
         //theta0 = 0.0;
         // theta1 = 0.5* Math.PI;
+        System.out.println("Can see inside ? " + viewInside);
+        
         final double dA = Math.abs (theta0 - theta1);
         final double inverseRadial = 1.0 / radialSamples;
         final double axisStep = height / axisSamples;
@@ -231,8 +269,17 @@ public class tubeTest extends Mesh {
             }
         }
         
-        for (int ii = 0; ii < sin.length; ii++) {
-            sin[ii] = 0.0; cos[ii] = 0.0;
+        if (viewInside) {
+            putVertex(0,0,-1); //bottom center
+            putNormal(0, 0, -1);
+            
+            putVertex(0, 0, 1); // top center
+            putNormal(0, 0, 1);            
+        }
+
+        for ( int ii = 0; ii < sin.length; ii++ ) {
+            sin[ii] = 0.0;
+            cos[ii] = 0.0;
         }
     }
 
@@ -240,6 +287,7 @@ public class tubeTest extends Mesh {
         final int outerCylinder = (axisSamples + 1) * (radialSamples + 1);
         final int bottomEdge = 2 * outerCylinder;
         final int topEdge = bottomEdge + 2 * radialSamples;
+        
         // inner cylinder
         for ( int radialCount = 0; radialCount < radialSamples; radialCount++ ) {
             for ( int axisCount = 0; axisCount < axisSamples; axisCount++ ) {
@@ -305,6 +353,7 @@ public class tubeTest extends Mesh {
                 putTriangleIndex (index1, index2, index3);
             }
         }
+        
     }
 
     /**
