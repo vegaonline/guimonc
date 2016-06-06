@@ -18,6 +18,8 @@ public class tubeTest extends Mesh {
     private double outerRadius;
     private double innerRadius;
     private double height;
+    private double theta0;
+    private double theta1;
 
     protected boolean viewInside;
 
@@ -27,26 +29,54 @@ public class tubeTest extends Mesh {
     public tubeTest() {
     }
 
-    //public tubeTest(final String name, final double outerRadius, final double innerRadius, final double height,
-    //        final int axisSamples, final int radialSamples) {
-    //	this(name, outerRadius, innerRadius,height,  axisSamples, radialSamples);
-    //}
+
+    /**
+     * 
+     * @param name name of the Tube
+     * @param outerRadius Outer Radius (> Inner Radius)
+     * @param innerRadius Inner Radius
+     * @param height  Height
+     * @param axisSamples  Sampling number along length for triangularization
+     * @param radialSamples Sampling number radially 
+     * @param material Material
+     */
     public tubeTest(final String name, final double outerRadius,
-            final double innerRadius, final double height,
-            final int axisSamples, final int radialSamples, Material material) {
+            final double innerRadius, final double height, final int axisSamples, 
+            final int radialSamples, Material material) {
+        this (name, outerRadius, innerRadius, height, 0.0, 2.0 * Math.PI,
+                axisSamples, radialSamples, material );
+    }
+    
+    /**
+     * 
+     * @param name
+     * @param outerRadius
+     * @param innerRadius
+     * @param height
+     * @param ang0
+     * @param ang1
+     * @param axisSamples
+     * @param radialSamples
+     * @param material 
+     */
+
+    public tubeTest(final String name, final double outerRadius,
+            final double innerRadius, final double height, final double ang0,
+            final double ang1, final int axisSamples, final int radialSamples,
+            Material material) {
         super (material);
         this.outerRadius = outerRadius;
         this.innerRadius = innerRadius;
         this.height = height;
         this.axisSamples = axisSamples;
         this.radialSamples = radialSamples;
+        this.theta0 = ang0;
+        this.theta1 = ang1;
         allocateVertices ();
         createTriangles ();
     }
 
-    //public tubeTest(final String name, final double outerRadius, final double innerRadius, final double height) {
-    //    this(name, outerRadius, innerRadius, height, 2, 20);
-    //}
+
     private void allocateVertices() {
         //viewInside = true;       
         setVerts (axisSamples, radialSamples);
@@ -59,9 +89,8 @@ public class tubeTest extends Mesh {
     }
 
     private void setVerts(int axisSamples, int radialSamples) {
-        verts
-                = (2 * (axisSamples + 1) * (radialSamples + 1) + radialSamples *
-                4);
+        verts = (2 * (axisSamples + 1) * (radialSamples + 1) 
+                + radialSamples * 4);
     }
 
     public int getVerts() {
@@ -115,16 +144,20 @@ public class tubeTest extends Mesh {
 
     private void setGeometryData() {
 
+        //theta0 = 0.0;
+        // theta1 = 0.5* Math.PI;
+        final double dA = Math.abs (theta0 - theta1);
         final double inverseRadial = 1.0 / radialSamples;
         final double axisStep = height / axisSamples;
-        final double axisTextureStep = 1.0 / axisSamples;
+        final double axisTextureStep = 1.0 / (axisSamples - 1);
         final double halfHeight = 0.5 * height;
         final double innerOuterRatio = innerRadius / outerRadius;
         final double[] sin = new double[radialSamples];
         final double[] cos = new double[radialSamples];
 
         for ( int radialCount = 0; radialCount < radialSamples; radialCount++ ) {
-            final double angle = 2 * Math.PI * inverseRadial * radialCount;
+            // final double angle = 2 * Math.PI * inverseRadial * radialCount;
+            final double angle = dA * inverseRadial * radialCount;
             cos[radialCount] = Math.cos (angle);
             sin[radialCount] = Math.sin (angle);
         }
@@ -196,6 +229,10 @@ public class tubeTest extends Mesh {
                 putNormal (0, 1, 0);
                 putNormal (0, 1, 0);
             }
+        }
+        
+        for (int ii = 0; ii < sin.length; ii++) {
+            sin[ii] = 0.0; cos[ii] = 0.0;
         }
     }
 

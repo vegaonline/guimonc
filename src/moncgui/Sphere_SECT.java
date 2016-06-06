@@ -11,7 +11,7 @@ import javafx.geometry.Point3D;
  *
  * @author vega
  */
-public class Sphere extends Mesh {
+public class Sphere_SECT extends Mesh {
 
     private static final long serialVersionUID = 1L;
 
@@ -30,7 +30,7 @@ public class Sphere extends Mesh {
 
     protected boolean viewInside;
 
-    public Sphere() {
+    public Sphere_SECT() {
     }
 
     /**
@@ -53,7 +53,7 @@ public class Sphere extends Mesh {
      * @see #Sphere(java.lang.String, com.ardor3d.math.Vector3, int, int,
      * double)
      */
-    public Sphere(final String name, final int zSamples, final int radialSamples,
+    public Sphere_SECT(final String name, final int zSamples, final int radialSamples,
             final double radius) {
         this (name, new Vector3D (0, 0, 0), zSamples, radialSamples, radius,
                 Material.getShinyMaterial ());
@@ -70,7 +70,7 @@ public class Sphere extends Mesh {
      * @param radialSamples The number of samples along the radial.
      * @param radius The radius of the sphere.
      */
-    public Sphere(final String name, final Vector3D center, final int zSamples,
+    public Sphere_SECT(final String name, final Vector3D center, final int zSamples,
             final int radialSamples,
             final double radius, Material material) {
         super (material);

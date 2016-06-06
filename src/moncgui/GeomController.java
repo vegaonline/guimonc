@@ -296,6 +296,8 @@ public class GeomController extends Mesh {
         BaseCoord.setFont (new Font ("Times New Roman", 10));
         radIT.setFont (new Font ("Times New Roman", 10));
         radOT.setFont (new Font ("Times New Roman", 10));
+        Phi0T.setFont (new Font ("Times New Roman", 10));
+        Phi1T.setFont (new Font ("Times New Roman", 10));
         heightT.setFont (new Font ("Times New Roman", 10));
         matT.setFont (new Font ("Times New Roman", 10));
         objAxisT.setFont (new Font ("Times New Roman", 10));
@@ -318,6 +320,8 @@ public class GeomController extends Mesh {
         radO.setAlignment (Pos.CENTER_RIGHT);
         radI.setMaxSize (40, 1); // width height
         radO.setMaxSize (40, 1); // width height
+        phi0.setMaxSize (40, 1);
+        phi1.setMaxSize (40, 1);
         ht.setPrefColumnCount (5);
         ht.setAlignment (Pos.CENTER_RIGHT);
         ht.setMaxSize (40, 1); // width height
@@ -341,11 +345,10 @@ public class GeomController extends Mesh {
         HBox hb2 = new HBox (radIT, radI);
         HBox hb3 = new HBox (radOT, radO);
         HBox hb4 = new HBox (heightT, ht);
-        HBox hb5 = new HBox (objAxisT, objAxis);
-        HBox hb6 = new HBox (matT, matList);
-        //HBox hb6 = new HBox(copyAxisX, copyAxisY, copyAxisZ);
-        //HBox hb7 = new HBox(gapT, gap);
-        //HBox hb8 = new HBox(copyNumT, copyNum);
+        HBox hb5 = new HBox (Phi0T, phi0);
+        HBox hb6 = new HBox (Phi1T, phi1);
+        HBox hb7 = new HBox (objAxisT, objAxis);
+        HBox hb8 = new HBox (matT, matList);
 
         hb1.setSpacing (2); //hb1.setPadding(new Insets(2));
         hb2.setSpacing (2);
@@ -353,10 +356,10 @@ public class GeomController extends Mesh {
         hb4.setSpacing (2);
         hb5.setSpacing (2);
         hb6.setSpacing (2);
-        // hb7.setSpacing(2);
-        // hb8.setSpacing(2);
+        hb7.setSpacing (2);
+        hb8.setSpacing (2);
         // VBox vb1 = new VBox(BaseCoord, hb1, hb2, hb3, hb4, hb5, willCopyT, hb6, hb7, hb8);
-        VBox vb1 = new VBox (BaseCoord, hb1, hb2, hb3, hb4, hb5, hb6);
+        VBox vb1 = new VBox (BaseCoord, hb1, hb2, hb3, hb4, hb5, hb6, hb7, hb8);
 
         baseCX.setPromptText ("0.0");
         baseCY.setPromptText ("0.0");
@@ -378,9 +381,32 @@ public class GeomController extends Mesh {
                 paramPane.getChildren ().removeAll (vb1, radIT, radOT, radI,
                         radO, heightT, ht, objAxisT, objAxis, drawMe);
 
-                double oRad = Double.parseDouble (radO.getText ());
-                double length = chkNull (Double.parseDouble (ht.getText ()));
-                double iRad = Double.parseDouble (radI.getText ());
+                double oRad, iRad, length, tht0, tht1;
+                if ( !radO.getText ().isEmpty () ) {
+                    oRad = Double.parseDouble (radO.getText ());
+                } else {
+                    oRad = 0.0;
+                }
+                if ( !radI.getText ().isEmpty () ) {
+                    iRad = Double.parseDouble (radI.getText ());
+                } else {
+                    iRad = 0.0;
+                }
+                if ( !ht.getText ().isEmpty () ) {
+                    length = chkNull (Double.parseDouble (ht.getText ()));
+                } else {
+                    length = 0.0;
+                }
+                if ( !phi0.getText ().isEmpty () ) {
+                    tht0 = Double.parseDouble (phi0.getText ()) * Math.PI/180.0;
+                } else {
+                    tht0 = 0.0;
+                }
+                if ( !phi1.getText ().isEmpty () ) {
+                    tht1 = Double.parseDouble (phi1.getText ()) * Math.PI/180.0;
+                } else {
+                    tht1 = 2.0 * Math.PI;
+                }
                 /*
                  * int copyN = Integer.parseInt(copyNum.getText()); double
                  * gapLen = Double.parseDouble(gap.getText()); int isX = 0, isY
@@ -397,25 +423,32 @@ public class GeomController extends Mesh {
                 } else {
                     radSample = 15;
                 }
-                lenSample = (int) (lenScale * Math.sqrt (length) + 0.5);
+                lenSample = 2; // (int) (lenScale * Math.sqrt (length) + 0.5);
+
+                System.out.println (radSample + "   " + lenSample);
 
                 if ( iRad != 0.0 ) {
                     tubeTest tub1 = null;
                     if ( matList.getValue ().contains ("Copper") ) {
                         tub1 = new tubeTest ("Tube", oRad, iRad, length,
-                                lenSample, radSample, Material.Copper ());
+                                tht0, tht1, lenSample, radSample, Material.
+                                Copper ());
                     } else if ( matList.getValue ().contains ("Rubber") ) {
                         tub1 = new tubeTest ("Tube", oRad, iRad, length,
-                                lenSample, radSample, Material.Rubber ());
+                                tht0, tht1, lenSample, radSample, Material.
+                                Rubber ());
                     } else if ( matList.getValue ().contains ("Brass") ) {
                         tub1 = new tubeTest ("Tube", oRad, iRad, length,
-                                lenSample, radSample, Material.Brass ());
+                                tht0, tht1, lenSample, radSample, Material.
+                                Brass ());
                     } else if ( matList.getValue ().contains ("Glass") ) {
                         tub1 = new tubeTest ("Tube", oRad, iRad, length,
-                                lenSample, radSample, Material.Glass ());
+                                tht0, tht1, lenSample, radSample, Material.
+                                Glass ());
                     } else {
                         tub1 = new tubeTest ("Tube", oRad, iRad, length,
-                                lenSample, radSample, Material.Plastic ());
+                                tht0, tht1, lenSample, radSample, Material.
+                                Plastic ());
                     }
 
                     objCnt++;
@@ -471,6 +504,7 @@ public class GeomController extends Mesh {
                             "  " + baseCY.getText () + "  " + baseCZ.getText () +
                             "  " +
                             "  " + iRad + "  " + oRad + "  " + length +
+                            "  " + tht0 + "  " + tht1 +
                             "  " + objAxis.getText () + "  " + matList.
                             getValue () + "\n";
                     geoEntries.appendText (geoTextEntry);
@@ -899,7 +933,7 @@ public class GeomController extends Mesh {
                         baseCY.getText () + "  " + baseCZ.getText () + "  " +
                         "  " + lenV + "  " + widV +
                         "  " + depV + "  " + objAxis.
-                        getText () + "   " +  matList.getValue () + "\n";
+                        getText () + "   " + matList.getValue () + "\n";
                 geoEntries.appendText (geoTextEntry);
                 nodeList.setText ("Brick added");
 

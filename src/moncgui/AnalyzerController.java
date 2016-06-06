@@ -653,6 +653,9 @@ public class AnalyzerController implements Initializable {
         --colX;
         --colY;
         --colZ;
+        plotExport.getItems().clear();
+        plotExport.getItems ().setAll ("Export to PNG");
+        /*
         if ( found2d == true ) {
             plotExport.getItems ().clear ();
             plotExport.getItems ().setAll ("Export to PNG");
@@ -661,6 +664,7 @@ public class AnalyzerController implements Initializable {
             plotExport.getItems ().clear ();
             plotExport.getItems ().setAll ("Export to PNG", "Export to JPG");
         }
+        */ 
         getMaxMinData (colX, colY, colZ);
         if ( dataLen == 2 ) {
             plot2DRoutine (colX, colY);
@@ -703,10 +707,10 @@ public class AnalyzerController implements Initializable {
             fileChooser.setTitle (op2);
             fName = fileChooser.showSaveDialog (newStage).getPath ();
             if ( fName != null ) {
-                File fImage = new File (fName);
+                File fImagePNG = new File (fName);
                 if ( plotType.getValue ().contains ("3D") ) {
                     try {
-                        chart.screenshot (fImage);
+                        chart.screenshot (fImagePNG);
                     } catch (IOException ex) {
                         Logger.getLogger (AnalyzerController.class.getName ()).
                                 log (Level.SEVERE, null, ex);
@@ -726,12 +730,15 @@ public class AnalyzerController implements Initializable {
                     = new FileChooser.ExtensionFilter (descr2, ext2);
             fileChooser.getExtensionFilters ().add (extFilt);
             fileChooser.setTitle (op2);
-            fName = fileChooser.showSaveDialog (plotStage).getPath ();
+            fName = fileChooser.showSaveDialog (newStage).getPath ();
             if ( fName != null ) {
                 File fImage = new File (fName);
+                System.out.println ("filename = " + fName + "\nDoes fImage exists ? " + fImage.exists ());
                 if ( plotType.getValue ().contains ("3D") ) {
                     try {
-                        chart.screenshot (fImage);
+                        if ( fImage.exists () ) {
+                            chart.screenshot (fImage);
+                        }
                     } catch (IOException ex) {
                         Logger.getLogger (AnalyzerController.class.getName ()).
                                 log (Level.SEVERE, null, ex);

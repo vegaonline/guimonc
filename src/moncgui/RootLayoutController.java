@@ -49,7 +49,8 @@ public class RootLayoutController { // implements Initializable
     private Menu doMat;
     @FXML
     private MenuItem doManageMat;
-    
+    @FXML
+    private MenuItem RUNMONC;    
     
 
     private MoncGUI myGUI;
@@ -59,6 +60,7 @@ public class RootLayoutController { // implements Initializable
     private Label welcome3;
     private Label welcome4;
     private Label welcome5;
+
 
     
 
@@ -163,6 +165,11 @@ public class RootLayoutController { // implements Initializable
     @FXML
     private void manageMat(ActionEvent event) {
         myGUI.manageMat();
+    }
+
+    @FXML
+    private void MONCRun(ActionEvent event) {
+        popupMsg.infoBox ("MONC code is not included with this distribution", "MONC NOT FOUND");
     }
 
 }

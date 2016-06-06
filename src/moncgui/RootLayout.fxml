@@ -27,10 +27,15 @@
                     <items>
                         <MenuItem fx:id="doConfigNew" mnemonicParsing="false" onAction="#confNew" text="New" />
                         <!--- <MenuItem fx:id="doQuit" mnemonicParsing="false" 
-                                  onAction="#handleExit" text="Exit" />  -->
+                        onAction="#handleExit" text="Exit" />  -->
                     </items>
                 </Menu>
-                <Menu fx:id="doRun" mnemonicParsing="false" text="Run" />
+                <Menu fx:id="doRun" mnemonicParsing="false" text="Run" >
+                    <items> 
+                        <MenuItem fx:id="RUNMONC" mnemonicParsing="false" 
+                                  onAction="#MONCRun" text="RUN MONC CODE" />
+                    </items> 
+                </Menu>
                 <Menu fx:id="anaLyzePlot" mnemonicParsing="false" text="Analyze and Report">
                     <items>
                         <MenuItem fx:id="analyzePlot" mnemonicParsing="false" onAction="#doPlot" text="Plot" />
@@ -38,11 +43,11 @@
                     </items>
                 </Menu>
                 <Menu fx:id="HOME" mnemonicParsing="false" text="ASSIST" >
-                <items>
-                    <MenuItem fx:id="help" mnemonicParsing="false" onAction="#doHELP" text="Help" />
-                    <MenuItem fx:id="about" mnemonicParsing="false" onAction="#doAbout" text="About"/>
-                    <MenuItem fx:id="exit" mnemonicParsing="false"  onAction="#handleExit" text="EXIT" />
-                </items>
+                    <items>
+                        <MenuItem fx:id="help" mnemonicParsing="false" onAction="#doHELP" text="Help" />
+                        <MenuItem fx:id="about" mnemonicParsing="false" onAction="#doAbout" text="About"/>
+                        <MenuItem fx:id="exit" mnemonicParsing="false"  onAction="#handleExit" text="EXIT" />
+                    </items>
                 </Menu>
             </menus>
         </MenuBar>
