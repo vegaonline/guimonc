@@ -594,25 +594,32 @@ public class GeomController extends Mesh {
                 // double fi1 = Double.parseDouble (phi1.getText ());
                 // radSample = (int) (radScale * Math.sqrt (iRad) + 0.5);
                 lenSample = 5;
-                Sphere sph1 = null;
+                Sphere_SECT sph1 = null;
 
                 Vector3D sphCent = new Vector3D (oX, oY, oZ);
 
                 if ( matList.getValue ().contains ("Copper") ) {
-                    sph1 = new Sphere ("Sphere", sphCent, 20, 20, oRad,
-                            Material.Copper ());
+                    //sph1 = new Sphere ("Sphere", sphCent, 20, 20, oRad,Material.Copper ());
+                    sph1 = new Sphere_SECT ("Sphere", 3.0, 4.0, 0.0, 4.7, 0.0,
+                            4.7, 20, 20, Material.Copper ());
                 } else if ( matList.getValue ().contains ("Rubber") ) {
-                    sph1 = new Sphere ("Sphere", sphCent, 20, 20, oRad,
-                            Material.Rubber ());
+                    //sph1 = new Sphere ("Sphere", sphCent, 20, 20, oRad,Material.Rubber ());
+                    sph1 = new Sphere_SECT ("Sphere", 3.0, 4.0, 0.0, 4.7, 0.0,
+                            4.7, 20, 20, Material.Rubber ());
                 } else if ( matList.getValue ().contains ("Brass") ) {
-                    sph1 = new Sphere ("Sphere", sphCent, 20, 20, oRad,
-                            Material.Brass ());
+                    //sph1 = new Sphere ("Sphere", sphCent, 20, 20, oRad,Material.Brass ());
+                    double ang0 = -0.5 * Math.PI ;
+                    double ang1 = 0.5 * Math.PI ;
+                    sph1 = new Sphere_SECT ("Sphere", 0.0, 4.0, ang0, ang1, 0.0,
+                            4.7, 20, 20, Material.Brass ());
                 } else if ( matList.getValue ().contains ("Glass") ) {
-                    sph1 = new Sphere ("Sphere", sphCent, 20, 20, oRad,
-                            Material.Glass ());
+                    //sph1 = new Sphere ("Sphere", sphCent, 20, 20, oRad,Material.Glass ());
+                    sph1 = new Sphere_SECT ("Sphere", 3.0, 4.0, 0.0, 4.7, 0.0,
+                            4.7, 20, 20, Material.Glass ());
                 } else {
-                    sph1 = new Sphere ("Sphere", sphCent, 20, 20, oRad,
-                            Material.Plastic ());
+                    //sph1 = new Sphere ("Sphere", sphCent, 20, 20, oRad,Material.Plastic ());
+                    sph1 = new Sphere_SECT ("Sphere", 3.0, 4.0, 0.0, 4.7, 0.0,
+                            4.7, 20, 20, Material.Plastic ());
                 }
 
                 // Sphere_Sect sph1 = new Sphere_Sect("Spherical_1", lenSample,radSample, iRad, oRad, tht0, tht1, fi0, fi1);

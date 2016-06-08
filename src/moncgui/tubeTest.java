@@ -181,10 +181,7 @@ public class tubeTest extends Mesh {
 
         //theta0 = 0.0;
         // theta1 = 0.5* Math.PI;
-        System.out.println ("Can see inside ? " + viewInside);
-
         final double dA = Math.abs (theta0 - theta1);
-        System.out.println ("dA = " + dA);
         final double inverseRadial = 1.0 / (radialSamples - 1) ;
         final double axisStep = height / axisSamples;
         final double axisTextureStep = 1.0 / (axisSamples - 1);
@@ -198,8 +195,6 @@ public class tubeTest extends Mesh {
             final double angle = theta0 + dA * inverseRadial * radialCount;
             cos[radialCount] = Math.cos (angle);
             sin[radialCount] = Math.sin (angle);
-            System.out.println (radialCount + " angle = " + angle + " sin = " +
-                    sin[radialCount] + " cos = " + cos[radialCount]);
         }
 
 
