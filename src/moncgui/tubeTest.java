@@ -19,7 +19,7 @@ public class tubeTest extends Mesh {
     private double innerRadius;
     private double height;
     private double theta0;
-    private double theta1;    
+    private double theta1;
     private boolean viewInside;
 
     /**
@@ -46,7 +46,7 @@ public class tubeTest extends Mesh {
     }
 
     /**
-     * 
+     *
      * @param name
      * @param outerRadius
      * @param innerRadius
@@ -54,7 +54,7 @@ public class tubeTest extends Mesh {
      * @param axisSamples
      * @param radialSamples
      * @param viewInside true means can see inside i.e. not closed
-     * @param material 
+     * @param material
      */
     public tubeTest(final String name, final double outerRadius,
             final double innerRadius, final double height, final int axisSamples,
@@ -64,7 +64,7 @@ public class tubeTest extends Mesh {
     }
 
     /**
-     * 
+     *
      * @param name
      * @param outerRadius
      * @param innerRadius
@@ -73,7 +73,7 @@ public class tubeTest extends Mesh {
      * @param ang1
      * @param axisSamples
      * @param radialSamples
-     * @param material 
+     * @param material
      */
     public tubeTest(final String name, final double outerRadius,
             final double innerRadius, final double height, final double ang0,
@@ -84,7 +84,7 @@ public class tubeTest extends Mesh {
     }
 
     /**
-     * 
+     *
      * @param name
      * @param outerRadius
      * @param innerRadius
@@ -94,9 +94,8 @@ public class tubeTest extends Mesh {
      * @param axisSamples
      * @param radialSamples
      * @param viewInside true means can see inside i.e. not closed
-     * @param material 
+     * @param material
      */
-    
     public tubeTest(final String name, final double outerRadius,
             final double innerRadius, final double height, final double ang0,
             final double ang1, final int axisSamples, final int radialSamples,
@@ -114,7 +113,7 @@ public class tubeTest extends Mesh {
         createTriangles ();
     }
 
-    private void allocateVertices() {        
+    private void allocateVertices() {
         setVerts (axisSamples, radialSamples);
         setVertexCoordsSize (verts);
         setNormalCoordsSize (verts);
@@ -182,25 +181,27 @@ public class tubeTest extends Mesh {
 
         //theta0 = 0.0;
         // theta1 = 0.5* Math.PI;
-        System.out.println("Can see inside ? " + viewInside);
-        
+        System.out.println ("Can see inside ? " + viewInside);
+
         final double dA = Math.abs (theta0 - theta1);
-        final double inverseRadial = 1.0 / radialSamples;
+        System.out.println ("dA = " + dA);
+        final double inverseRadial = 1.0 / (radialSamples - 1) ;
         final double axisStep = height / axisSamples;
         final double axisTextureStep = 1.0 / (axisSamples - 1);
         final double halfHeight = 0.5 * height;
         final double innerOuterRatio = innerRadius / outerRadius;
-        final double[] sin = new double[radialSamples+1];
-        final double[] cos = new double[radialSamples+1];
+        final double[] sin = new double[radialSamples ];
+        final double[] cos = new double[radialSamples ];
 
         for ( int radialCount = 0; radialCount < radialSamples; radialCount++ ) {
             // final double angle = 2 * Math.PI * inverseRadial * radialCount;
             final double angle = theta0 + dA * inverseRadial * radialCount;
             cos[radialCount] = Math.cos (angle);
             sin[radialCount] = Math.sin (angle);
+            System.out.println (radialCount + " angle = " + angle + " sin = " +
+                    sin[radialCount] + " cos = " + cos[radialCount]);
         }
-        cos[radialSamples] = cos[0];
-        sin[radialSamples] = sin[0];
+
 
         // outer cylinder
         for ( int radialCount = 0; radialCount < radialSamples + 1;
@@ -270,13 +271,13 @@ public class tubeTest extends Mesh {
                 putNormal (0, 1, 0);
             }
         }
-        
-        if (viewInside) {
-            putVertex(0,0,-1); //bottom center
-            putNormal(0, 0, -1);
-            
-            putVertex(0, 0, 1); // top center
-            putNormal(0, 0, 1);            
+
+        if ( viewInside ) {
+            putVertex (0, 0, -1); //bottom center
+            putNormal (0, 0, -1);
+
+            putVertex (0, 0, 1); // top center
+            putNormal (0, 0, 1);
         }
 
         for ( int ii = 0; ii < sin.length; ii++ ) {
@@ -289,9 +290,9 @@ public class tubeTest extends Mesh {
         final int outerCylinder = (axisSamples + 1) * (radialSamples + 1);
         final int bottomEdge = 2 * outerCylinder;
         final int topEdge = bottomEdge + 2 * radialSamples;
-        
+
         // inner cylinder
-        for ( int radialCount = 0; radialCount < radialSamples; radialCount++ ) {
+        for ( int radialCount = 0; radialCount < radialSamples - 1; radialCount++ ) {
             for ( int axisCount = 0; axisCount < axisSamples; axisCount++ ) {
                 final int index0 = axisCount + (axisSamples + 1) * radialCount;
                 final int index1 = index0 + 1;
@@ -308,7 +309,7 @@ public class tubeTest extends Mesh {
         }
 
         // outer cylinder
-        for ( int radialCount = 0; radialCount < radialSamples; radialCount++ ) {
+        for ( int radialCount = 0; radialCount < radialSamples - 1; radialCount++ ) {
             for ( int axisCount = 0; axisCount < axisSamples; axisCount++ ) {
                 final int index0 = outerCylinder + axisCount +
                         (axisSamples + 1) * radialCount;
@@ -326,7 +327,7 @@ public class tubeTest extends Mesh {
         }
 
         // bottom edge
-        for ( int radialCount = 0; radialCount < radialSamples; radialCount++ ) {
+        for ( int radialCount = 0; radialCount < radialSamples - 1; radialCount++ ) {
             final int index0 = bottomEdge + 2 * radialCount;
             final int index1 = index0 + 1;
             final int index2 = bottomEdge + 2 * ((radialCount + 1) %
@@ -342,7 +343,7 @@ public class tubeTest extends Mesh {
         }
 
         // top edge
-        for ( int radialCount = 0; radialCount < radialSamples; radialCount++ ) {
+        for ( int radialCount = 0; radialCount < radialSamples - 1; radialCount++ ) {
             final int index0 = topEdge + 2 * radialCount;
             final int index1 = index0 + 1;
             final int index2 = topEdge + 2 * ((radialCount + 1) % radialSamples);
@@ -355,7 +356,7 @@ public class tubeTest extends Mesh {
                 putTriangleIndex (index1, index2, index3);
             }
         }
-        
+
     }
 
     /**
