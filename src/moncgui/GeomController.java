@@ -380,35 +380,24 @@ public class GeomController extends Mesh {
                         radO, heightT, ht, objAxisT, objAxis, drawMe);
 
                 double oRad, iRad, length, tht0, tht1;
-                if ( !radO.getText ().isEmpty () ) {
-                    oRad = Double.parseDouble (radO.getText ());
-                } else {
-                    oRad = 0.0;
-                }
-                if ( !radI.getText ().isEmpty () ) {
-                    iRad = Double.parseDouble (radI.getText ());
-                } else {
-                    iRad = 0.0;
-                }
-                if ( !ht.getText ().isEmpty () ) {
-                    length = chkNull (Double.parseDouble (ht.getText ()));
-                } else {
-                    length = 0.0;
-                }
-                if ( !phi0.getText ().isEmpty () ) {
-                    tht0 = Double.parseDouble (phi0.getText ()) * Math.PI /
-                            180.0;
-                } else {
-                    tht0 = 0.0;
-                }
-                if ( !phi1.getText ().isEmpty () ) {
-                    tht1 = Double.parseDouble (phi1.getText ()) * Math.PI /
-                            180.0;
-                } else {
-                    tht1 = 2.0 * Math.PI;
-                }
+
+                iRad = (!radI.getText ().isEmpty () ? Double.parseDouble (radI.
+                        getText ()) : 0.0);
+                oRad = (!radO.getText ().isEmpty () ? Double.parseDouble (radO.
+                        getText ()) : 0.0);
+                length = (!ht.getText ().isEmpty () ? chkNull (Double.
+                        parseDouble (ht.getText ())) : 0.0);
+                tht0 = (!phi0.getText ().isEmpty () ? Double.parseDouble (phi0.
+                        getText ()) * Math.PI /
+                        180.0 : 0.0);
+                tht1 = (!phi1.getText ().isEmpty () ? Double.parseDouble (phi1.
+                        getText ()) * Math.PI / 180.0 : 2.0 * Math.PI);
 
                 if ( oRad == 0.0 ) {
+                    popupMsg.infoBox (
+                            "Outer radius cannot be zero : resetting..",
+                            "Parameter Error"
+                    );
                     resetGeom ();
                 }
 

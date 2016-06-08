@@ -190,15 +190,17 @@ public class tubeTest extends Mesh {
         final double axisTextureStep = 1.0 / (axisSamples - 1);
         final double halfHeight = 0.5 * height;
         final double innerOuterRatio = innerRadius / outerRadius;
-        final double[] sin = new double[radialSamples];
-        final double[] cos = new double[radialSamples];
+        final double[] sin = new double[radialSamples+1];
+        final double[] cos = new double[radialSamples+1];
 
         for ( int radialCount = 0; radialCount < radialSamples; radialCount++ ) {
             // final double angle = 2 * Math.PI * inverseRadial * radialCount;
-            final double angle = dA * inverseRadial * radialCount;
+            final double angle = theta0 + dA * inverseRadial * radialCount;
             cos[radialCount] = Math.cos (angle);
             sin[radialCount] = Math.sin (angle);
         }
+        cos[radialSamples] = cos[0];
+        sin[radialSamples] = sin[0];
 
         // outer cylinder
         for ( int radialCount = 0; radialCount < radialSamples + 1;
