@@ -147,7 +147,8 @@ public class Sphere_SECT extends Mesh {
      * builds the vertices based on the radius, center and radial and zSamples.
      */
     private void setGeometryData() {
-
+theta0 = -Math.PI * 0.5; theta1 = Math.PI * 0.5;
+phi0 = 0.0; phi1 = Math.PI*2.0;
         final double dTheta = Math.abs (theta0 - theta1);
         final double dPhi = Math.abs (phi0 - phi1);
         System.out.println ("theta0 = " + theta0 + "  theta1 = " + theta1);
@@ -172,8 +173,8 @@ public class Sphere_SECT extends Mesh {
             afCos[iR] = Math.cos (fAnglePhi);
             afSin[iR] = Math.sin (fAnglePhi);
         }
-        //afSin[radialSamples] = afSin[0];
-        //afCos[radialSamples] = afCos[0];
+        afSin[radialSamples] = afSin[0];
+        afCos[radialSamples] = afCos[0];
 
         // generate the sphere itself
         for ( int icnt = 0; icnt < 2; icnt++ ) {
@@ -197,12 +198,12 @@ public class Sphere_SECT extends Mesh {
 
                 // compute center of slice
                 kSliceCenter = new Vector3D (center.getX (), center.getY (),
-                        center.
-                        getZ () + fZ);
+                        center.getZ () + fZ);
 
                 // compute radius of slice
-                final double fSliceRadius = Math.sqrt (Math.abs (
-                        radius * radius - fZ * fZ));
+                //final double fSliceRadius = Math.sqrt (Math.abs (radius * radius - fZ * fZ));
+                final double fSliceRadius  = radius * Math.cos(fAFraction);
+                System.out.println ("Slice radius = " + fSliceRadius);
 
                 // compute slice vertices with duplication at end point
                 Vector3D kNormal;
@@ -213,8 +214,7 @@ public class Sphere_SECT extends Mesh {
                             0);
                     tempVa = new Vector3D (fSliceRadius * kRadial.getX (),
                             fSliceRadius * kRadial.getY (), fSliceRadius *
-                            kRadial.
-                            getZ ());
+                            kRadial.getZ ());
                     putVertex ((kSliceCenter.getX () + tempVa.getX ()),
                             (kSliceCenter.getY () + tempVa.getY ()),
                             (kSliceCenter.getZ () + tempVa.getZ ()));
@@ -222,16 +222,13 @@ public class Sphere_SECT extends Mesh {
                     tempVa = getVertexCoord (i);
 
                     kNormal = new Vector3D (tempVa.getX () - center.getX (),
-                            tempVa.
-                            getY () - center.getY (), tempVa.getZ () - center.
+                            tempVa.getY () - center.getY (), tempVa.getZ () - center.
                             getZ ());
                     double mag = Math.sqrt (Math.pow (kNormal.getX (), 2) +
-                            Math.
-                            pow (kNormal.getY (), 2) + Math.
-                            pow (kNormal.getZ (), 2));
+                            Math.pow (kNormal.getY (), 2) 
+                            + Math.pow (kNormal.getZ (), 2));
                     kNormal = new Vector3D (kNormal.getX () / mag, kNormal.
-                            getY () /
-                            mag, kNormal.getZ () / mag);
+                            getY () /mag, kNormal.getZ () / mag);
                     if ( !viewInside ) {
                         putNormal (kNormal.getX (), kNormal.getY (), kNormal.
                                 getZ ());

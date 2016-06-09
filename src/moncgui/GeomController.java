@@ -582,22 +582,24 @@ public class GeomController extends Mesh {
             public void handle(ActionEvent ev) {
                 paramPane.getChildren ().removeAll (vb1, radIT, radOT, radI,
                         radO, heightT, ht, objAxisT, objAxis, drawMe);
+                /*
                 double oRad = Double.parseDouble (radO.getText ());
                 double oX = Double.parseDouble (baseCX.getText ());
                 double oY = Double.parseDouble (baseCY.getText ());
                 double oZ = Double.parseDouble (baseCZ.getText ());
-
+*/
                 // double iRad = Double.parseDouble (radI.getText ());
                 // double tht0 = Double.parseDouble (theta0.getText ());
                 //  double tht1 = Double.parseDouble (theta1.getText ());
-                // double fi0 = Double.parseDouble (phi0.getText ());
                 // double fi1 = Double.parseDouble (phi1.getText ());
                 // radSample = (int) (radScale * Math.sqrt (iRad) + 0.5);
                 lenSample = 5;
                 Sphere_SECT sph1 = null;
-
-                Vector3D sphCent = new Vector3D (oX, oY, oZ);
-
+                
+                // Vector3D sphCent = new Vector3D (oX, oY, oZ);
+                Vector3D sphCent = new Vector3D (0, 10, 0);
+                baseCX.setText("0.0"); baseCY.setText("0.0"); baseCZ.setText ("0.0");
+                matList.setValue ("Brass");
                 if ( matList.getValue ().contains ("Copper") ) {
                     //sph1 = new Sphere ("Sphere", sphCent, 20, 20, oRad,Material.Copper ());
                     sph1 = new Sphere_SECT ("Sphere", 3.0, 4.0, 0.0, 4.7, 0.0,
@@ -608,8 +610,8 @@ public class GeomController extends Mesh {
                             4.7, 20, 20, Material.Rubber ());
                 } else if ( matList.getValue ().contains ("Brass") ) {
                     //sph1 = new Sphere ("Sphere", sphCent, 20, 20, oRad,Material.Brass ());
-                    double ang0 = -0.5 * Math.PI ;
-                    double ang1 = 0.5 * Math.PI ;
+                    double ang0 = -0.5 * Math.PI;
+                    double ang1 = 0.5 * Math.PI;
                     sph1 = new Sphere_SECT ("Sphere", 0.0, 4.0, ang0, ang1, 0.0,
                             4.7, 20, 20, Material.Brass ());
                 } else if ( matList.getValue ().contains ("Glass") ) {
@@ -640,7 +642,6 @@ public class GeomController extends Mesh {
                  */
                 geoTextEntry = "Sphere" + "  " + baseCX.getText () + "  " +
                         baseCY.getText () + "  " + baseCZ.getText () + "  " + // " Outer Rad " + oRad + " Inner Rad   " + iRad +
-                        "  " + oRad + // " Theta 1 " + tht0 + " Theta 2  " + tht1 + " Phi 1   " +
                         //   fi0 + "  Phi 2  " + fi1 + 
                         "  " + objAxis.getText () + "  " + matList.getValue () +
                         "\n";
