@@ -62,6 +62,7 @@ public class GeomController extends Mesh {
     private final SplitPane drawPane = new SplitPane ();
     private final GridPane paramPane = new GridPane ();
     private final GridPane objPane = new GridPane ();
+    private final ToggleGroup inView = new ToggleGroup ();
 
     FileChooser fileChooser = new FileChooser ();
 
@@ -87,6 +88,9 @@ public class GeomController extends Mesh {
     private List<String> materialNames = new ArrayList<String> ();
     private List<tubeTest> tubeList = new ArrayList<tubeTest> (totObjectNum);
 
+    private Label inViewT = new Label ("View Inside ");
+    private RadioButton inViewYes;
+    private RadioButton inViewNo;
     private Label BaseCoord = new Label ("Origin (X, Y, Z) ");
     private TextField baseCX = new TextField ();
     private TextField baseCY = new TextField ();
@@ -306,6 +310,7 @@ public class GeomController extends Mesh {
         willCopyT.setFont (new Font ("Times New Roman", 10));
         copyNumT.setFont (new Font ("Times New Roman", 10));
         gapT.setFont (new Font ("Times New Roman", 10));
+        inViewT.setFont (new Font ("Times New Roman", 10));
 
         baseCX.setPrefColumnCount (5);
         baseCX.setAlignment (Pos.CENTER_RIGHT);
@@ -343,6 +348,14 @@ public class GeomController extends Mesh {
         copyNum.setAlignment (Pos.CENTER_RIGHT);
         copyNum.setMaxSize (50, 1);
 
+        inViewYes = new RadioButton (" Yes ");
+        inViewYes.setToggleGroup (inView);
+        inViewNo = new RadioButton (" No ");
+        inViewNo.setToggleGroup (inView);
+        inViewNo.setSelected (true);
+        inViewYes.setUserData ("true");
+        inViewNo.setUserData ("false");
+
         HBox hb1 = new HBox (baseCX, baseCY, baseCZ);
         HBox hb2 = new HBox (radIT, radI);
         HBox hb3 = new HBox (radOT, radO);
@@ -351,6 +364,7 @@ public class GeomController extends Mesh {
         HBox hb6 = new HBox (Phi1T, phi1);
         HBox hb7 = new HBox (objAxisT, objAxis);
         HBox hb8 = new HBox (matT, matList);
+        HBox hb9 = new HBox (inViewT, inViewYes, inViewNo);
 
         hb1.setSpacing (2); //hb1.setPadding(new Insets(2));
         hb2.setSpacing (2);
@@ -360,8 +374,9 @@ public class GeomController extends Mesh {
         hb6.setSpacing (2);
         hb7.setSpacing (2);
         hb8.setSpacing (2);
-        // VBox vb1 = new VBox(BaseCoord, hb1, hb2, hb3, hb4, hb5, willCopyT, hb6, hb7, hb8);
-        VBox vb1 = new VBox (BaseCoord, hb1, hb2, hb3, hb4, hb5, hb6, hb7, hb8);
+
+        VBox vb1 = new VBox (BaseCoord, hb1, hb2, hb3, hb4, hb5, hb6, hb7, hb8,
+                hb9);
 
         baseCX.setPromptText ("0.0");
         baseCY.setPromptText ("0.0");
@@ -383,18 +398,19 @@ public class GeomController extends Mesh {
                         radO, heightT, ht, objAxisT, objAxis, drawMe);
 
                 double oRad, iRad, length, tht0, tht1;
+                boolean naked = (inView.getSelectedToggle ().getUserData ().
+                        toString ().contains ("true") ? true : false);
 
-                iRad = (!radI.getText ().isEmpty () ? Double.parseDouble (radI.
-                        getText ()) : 0.0);
-                oRad = (!radO.getText ().isEmpty () ? Double.parseDouble (radO.
-                        getText ()) : 0.0);
+                iRad = (!radI.getText ().isEmpty () ? Double.parseDouble (
+                        radI.getText ()) : 0.0);
+                oRad = (!radO.getText ().isEmpty () ? Double.parseDouble (
+                        radO.getText ()) : 0.0);
                 length = (!ht.getText ().isEmpty () ? chkNull (Double.
                         parseDouble (ht.getText ())) : 0.0);
-                tht0 = (!phi0.getText ().isEmpty () ? Double.parseDouble (phi0.
-                        getText ()) * Math.PI /
-                        180.0 : 0.0);
-                tht1 = (!phi1.getText ().isEmpty () ? Double.parseDouble (phi1.
-                        getText ()) * Math.PI / 180.0 : 2.0 * Math.PI);
+                tht0 = (!phi0.getText ().isEmpty () ? Double.parseDouble (
+                        phi0.getText ()) * Math.PI / 180.0 : 0.0);
+                tht1 = (!phi1.getText ().isEmpty () ? Double.parseDouble (
+                        phi1.getText ()) * Math.PI / 180.0 : 2.0 * Math.PI);
 
                 if ( oRad == 0.0 ) {
                     popupMsg.infoBox (
@@ -408,35 +424,44 @@ public class GeomController extends Mesh {
                 lenSample = 2; // (int) (lenScale * Math.sqrt (length) + 0.5);    
 
                 tubeTest tub1 = null;
-                if ( matList.getValue ().contains ("Copper") ) {
+
+                if ( matList.getValue ()
+                        .contains ("Copper") ) {
                     tub1 = new tubeTest ("Tube", oRad, iRad, length,
-                            tht0, tht1, lenSample, radSample, Material.
+                            tht0, tht1, lenSample, radSample, naked, Material.
                             Copper ());
-                } else if ( matList.getValue ().contains ("Rubber") ) {
+                } else if ( matList.getValue ()
+                        .contains ("Rubber") ) {
                     tub1 = new tubeTest ("Tube", oRad, iRad, length,
-                            tht0, tht1, lenSample, radSample, Material.
+                            tht0, tht1, lenSample, radSample, naked, Material.
                             Rubber ());
-                } else if ( matList.getValue ().contains ("Brass") ) {
+                } else if ( matList.getValue ()
+                        .contains ("Brass") ) {
                     tub1 = new tubeTest ("Tube", oRad, iRad, length,
-                            tht0, tht1, lenSample, radSample, Material.
+                            tht0, tht1, lenSample, radSample, naked, Material.
                             Brass ());
-                } else if ( matList.getValue ().contains ("Glass") ) {
+                } else if ( matList.getValue ()
+                        .contains ("Glass") ) {
                     tub1 = new tubeTest ("Tube", oRad, iRad, length,
-                            tht0, tht1, lenSample, radSample, Material.
+                            tht0, tht1, lenSample, radSample, naked, Material.
                             Glass ());
                 } else {
                     tub1 = new tubeTest ("Tube", oRad, iRad, length,
-                            tht0, tht1, lenSample, radSample, Material.
+                            tht0, tht1, lenSample, radSample, naked, Material.
                             Plastic ());
                 }
 
                 objCnt++;
                 oal1 = new Object_Array_List (objCnt, "Tube", lenSample,
                         radSample, oRad, iRad, length);
+
                 oal1.setNVerts (tub1.getVerts ());
-                System.out.println ("Tube :: Number of Vertices = " + tub1.
+                System.out.println (
+                        "Tube :: Number of Vertices = " + tub1.
                         getVerts ());
-                for ( int ii = 0; ii < tub1.getVerts (); ii++ ) {
+                for ( int ii = 0;
+                        ii < tub1.getVerts ();
+                        ii++ ) {
                     maxminFunc (
                             tub1.getVertexCoord (ii).getX (),
                             tub1.getVertexCoord (ii).getY (),
@@ -445,17 +470,21 @@ public class GeomController extends Mesh {
                     oal1.setMaxMin (maxx, minx, maxy, miny, maxz, minz);
                     maxminInit ();
                 }
+
                 objLIST.add (oal1);
 
                 //Cylinder tub1 = new Cylinder(oRad, length);
                 //GeoItems.add(tub1);
                 //Cylinder tub2 = new Cylinder(oRad, length);
                 //GeoItems.add(tub2);
-                if ( objAxis.getText ().matches (axisX) ) {
+                if ( objAxis.getText ()
+                        .matches (axisX) ) {
                     tub1.setRotate (90.0);   //  tub2.setRotate(90.0);
-                } else if ( objAxis.getText ().matches (axisY) ) {
+                } else if ( objAxis.getText ()
+                        .matches (axisY) ) {
 
-                } else if ( objAxis.getText ().matches (axisZ) ) {
+                } else if ( objAxis.getText ()
+                        .matches (axisZ) ) {
                     tub1.setRotationAxis (Rotate.X_AXIS);
                     tub1.setRotate (90.0);
                     //    tub2.setRotationAxis(Rotate.X_AXIS);    tub2.setRotate(90.0);
@@ -464,16 +493,19 @@ public class GeomController extends Mesh {
                 double oY = Double.parseDouble (baseCY.getText ());
                 double oZ = Double.parseDouble (baseCZ.getText ());
 
-                if ( oX != 0.0 ) {
+                if ( oX !=
+                        0.0 ) {
                     tub1.setTranslateX (Double.parseDouble (baseCX.
                             getText ()));
                     //tub2.setTranslateX(Double.parseDouble(baseCX.getText()));
                 }
-                if ( oY != 0.0 ) {
+                if ( oY !=
+                        0.0 ) {
                     tub1.setTranslateY (Double.parseDouble (baseCY.
                             getText ()));
                 }
-                if ( oZ != 0.0 ) {
+                if ( oZ !=
+                        0.0 ) {
                     tub1.setTranslateZ (Double.parseDouble (baseCZ.
                             getText ()));
                     //tub2.setTranslateZ(Double.parseDouble(baseCZ.getText()));
@@ -486,11 +518,15 @@ public class GeomController extends Mesh {
                         "  " + tht0 + "  " + tht1 +
                         "  " + objAxis.getText () + "  " + matList.
                         getValue () + "\n";
+
                 geoEntries.appendText (geoTextEntry);
-                nodeList.setText ("Tube added");
+
+                nodeList.setText (
+                        "Tube added");
                 camV.add (tub1);
                 numGeom++;;
-                paramPane.getChildren ().clear ();
+                paramPane.getChildren ()
+                        .clear ();
                 //camV.add(tub2);
 
             }
@@ -646,7 +682,6 @@ public class GeomController extends Mesh {
                 sph1.setTranslateX (oX);
                 sph1.setTranslateY (oY);
                 sph1.setTranslateZ (oZ);
-
 
                 geoTextEntry = "Sphere" + "  " + baseCX.getText () + "  " +
                         baseCY.getText () + "  " + baseCZ.getText () + "  " +

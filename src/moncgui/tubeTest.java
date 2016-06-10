@@ -108,7 +108,7 @@ public class tubeTest extends Mesh {
         this.radialSamples = radialSamples;
         this.theta0 = ang0;
         this.theta1 = ang1;
-        this.viewInside = closed;
+        this.viewInside = !closed;
         allocateVertices ();
         createTriangles ();
     }
