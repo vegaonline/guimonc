@@ -24,21 +24,21 @@ public class Sphere_SECT extends Mesh {
     private double innerRadius;
     private double outerRadius;
     private double radius;
-    
+
     /**
      * azimuthal angles
      */
     private double phi0;
     private double phi1;
     private double dTheta;
-    
+
     /**
      * vertical angles
      */
     private double theta0;
     private double theta1;
     private double dPhi;
-    
+
     /**
      * the center of the sphere
      */
@@ -58,8 +58,7 @@ public class Sphere_SECT extends Mesh {
     //public Sphere(final String name) {
     //super(name);
     //}
-
-        /**
+    /**
      *
      * @param name
      * @param outerRadius
@@ -69,8 +68,8 @@ public class Sphere_SECT extends Mesh {
      */
     public Sphere_SECT(final String name, final double outerRadius,
             final int radialSamples, final int zSamples, Material material) {
-        this(name, 0.0, outerRadius, 0.0, Math.PI, 0.0, 2.0 * Math.PI,
-                radialSamples, zSamples, material);
+        this (name, 0.0, outerRadius, 0.0, Math.PI, 0.0, 2.0 * Math.PI,
+                radialSamples, zSamples, false, material);
     }
 
     /**
@@ -85,11 +84,10 @@ public class Sphere_SECT extends Mesh {
     public Sphere_SECT(final String name, final double innerRadius,
             final double outerRadius, final int radialSamples,
             final int zSamples, Material material) {
-        this(name, innerRadius, outerRadius, 0.0, Math.PI, 0.0, 2.0 * Math.PI,
-                radialSamples, zSamples, material);
+        this (name, innerRadius, outerRadius, 0.0, Math.PI, 0.0, 2.0 * Math.PI,
+                radialSamples, zSamples, false, material);
     }
-    
-    
+
     /**
      *
      * @param name
@@ -104,8 +102,8 @@ public class Sphere_SECT extends Mesh {
     public Sphere_SECT(final String name, final double innerRadius,
             final double outerRadius, final double theta1, final double phi1,
             final int radialSamples, final int zSamples, Material material) {
-        this(name, innerRadius, outerRadius, 0.0, theta1, 0.0, phi1,
-                radialSamples, zSamples, material);
+        this (name, innerRadius, outerRadius, 0.0, theta1, 0.0, phi1,
+                radialSamples, zSamples, false, material);
     }
 
     /**
@@ -122,16 +120,35 @@ public class Sphere_SECT extends Mesh {
      * @param material 
      */
     public Sphere_SECT(final String name, final double innerRadius,
-            final double outerRadius,  double theta0,  double theta1,
-             double phi0,  double phi1, final int radialSamples,   // put final 
+            final double outerRadius, double theta0, double theta1,
+            double phi0, double phi1, final int radialSamples, // put final 
             final int zSamples, Material material) {
-        super(material);
-/*
-        theta0 = -Math.PI * 0.5;
-        theta1 = Math.PI * 0.5;
-        phi0 = 0.0;
-        phi1 = Math.PI * 2.0;
-        */ 
+        this (name, innerRadius, outerRadius, theta0, theta1, phi0, phi1,
+                radialSamples, zSamples, false, material);
+    }
+    
+    /**
+     *
+     * @param name
+     * @param innerRadius
+     * @param outerRadius
+     * @param theta0
+     * @param theta1
+     * @param phi0
+     * @param phi1
+     * @param radialSamples
+     * @param zSamples
+     * @param material
+     */
+    public Sphere_SECT(final String name, final double innerRadius,
+            final double outerRadius, double theta0, double theta1,
+            double phi0, double phi1, final int radialSamples, // put final 
+            final int zSamples, boolean seeIn, Material material) {
+        super (material);
+        /*
+         * theta0 = -Math.PI * 0.5; theta1 = Math.PI * 0.5; phi0 = 0.0; phi1 =
+         * Math.PI * 2.0;
+         */
         dTheta = Math.abs (theta0 - theta1);
         dPhi = Math.abs (phi0 - phi1);
         this.innerRadius = innerRadius;
@@ -143,9 +160,10 @@ public class Sphere_SECT extends Mesh {
         this.radialSamples = radialSamples;
         this.zSamples = zSamples;
         this.center = center;
-        setGeometryData();
-        setIndexData();
-        createTriangles();
+        this.viewInside = seeIn;
+        setGeometryData ();
+        setIndexData ();
+        createTriangles ();
     }
 
     /**
@@ -155,9 +173,9 @@ public class Sphere_SECT extends Mesh {
      * builds the vertices based on the radius, center and radial and zSamples.
      */
     private void setGeometryData() {
-        radius = outerRadius;
         // allocate vertices
-        final int verts = (zSamples - 2) * (radialSamples + 1) + 2;
+        final int verts = (innerRadius == 0 ? 1 : 2) * ((zSamples - 2) *
+                (radialSamples + 1) + 2);
         setVertexCoordsSize (verts);
         setNormalCoordsSize (verts);
 
@@ -170,7 +188,6 @@ public class Sphere_SECT extends Mesh {
         final double[] afSin = new double[(radialSamples + 1)];
         final double[] afCos = new double[(radialSamples + 1)];
         for ( int iR = 0; iR < radialSamples; iR++ ) {
-            // final double fAngle = 2 * Math.PI * fInvRS * iR;
             final double fAngle = phi0 + dPhi * fInvRS * iR;
             afCos[iR] = Math.cos (fAngle);
             afSin[iR] = Math.sin (fAngle);
@@ -178,91 +195,114 @@ public class Sphere_SECT extends Mesh {
         afSin[radialSamples] = afSin[0];
         afCos[radialSamples] = afCos[0];
 
-        // generate the sphere itself
-        int i = 0;
-        Vector3D tempVa = new Vector3D (0, 0, 0);
-        final Point3D tempVb;
-        Vector3D tempVc = new Vector3D (0, 0, 0);
+        for ( int icnt = 0; icnt < 2; icnt++ ) {
+            radius = (icnt == 0 ? innerRadius : outerRadius);
+            if ( radius == 0.0 ) {
+                continue;
+            }
+            System.out.println ("radius " + radius);
+            double zNP = 0.0;
+            double zSP = 0.0;
 
-        Vector3D kSliceCenter = new Vector3D (0, 0, 0);
+            // generate the sphere itself
+            int i = 0;
+            Vector3D tempVa = new Vector3D (0, 0, 0);
+            final Point3D tempVb;
+            Vector3D tempVc = new Vector3D (0, 0, 0);
+            Vector3D kSliceCenter = new Vector3D (0, 0, 0);
 
-        for ( int iZ = 1; iZ < (zSamples - 1); iZ++ ) {
-            final double fAFraction = 0.5 * Math.PI * (-1.0f + fZFactor * iZ); // in (-pi/2, pi/2)
-            final double fZFraction = Math.sin (fAFraction); // in (-1,1)
-            final double fZ = radius * fZFraction;
+            for ( int iZ = 1; iZ < (zSamples - 1); iZ++ ) {
+                //final double fAFraction = 0.5 * Math.PI * (-1.0f + fZFactor * iZ); // in (-pi/2, pi/2)
+                final double fAFraction = theta0 + iZ * fZFactor * dTheta;
+                final double fZFraction = Math.sin (fAFraction); // in (-1,1)
+                final double fZ = radius * fZFraction;
 
-            // compute center of slice
-            kSliceCenter = new Vector3D (center.getX (), center.getY (), center.
-                    getZ () + fZ);
+                // compute center of slice
+                kSliceCenter = new Vector3D (center.getX (), center.getY (),
+                        center.
+                        getZ () + fZ);
 
-            // compute radius of slice
-            final double fSliceRadius = Math.sqrt (Math.abs (radius * radius -
-                    fZ * fZ));
+                // compute radius of slice
+                final double fSliceRadius = Math.sqrt (Math.abs (
+                        radius * radius -
+                        fZ * fZ));
 
-            // compute slice vertices with duplication at end point
-            Vector3D kNormal;
-            final int iSave = i;
-            for ( int iR = 0; iR < radialSamples; iR++ ) {
-                final double fRadialFraction = iR * fInvRS; // in [0,1)
-                final Vector3D kRadial = new Vector3D (afCos[iR], afSin[iR], 0);
-                tempVa = new Vector3D (fSliceRadius * kRadial.getX (),
-                        fSliceRadius * kRadial.getY (), fSliceRadius * kRadial.
-                        getZ ());
-                putVertex ((kSliceCenter.getX () + tempVa.getX ()),
-                        (kSliceCenter.getY () + tempVa.getY ()),
-                        (kSliceCenter.getZ () + tempVa.getZ ()));
-
-                tempVa = getVertexCoord (i);
-
-                kNormal = new Vector3D (tempVa.getX () - center.getX (), tempVa.
-                        getY () - center.getY (), tempVa.getZ () - center.
-                        getZ ());
-                double mag = Math.sqrt (Math.pow (kNormal.getX (), 2) + Math.
-                        pow (kNormal.getY (), 2) + Math.pow (kNormal.getZ (), 2));
-                kNormal = new Vector3D (kNormal.getX () / mag, kNormal.getY () /
-                        mag, kNormal.getZ () / mag);
-                if ( !viewInside ) {
-                    putNormal (kNormal.getX (), kNormal.getY (), kNormal.getZ ());
-                } else {
-                    putNormal (-kNormal.getX (), -kNormal.getY (), -kNormal.
+                // compute slice vertices with duplication at end point
+                Vector3D kNormal;
+                final int iSave = i;
+                for ( int iR = 0; iR < radialSamples; iR++ ) {
+                    final double fRadialFraction = iR * fInvRS; // in [0,1)
+                    final Vector3D kRadial = new Vector3D (afCos[iR], afSin[iR],
+                            0);
+                    tempVa = new Vector3D (fSliceRadius * kRadial.getX (),
+                            fSliceRadius * kRadial.getY (), fSliceRadius *
+                            kRadial.
                             getZ ());
+                    putVertex ((kSliceCenter.getX () + tempVa.getX ()),
+                            (kSliceCenter.getY () + tempVa.getY ()),
+                            (kSliceCenter.getZ () + tempVa.getZ ()));
+
+                    zNP = Math.max (kSliceCenter.getZ () + tempVa.getZ (), zNP);
+                    zSP = Math.min (kSliceCenter.getZ () + tempVa.getZ (), zSP);
+
+                   // System.out.println ("radius " + radius + " Z = " +kSliceCenter.getZ () + tempVa.getZ ());
+
+                    tempVa = getVertexCoord (i);
+
+                    kNormal = new Vector3D (tempVa.getX () - center.getX (),
+                            tempVa.
+                            getY () - center.getY (), tempVa.getZ () - center.
+                            getZ ());
+                    double mag = Math.sqrt (Math.pow (kNormal.getX (), 2) +
+                            Math.
+                            pow (kNormal.getY (), 2) + Math.
+                            pow (kNormal.getZ (), 2));
+                    kNormal = new Vector3D (kNormal.getX () / mag, kNormal.
+                            getY () /
+                            mag, kNormal.getZ () / mag);
+                    if ( !viewInside ) {
+                        putNormal (kNormal.getX (), kNormal.getY (), kNormal.
+                                getZ ());
+                    } else {
+                        putNormal (-kNormal.getX (), -kNormal.getY (), -kNormal.
+                                getZ ());
+                    }
+
+                    i++;
                 }
+
+//            setVertexCoord(i, getVertexCoord(iSave));
+//            setNormalCoord(i, getNormalCoord(iSave));
+                putVertex (getVertexCoord (iSave));
+                putNormal (getNormalCoord (iSave));
 
                 i++;
             }
 
-//            setVertexCoord(i, getVertexCoord(iSave));
-//            setNormalCoord(i, getNormalCoord(iSave));
-            putVertex (getVertexCoord (iSave));
-            putNormal (getNormalCoord (iSave));
-
-            i++;
-        }
-
-        // south pole
+            // south pole
 //        setVertexCount(i+1);
-        putVertex (new Vector3D (center.getX (), center.getY (),
-                (float) (center.getZ () - radius)));
+            // putVertex (new Vector3D (center.getX (), center.getY (),(float) (center.getZ () - radius)));
+            putVertex (new Vector3D (center.getX (), center.getY (), zSP));
 
 //        setNormalCount(i+1);
-        if ( !viewInside ) {
-            putNormal (new Vector3D (0, 0, -1));
-        } else {
-            putNormal (new Vector3D (0, 0, 1));
+            if ( !viewInside ) {
+                putNormal (new Vector3D (0, 0, -1));
+            } else {
+                putNormal (new Vector3D (0, 0, 1));
+            }
+
+            i++;
+
+            // north pole
+            //putVertex (new Vector3D (center.getX (), center.getY (),(float) (center.getZ () + radius)));
+            putVertex (new Vector3D (center.getX (), center.getY (), zNP));
+
+            if ( !viewInside ) {
+                putNormal (new Vector3D (0, 0, 1));
+            } else {
+                putNormal (new Vector3D (0, 0, -1));
+            }
         }
-
-        i++;
-
-        // north pole
-        putVertex (new Vector3D (center.getX (), center.getY (),
-                (float) (center.getZ () + radius)));
-
-        if ( !viewInside ) {
-            putNormal (new Vector3D (0, 0, 1));
-        } else {
-            putNormal (new Vector3D (0, 0, -1));
-        }
-
     }
 
     /**
@@ -281,7 +321,7 @@ public class Sphere_SECT extends Mesh {
             iZStart += (radialSamples + 1);
             int i2 = iZStart;
             int i3 = i2 + 1;
-            for ( int i = 0; i < radialSamples-1; i++, index += 6 ) {
+            for ( int i = 0; i < radialSamples - 1; i++, index += 6 ) {
                 if ( !viewInside ) {
                     putTriangleIndex (i0++, i1, i2);
                     putTriangleIndex (i1++, i3++, i2++);
