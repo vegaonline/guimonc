@@ -30,7 +30,9 @@ public class MoncGUI extends Application {
     public JavaFXChartFactory factory;
     public AWTChart chart;
     public ImageView imageView;
-    private String txtIT = null;
+    private String txtGeo = null;
+    private String txtZone = null;
+    private String txtMat = null;
 
     /**
      * Returns the main stage
@@ -55,8 +57,9 @@ public class MoncGUI extends Application {
         this.thisNode = myPane;
     }
 
-    public void setTxtIT(String str) {
-        this.txtIT = str;
+    public void setTxt(String strMat, String strGeo) {
+        this.txtMat = strMat;
+        this.txtGeo = strGeo;
     }
 
     @Override
@@ -100,8 +103,11 @@ public class MoncGUI extends Application {
             ConfigSetController controller = loader.getController ();
             controller.setMainApp (this);
             controller.setMyStage (primaryStage);
-            if ( txtIT != null ) {
-                controller.geoArea.appendText (txtIT);
+            if ( txtMat != null ) {
+                controller.matArea.appendText (txtMat);
+            }
+            if (txtGeo != null) {
+                controller.geoArea.appendText(txtGeo);
             }
         } catch (IOException ex) {
             System.out.println (" Problem in loading config set");

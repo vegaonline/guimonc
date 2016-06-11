@@ -25,9 +25,6 @@ import javafx.scene.text.Font;
 import javafx.scene.transform.Rotate;
 import javafx.stage.*;
 import javax.imageio.ImageIO;
-import moncgui.Material;
-import moncgui.Mesh;
-import moncgui.Sphere;
 
 /**
  * FXML Controller class
@@ -38,6 +35,7 @@ import moncgui.Sphere;
 public class GeomController extends Mesh {
 
     private double dTORad = Math.PI / 180.0;
+    private double RTODeg  = 180.0 / Math.PI;
     private int geoSnapCnt = 0;
     private int totObjectNum = 1000;
     private int initialized = 0;
@@ -134,6 +132,7 @@ public class GeomController extends Mesh {
     private ComboBox<String> matList = new ComboBox<String> ();
     private Button drawMe = new Button ("Draw ");
     private TextArea geoEntries = new TextArea ();
+    private TextArea matEntries = new TextArea();
     // private TextArea nodeList = new TextArea ();
     private TextField nodeList = new TextField ();
     private String geoTextEntry = null;
@@ -414,8 +413,7 @@ public class GeomController extends Mesh {
 
                 if ( oRad == 0.0 ) {
                     popupMsg.infoBox (
-                            "Outer radius cannot be zero : resetting..",
-                            "Parameter Error"
+                            "Outer radius cannot be zero : resetting..","Parameter Error"
                     );
                     resetGeom ();
                 }
@@ -425,32 +423,23 @@ public class GeomController extends Mesh {
 
                 tubeTest tub1 = null;
 
-                if ( matList.getValue ()
-                        .contains ("Copper") ) {
+                if ( matList.getValue ().contains ("Copper") ) {
                     tub1 = new tubeTest ("Tube", oRad, iRad, length,
-                            tht0, tht1, lenSample, radSample, naked, Material.
-                            Copper ());
-                } else if ( matList.getValue ()
-                        .contains ("Rubber") ) {
+                            tht0, tht1, lenSample, radSample, naked, Material.Copper ());
+                } else if ( matList.getValue ().contains ("Rubber") ) {
                     tub1 = new tubeTest ("Tube", oRad, iRad, length,
-                            tht0, tht1, lenSample, radSample, naked, Material.
-                            Rubber ());
-                } else if ( matList.getValue ()
-                        .contains ("Brass") ) {
+                            tht0, tht1, lenSample, radSample, naked, Material.Rubber ());
+                } else if ( matList.getValue ().contains ("Brass") ) {
                     tub1 = new tubeTest ("Tube", oRad, iRad, length,
-                            tht0, tht1, lenSample, radSample, naked, Material.
-                            Brass ());
-                } else if ( matList.getValue ()
-                        .contains ("Glass") ) {
+                            tht0, tht1, lenSample, radSample, naked, Material.Brass ());
+                } else if ( matList.getValue ().contains ("Glass") ) {
                     tub1 = new tubeTest ("Tube", oRad, iRad, length,
-                            tht0, tht1, lenSample, radSample, naked, Material.
-                            Glass ());
+                            tht0, tht1, lenSample, radSample, naked, Material.Glass ());
                 } else {
                     tub1 = new tubeTest ("Tube", oRad, iRad, length,
-                            tht0, tht1, lenSample, radSample, naked, Material.
-                            Plastic ());
+                            tht0, tht1, lenSample, radSample, naked, Material.Plastic ());
                 }
-
+/*
                 objCnt++;
                 oal1 = new Object_Array_List (objCnt, "Tube", lenSample,
                         radSample, oRad, iRad, length);
@@ -472,61 +461,40 @@ public class GeomController extends Mesh {
                 }
 
                 objLIST.add (oal1);
+*/
 
-                //Cylinder tub1 = new Cylinder(oRad, length);
-                //GeoItems.add(tub1);
-                //Cylinder tub2 = new Cylinder(oRad, length);
-                //GeoItems.add(tub2);
-                if ( objAxis.getText ()
-                        .matches (axisX) ) {
+                if ( objAxis.getText ().matches (axisX) ) {
                     tub1.setRotate (90.0);   //  tub2.setRotate(90.0);
-                } else if ( objAxis.getText ()
-                        .matches (axisY) ) {
+                } else if ( objAxis.getText ().matches (axisY) ) {
 
-                } else if ( objAxis.getText ()
-                        .matches (axisZ) ) {
+                } else if ( objAxis.getText ().matches (axisZ) ) {
                     tub1.setRotationAxis (Rotate.X_AXIS);
                     tub1.setRotate (90.0);
-                    //    tub2.setRotationAxis(Rotate.X_AXIS);    tub2.setRotate(90.0);
                 }
                 double oX = Double.parseDouble (baseCX.getText ());
                 double oY = Double.parseDouble (baseCY.getText ());
                 double oZ = Double.parseDouble (baseCZ.getText ());
 
-                if ( oX !=
-                        0.0 ) {
-                    tub1.setTranslateX (Double.parseDouble (baseCX.
-                            getText ()));
-                    //tub2.setTranslateX(Double.parseDouble(baseCX.getText()));
+                if ( oX !=0.0 ) {
+                    tub1.setTranslateX (oX);
                 }
-                if ( oY !=
-                        0.0 ) {
-                    tub1.setTranslateY (Double.parseDouble (baseCY.
-                            getText ()));
+                if ( oY !=0.0 ) {
+                    tub1.setTranslateY (oY);
                 }
-                if ( oZ !=
-                        0.0 ) {
-                    tub1.setTranslateZ (Double.parseDouble (baseCZ.
-                            getText ()));
-                    //tub2.setTranslateZ(Double.parseDouble(baseCZ.getText()));
+                if ( oZ !=0.0 ) {
+                    tub1.setTranslateZ (oZ);
                 }
 
-                geoTextEntry = "TUBE" + "  " + baseCX.getText () +
-                        "  " + baseCY.getText () + "  " + baseCZ.getText () +
-                        "  " +
-                        "  " + iRad + "  " + oRad + "  " + length +
-                        "  " + tht0 + "  " + tht1 +
-                        "  " + objAxis.getText () + "  " + matList.
-                        getValue () + "\n";
+                geoTextEntry = "TUBE" + "  (" + oX +",  " + oY + ",  " +oZ +")  " +
+                        "  " + iRad + "  " + oRad + "  " + length +"  " + tht0 * RTODeg + "  " + tht1 * RTODeg+
+                        "  " + objAxis.getText () +  "\n";
 
                 geoEntries.appendText (geoTextEntry);
-
-                nodeList.setText (
-                        "Tube added");
+                matEntries.appendText(matList.getValue () + "\n");
+                nodeList.setText ("Tube added");
                 camV.add (tub1);
-                numGeom++;;
-                paramPane.getChildren ()
-                        .clear ();
+                numGeom++;
+                paramPane.getChildren ().clear ();
                 //camV.add(tub2);
 
             }
@@ -685,12 +653,12 @@ public class GeomController extends Mesh {
 
                 geoTextEntry = "Sphere" + "  " + baseCX.getText () + "  " +
                         baseCY.getText () + "  " + baseCZ.getText () + "  " +
-                        "  " + iRad + "    " + oRad + "  " + tht0 + "  " + tht1 +
-                        "  " +
-                        fi0 + "  " + fi1 + "  " + objAxis.getText () + "  " +
-                        matList.getValue () +
+                        "  " + iRad + "    " + oRad + "  " + tht0*RTODeg + "  " + tht1*RTODeg +
+                        "  " + fi0*RTODeg + "  " + fi1*RTODeg + "  " + objAxis.getText ()+
                         "\n";
                 geoEntries.appendText (geoTextEntry);
+                matEntries.appendText(matList.getValue () + "\n");
+                
                 nodeList.setText ("Sphere added");
                 camV.add (sph1);
                 numGeom++;
@@ -773,9 +741,9 @@ public class GeomController extends Mesh {
         WritableImage fImage = camV.snapshot (new SnapshotParameters (), null);
 
         //*****  Updating config box ******
-        String txtList = null;
-        txtList = geoEntries.getText ();
-        myGUI.setTxtIT (txtList);
+        String txtList1 =  matEntries.getText ();
+        String txtList2 = geoEntries.getText();
+        myGUI.setTxt (txtList1, txtList2);
         //****** Updating config box ends ******
 
         geoSnapCnt++;
@@ -893,10 +861,11 @@ public class GeomController extends Mesh {
                         baseCY.getText () + "  " + baseCZ.getText () + "  " +
                         "  " + lenV + "  " + widV +
                         "  " + depV + "  " + objAxis.
-                        getText () + "   " + matList.getValue () + "\n";
+                        getText () +  "\n";
                 geoEntries.appendText (geoTextEntry);
+                matEntries.appendText(matList.getValue () + "\n");
                 nodeList.setText ("Brick added");
-
+/*
                 objCnt++;
                 oal1 = new Object_Array_List (objCnt, "Brick", 0,
                         0, lenV, widV, depV);
@@ -907,6 +876,7 @@ public class GeomController extends Mesh {
                     //oal1.setVertCoord (brk.getVertexCoord (ii));
                 }
                 objLIST.add (oal1);
+*/
                 camV.add (brk);
                 numGeom++;
                 paramPane.getChildren ().clear ();
