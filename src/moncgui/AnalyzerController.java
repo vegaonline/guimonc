@@ -74,8 +74,8 @@ public class AnalyzerController implements Initializable {
     String dirName = "data";
     String descr1 = "Image File (.png)";
     String descr2 = "Image File (.jpg)";
-    String ext1 = ".png";
-    String ext2 = ".jpg";
+    String ext1 = "*.png";
+    String ext2 = "*.jpg";
     String op1 = "open";
     String op2 = "save";
 
