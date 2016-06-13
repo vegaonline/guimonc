@@ -68,7 +68,6 @@ public class MoncGUI extends Application {
     public void setArray(ObservableList<String> ele, List<double[]> eleDat) {
         this.eleSelectName = ele;
         this.eleData = eleDat;
-        System.out.println("In MONCGUI: length = " + ele.size ());
     }
 
     @Override
