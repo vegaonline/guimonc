@@ -25,9 +25,8 @@
                 </Menu>
                 <Menu fx:id="doConfig" mnemonicParsing="false" text="Configure">
                     <items>
-                        <MenuItem fx:id="doConfigNew" mnemonicParsing="false" onAction="#confNew" text="New" />
-                        <!--- <MenuItem fx:id="doQuit" mnemonicParsing="false" 
-                        onAction="#handleExit" text="Exit" />  -->
+                        <MenuItem fx:id="doConfigNew" mnemonicParsing="false" onAction="#confNew" 
+                                  text="New" />
                     </items>
                 </Menu>
                 <Menu fx:id="doRun" mnemonicParsing="false" text="Run" >

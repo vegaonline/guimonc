@@ -6,9 +6,11 @@
 package moncgui;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.logging.*;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
+import javafx.collections.*;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.ImageView;
@@ -33,6 +35,8 @@ public class MoncGUI extends Application {
     private String txtGeo = null;
     private String txtZone = null;
     private String txtMat = null;
+    private ObservableList<String> eleSelectName = FXCollections.observableArrayList ();
+    private java.util.List<double[]> eleData = new java.util.ArrayList<double[]> ();
 
     /**
      * Returns the main stage
@@ -60,6 +64,11 @@ public class MoncGUI extends Application {
     public void setTxt(String strMat, String strGeo) {
         this.txtMat = strMat;
         this.txtGeo = strGeo;
+    }
+    public void setArray(ObservableList<String> ele, List<double[]> eleDat) {
+        this.eleSelectName = ele;
+        this.eleData = eleDat;
+        System.out.println("In MONCGUI: length = " + ele.size ());
     }
 
     @Override
@@ -103,11 +112,12 @@ public class MoncGUI extends Application {
             ConfigSetController controller = loader.getController ();
             controller.setMainApp (this);
             controller.setMyStage (primaryStage);
+            controller.setArray (eleSelectName, eleData);
             if ( txtMat != null ) {
                 controller.matArea.appendText (txtMat);
             }
-            if (txtGeo != null) {
-                controller.geoArea.appendText(txtGeo);
+            if ( txtGeo != null ) {
+                controller.geoArea.appendText (txtGeo);
             }
         } catch (IOException ex) {
             System.out.println (" Problem in loading config set");
