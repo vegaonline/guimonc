@@ -21,12 +21,6 @@
             <Button fx:id="shapeEllip" mnemonicParsing="false" onAction="#doShapeCirc" text="Spheroid / Ellipsoid" />
             <Button fx:id="shapeCYL" mnemonicParsing="false" onAction="#doShapeCyl" text="Tube/Disk" />
             <Button fx:id="shapeUpd" mnemonicParsing="false" onAction="#doUpdate" text="UPDATE" />
-            <MenuButton fx:id="shapeRepli" mnemonicParsing="false" text="Replicate">
-              <items>
-                <MenuItem fx:id = "shapeCopy" mnemonicParsing="false" onAction="#doCopy" text="COPY" />
-                <MenuItem fx:id = "shapeMirror" mnemonicParsing="false" onAction="#doMirror"  text="Mirror" />
-              </items>
-            </MenuButton>
          </children>
       </HBox>
       <BorderPane fx:id="geoMainArea" layoutX="1.0" layoutY="29.0" />

@@ -9,11 +9,18 @@ public class Brick extends Mesh {
 
     private double l2, b2, d2;
     private int verts;
+    private double centerX;
+    private double centerY;
+    private double centerZ;
 
-    public Brick(String name, double length, double breadth, double depth,
+    public Brick(String name, double cx, double cy, double cz, double length,
+            double breadth, double depth,
             Material material) {
         super (name, material);
         //half = size/2;
+        this.centerX = cx;
+        this.centerY = cy;
+        this.centerZ = cz;
         l2 = 0.5 * length;
         b2 = 0.5 * breadth;
         d2 = 0.5 * depth;
@@ -24,74 +31,71 @@ public class Brick extends Mesh {
     }
 
     private void setVertexData() {
-
         setVertexCoordsSize (8);
-
         // top
-        putVertex (new Vector3D (l2, b2, d2));
-        putVertex (new Vector3D (-l2, b2, d2));
-        putVertex (new Vector3D (-l2, b2, -d2));
-        putVertex (new Vector3D (l2, b2, -d2));
+        putVertex (new Vector3D (centerX + l2, centerY + b2, centerZ + d2));
+        putVertex (new Vector3D (centerX - l2, centerY + b2, centerZ + d2));
+        putVertex (new Vector3D (centerX - l2, centerY + b2, centerZ - d2));
+        putVertex (new Vector3D (centerX + l2, centerY + b2, centerZ - d2));
         // bottom
-        putVertex (new Vector3D (l2, -b2, d2));
-        putVertex (new Vector3D (-l2, -b2, d2));
-        putVertex (new Vector3D (-l2, -b2, -d2));
-        putVertex (new Vector3D (l2, -b2, -d2));
+        putVertex (new Vector3D (centerX + l2, centerY - b2, centerZ + d2));
+        putVertex (new Vector3D (centerX - l2, centerY - b2, centerZ + d2));
+        putVertex (new Vector3D (centerX - l2, centerY - b2, centerZ - d2));
+        putVertex (new Vector3D (centerX + l2, centerY - b2, centerZ - d2));
         // front
-        putVertex (new Vector3D (l2, b2, d2));
-        putVertex (new Vector3D (-l2, b2, d2));
-        putVertex (new Vector3D (-l2, -b2, d2));
-        putVertex (new Vector3D (l2, -b2, d2));
+        putVertex (new Vector3D (centerX + l2, centerY + b2, centerZ + d2));
+        putVertex (new Vector3D (centerX - l2, centerY + b2, centerZ + d2));
+        putVertex (new Vector3D (centerX - l2, centerY - b2, centerZ + d2));
+        putVertex (new Vector3D (centerX + l2, centerY - b2, centerZ + d2));
         // back
-        putVertex (new Vector3D (l2, b2, -d2));
-        putVertex (new Vector3D (-l2, b2, -d2));
-        putVertex (new Vector3D (-l2, -b2, -d2));
-        putVertex (new Vector3D (l2, -b2, -d2));
+        putVertex (new Vector3D (centerX + l2, centerY + b2, centerZ - d2));
+        putVertex (new Vector3D (centerX - l2, centerY + b2, centerZ - d2));
+        putVertex (new Vector3D (centerX - l2, centerY - b2, centerZ - d2));
+        putVertex (new Vector3D (centerX + l2, centerY - b2, centerZ - d2));
         // left
-        putVertex (new Vector3D (-l2, b2, d2));
-        putVertex (new Vector3D (-l2, b2, -d2));
-        putVertex (new Vector3D (-l2, -b2, -d2));
-        putVertex (new Vector3D (-l2, -b2, d2));
+        putVertex (new Vector3D (centerX - l2, centerY + b2, centerZ + d2));
+        putVertex (new Vector3D (centerX - l2, centerY + b2, centerZ - d2));
+        putVertex (new Vector3D (centerX - l2, centerY - b2, centerZ - d2));
+        putVertex (new Vector3D (centerX - l2, centerY - b2, centerZ + d2));
         // right
-        putVertex (new Vector3D (l2, b2, d2));
-        putVertex (new Vector3D (l2, b2, -d2));
-        putVertex (new Vector3D (l2, -b2, -d2));
-        putVertex (new Vector3D (l2, -b2, d2));
+        putVertex (new Vector3D (centerX + l2, centerY + b2, centerZ + d2));
+        putVertex (new Vector3D (centerX + l2, centerY + b2, centerZ - d2));
+        putVertex (new Vector3D (centerX + l2, centerY - b2, centerZ - d2));
+        putVertex (new Vector3D (centerX + l2, centerY - b2, centerZ + d2));
     }
 
     private void setNormalData() {
         setNormalCoordsSize (16);
-
         // top
-        putNormal (0, 0, 1);
-        putNormal (0, 0, 1);
-        putNormal (0, 0, 1);
-        putNormal (0, 0, 1);
+        putNormal (centerX + 0, centerY + 0, centerZ + 1);
+        putNormal (centerX + 0, centerY + 0, centerZ + 1);
+        putNormal (centerX + 0, centerY + 0, centerZ + 1);
+        putNormal (centerX + 0, centerY + 0, centerZ + 1);
         // bottom
-        putNormal (0, 0, 1);
-        putNormal (0, 0, 1);
-        putNormal (0, 0, 1);
-        putNormal (0, 0, 1);
+        putNormal (centerX + 0, centerY + 0, centerZ + 1);
+        putNormal (centerX + 0, centerY + 0, centerZ + 1);
+        putNormal (centerX + 0, centerY + 0, centerZ + 1);
+        putNormal (centerX + 0, centerY + 0, centerZ + 1);
         // front
-        putNormal (0, 0, 1);
-        putNormal (0, 0, 1);
-        putNormal (0, 0, 1);
-        putNormal (0, 0, 1);
+        putNormal (centerX + 0, centerY + 0, centerZ + 1);
+        putNormal (centerX + 0, centerY + 0, centerZ + 1);
+        putNormal (centerX + 0, centerY + 0, centerZ + 1);
+        putNormal (centerX + 0, centerY + 0, centerZ + 1);
         // back
-        putNormal (0, 0, 1);
-        putNormal (0, 0, 1);
-        putNormal (0, 0, 1);
-        putNormal (0, 0, 1);
+        putNormal (centerX + 0, centerY + 0, centerZ + 1);
+        putNormal (centerX + 0, centerY + 0, centerZ + 1);
+        putNormal (centerX + 0, centerY + 0, centerZ + 1);
+        putNormal (centerX + 0, centerY + 0, centerZ + 1);
         // left
-        putNormal (0, 0, 1);
-        putNormal (0, 0, 1);
-        putNormal (0, 0, 1);
-        putNormal (0, 0, 1);
+        putNormal (centerX + 0, centerY + 0, centerZ + 1);
+        putNormal (centerX + 0, centerY + 0, centerZ + 1);
+        putNormal (centerX + 0, centerY + 0, centerZ + 1);
+        putNormal (centerX + 0, centerY + 0, centerZ + 1);
         // right
-        putNormal (0, 0, 1);
-        putNormal (0, 0, 1);
-        putNormal (0, 0, 1);
-        putNormal (0, 0, 1);
+        putNormal (centerX + 0, centerY + 0, centerZ + 1);
+        putNormal (centerX + 0, centerY + 0, centerZ + 1);
+        putNormal (centerX + 0, centerY + 0, centerZ + 1);
+        putNormal (centerX + 0, centerY + 0, centerZ + 1);
     }
 
     public void setVerts() {
