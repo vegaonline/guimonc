@@ -1362,7 +1362,7 @@ public class GeomController extends Mesh {
                 }
 
                 radSample = (int) (radScale * Math.sqrt (oRad) + 0.5);
-                lenSample = 12;
+                lenSample = 15;
                 Sphere_SECT sph1 = null;
 
                 // Vector3D sphCent = new Vector3D (oX, oY, oZ);
@@ -1739,7 +1739,7 @@ public class GeomController extends Mesh {
                                 nodeList.setText ("Total " + objCnt +
                                         " Brick added");
                                 brkList.clear ();
-                            } 
+                            }
                             if ( cpZ != 0 ) {
                                 objCnt += cpZ;
                                 newCX = oX;
@@ -1885,7 +1885,7 @@ public class GeomController extends Mesh {
                                 nodeList.setText ("Total " + objCnt +
                                         " Brick added");
                                 brkList.clear ();
-                            } 
+                            }
                             if ( cpZ != 0 ) {
                                 objCnt += cpZ;
                                 newCX = oX;
@@ -1936,8 +1936,8 @@ public class GeomController extends Mesh {
                                         " Brick added");
                                 brkList.clear ();
                             }
-                         
-                        }else if ( matList.getValue ().contains ("Brass") ) {
+
+                        } else if ( matList.getValue ().contains ("Brass") ) {
                             if ( cpX != 0 ) {
                                 objCnt += cpX;
                                 newCX = oX;
@@ -2031,7 +2031,7 @@ public class GeomController extends Mesh {
                                 nodeList.setText ("Total " + objCnt +
                                         " Brick added");
                                 brkList.clear ();
-                            } 
+                            }
                             if ( cpZ != 0 ) {
                                 objCnt += cpZ;
                                 newCX = oX;
@@ -2081,8 +2081,8 @@ public class GeomController extends Mesh {
                                 nodeList.setText ("Total " + objCnt +
                                         " Brick added");
                                 brkList.clear ();
-                            }                         
-                        }else if ( matList.getValue ().contains ("Glass") ) {
+                            }
+                        } else if ( matList.getValue ().contains ("Glass") ) {
                             if ( cpX != 0 ) {
                                 objCnt += cpX;
                                 newCX = oX;
@@ -2176,7 +2176,7 @@ public class GeomController extends Mesh {
                                 nodeList.setText ("Total " + objCnt +
                                         " Brick added");
                                 brkList.clear ();
-                            } 
+                            }
                             if ( cpZ != 0 ) {
                                 objCnt += cpZ;
                                 newCX = oX;
@@ -2226,8 +2226,8 @@ public class GeomController extends Mesh {
                                 nodeList.setText ("Total " + objCnt +
                                         " Brick added");
                                 brkList.clear ();
-                            }                         
-                        }else {
+                            }
+                        } else {
                             if ( cpX != 0 ) {
                                 objCnt += cpX;
                                 newCX = oX;
@@ -2321,7 +2321,7 @@ public class GeomController extends Mesh {
                                 nodeList.setText ("Total " + objCnt +
                                         " Brick added");
                                 brkList.clear ();
-                            } 
+                            }
                             if ( cpZ != 0 ) {
                                 objCnt += cpZ;
                                 newCX = oX;
@@ -2371,7 +2371,7 @@ public class GeomController extends Mesh {
                                 nodeList.setText ("Total " + objCnt +
                                         " Brick added");
                                 brkList.clear ();
-                            }                         
+                            }
                         }
                         matEntries.appendText (matList.getValue () + "\n");
                         numGeom++;
@@ -2381,9 +2381,7 @@ public class GeomController extends Mesh {
     }
 
     @FXML
-
-    private void doBrick(ActionEvent event
-    ) {
+    private void doBrick(ActionEvent event) {
         if ( initialized == 0 ) {
             newStage = new Stage ();
             newStage.setTitle (
