@@ -393,6 +393,9 @@ public class GeomController extends Mesh {
         paramPane.add (vb1, 0, 0); // col row                 
         paramPane.add (drawMe, 0, 9);
 
+        ObservableList<tubeTest> tubeList = FXCollections.
+                observableArrayList ();
+
         drawMe.setOnAction (new EventHandler<ActionEvent> () {
             @Override
             public void handle(ActionEvent ev) {
@@ -450,8 +453,6 @@ public class GeomController extends Mesh {
                 radSample = (int) (radScale * Math.sqrt (oRad) + 0.5);
                 lenSample = 2; // (int) (lenScale * Math.sqrt (length) + 0.5);    
 
-                ObservableList<tubeTest> tubeList = FXCollections.
-                        observableArrayList ();
                 objGroup = new Group ();
 
                 objCnt = 0;
@@ -1240,6 +1241,7 @@ public class GeomController extends Mesh {
             }
         }
         );
+        tubeList.remove (0, tubeList.size ());
     }
 
     public void drawSPH() {
@@ -1258,6 +1260,10 @@ public class GeomController extends Mesh {
         phi1.setFont (new Font ("Times New Roman", 10));
         matT.setFont (new Font ("Times New Roman", 10));
         objAxisT.setFont (new Font ("Times New Roman", 10));
+        copyNumTX.setFont (new Font ("Times New Roman", 10));
+        copyNumTY.setFont (new Font ("Times New Roman", 10));
+        copyNumTZ.setFont (new Font ("Times New Roman", 10));
+        gapT.setFont (new Font ("Times New Roman", 10));
 
         baseCX.setPrefColumnCount (5);
         baseCX.setAlignment (Pos.CENTER_RIGHT);
@@ -1288,6 +1294,12 @@ public class GeomController extends Mesh {
         phi1.setMaxSize (40, 1); // width height
         objAxis.setMaxSize (30, 1);
 
+        cpyX.setMaxSize (40, 1);
+        cpyY.setMaxSize (40, 1);
+        cpyZ.setMaxSize (40, 1);
+        gap.setMaxSize (40, 1);
+        gap.setAlignment (Pos.CENTER_RIGHT);
+
         HBox hb1 = new HBox (baseCX, baseCY, baseCZ);
         HBox hb2 = new HBox (radIT, radI, radOT, radO);
         HBox hb3 = new HBox (radOT, radO);
@@ -1297,6 +1309,11 @@ public class GeomController extends Mesh {
         HBox hb7 = new HBox (Phi1T, phi1);
         HBox hb8 = new HBox (objAxisT, objAxis);
         HBox hb9 = new HBox (matT, matList);
+        HBox hb10 = new HBox (copyNumTX, cpyX);
+        HBox hb11 = new HBox (copyNumTY, cpyY);
+        HBox hb12 = new HBox (copyNumTZ, cpyZ);
+        HBox hb13 = new HBox (gapT, gap);
+
         hb1.setSpacing (2); //hb1.setPadding(new Insets(2));
         hb2.setSpacing (2);
         hb3.setSpacing (2);
@@ -1306,10 +1323,14 @@ public class GeomController extends Mesh {
         hb7.setSpacing (2);
         hb8.setSpacing (2);
         hb9.setSpacing (2);
+        hb10.setSpacing (2);
+        hb11.setSpacing (2);
+        hb12.setSpacing (2);
+        hb13.setSpacing (2);
 
         // VBox vb1 = new VBox (BaseCoord, hb1, hb2, hb3, hb4, hb5, hb6);
         VBox vb1 = new VBox (BaseCoord, hb1, hb2, hb3, hb4, hb5, hb6, hb7, hb8,
-                hb9);
+                hb9, hb10, hb11, hb12, hb13);
 
         baseCX.setPromptText ("0.0");
         baseCY.setPromptText ("0.0");
@@ -1326,33 +1347,58 @@ public class GeomController extends Mesh {
         paramPane.add (vb1, 0, 0); // col row 
 
         paramPane.add (drawMe, 0, 3);  //15
+
+        ObservableList<Sphere_SECT> sphList = FXCollections.
+                observableArrayList ();
         drawMe.setOnAction (new EventHandler<ActionEvent> () {
             @Override
             public void handle(ActionEvent ev) {
                 paramPane.getChildren ().removeAll (vb1, radIT, radOT, radI,
                         radO, heightT, ht, objAxisT, objAxis, drawMe);
 
-                double iRad = (!radI.getText ().isEmpty () ? Double.
+                double iRad = 0.0, oRad = 0.0, tht0 = 0.0, tht1 = 0.0,
+                        fi0 = 0.0, fi1 = 0.0, gapVal = 0.0, oX = 0.0,
+                        oY = 0.0, oZ = 0.0, centerX = 0.0, centerY = 0.0,
+                        centerZ = 0.0;
+                int xDir = 0, yDir = 0, zDir = 0;
+                int cpX = 0, cpY = 0, cpZ = 0;
+
+                iRad = (!radI.getText ().isEmpty () ? Double.
                         parseDouble (radI.getText ()) : 0.0);
-                double oRad = (!radO.getText ().isEmpty () ? Double.
+                oRad = (!radO.getText ().isEmpty () ? Double.
                         parseDouble (radO.getText ()) : 0.0);
-                double tht0 = (!theta0.getText ().isEmpty () ? Double.
+                tht0 = (!theta0.getText ().isEmpty () ? Double.
                         parseDouble (theta0.getText ()) * dTORad : -0.5 *
                         Math.PI);
-                double tht1 = (!theta1.getText ().isEmpty () ? Double.
+                tht1 = (!theta1.getText ().isEmpty () ? Double.
                         parseDouble (theta1.getText ()) * dTORad : 0.5 * Math.PI);
-                double fi0 = (!phi0.getText ().isEmpty () ? Double.parseDouble (
+                fi0 = (!phi0.getText ().isEmpty () ? Double.parseDouble (
                         phi0.getText ()) * dTORad : 0.0);
-                double fi1 = (!phi1.getText ().isEmpty () ? Double.parseDouble (
+                fi1 = (!phi1.getText ().isEmpty () ? Double.parseDouble (
                         phi1.getText ()) * dTORad : 2.0 * Math.PI);
 
-                double oX = (!baseCX.getText ().isEmpty () ? Double.
+                oX = (!baseCX.getText ().isEmpty () ? Double.
                         parseDouble (baseCX.getText ()) : 0.0);
-                double oY = (!baseCY.getText ().isEmpty () ? Double.
+                oY = (!baseCY.getText ().isEmpty () ? Double.
                         parseDouble (baseCY.getText ()) : 0.0);
-                double oZ = (!baseCZ.getText ().isEmpty () ? Double.
+                oZ = (!baseCZ.getText ().isEmpty () ? Double.
                         parseDouble (baseCZ.getText ()) : 0.0);
+                gapVal = (!gap.getText ().isEmpty () ? Double.parseDouble (gap.
+                        getText ()) : 0.0);
+                cpX = (!cpyX.getText ().isEmpty () ? Integer.parseInt (cpyX.
+                        getText ()) : 0);
+                cpY = (!cpyY.getText ().isEmpty () ? Integer.parseInt (cpyY.
+                        getText ()) : 0);
+                cpZ = (!cpyZ.getText ().isEmpty () ? Integer.parseInt (cpyZ.
+                        getText ()) : 0);
+                xDir = (!objAxis.getText ().isEmpty () && objAxis.getText ().
+                        matches (axisX) ? 1 : 0);
+                yDir = (!objAxis.getText ().isEmpty () && objAxis.getText ().
+                        matches (axisY) ? 1 : 0);
+                zDir = (!objAxis.getText ().isEmpty () && objAxis.getText ().
+                        matches (axisZ) ? 1 : 0);
 
+                xDir = ((xDir == 0 && yDir == 0 && zDir == 0) ? 1 : xDir);
                 if ( oRad == 0.0 ) {
                     popupMsg.infoBox (
                             "Outer radius cannot be zero : resetting..",
@@ -1363,58 +1409,675 @@ public class GeomController extends Mesh {
 
                 radSample = (int) (radScale * Math.sqrt (oRad) + 0.5);
                 lenSample = 15;
-                Sphere_SECT sph1 = null;
 
-                // Vector3D sphCent = new Vector3D (oX, oY, oZ);
-                Vector3D sphCent = new Vector3D (0, 10, 0);
+                centerX = cpX;
+                centerY = cpY;
+                centerZ = cpZ;
+
+                objCnt = 0;
 
                 if ( matList.getValue ().contains ("Copper") ) {
-                    sph1 = new Sphere_SECT ("Sphere", iRad, oRad, tht0, tht1,
-                            fi0, fi1, radSample, lenSample, Material.Copper ());
+                    if ( cpX != 0 ) {
+                        objCnt += cpX;
+                        centerX = oX;
+                        centerY = oY;
+                        centerZ = oZ;
+                        for ( int ii = 0; ii < cpX; ii++ ) {
+                            if ( xDir == 1 ) {
+                                centerX += gapVal + oRad;
+                                sphList.add (new Sphere_SECT ("Sphere", centerX,
+                                        centerY, centerZ, iRad, oRad, tht0, tht1,
+                                        fi0, fi1, radSample, lenSample,
+                                        Material.
+                                        Copper ()));
+                                sphList.get (ii).setRotationAxis (Rotate.Y_AXIS);
+                                sphList.get (ii).setRotate (90.0);
+                            } else if ( yDir == 1 ) {
+                                centerX += gapVal + oRad;
+                                sphList.add (new Sphere_SECT ("Sphere", centerX,
+                                        centerY, centerZ, iRad, oRad, tht0, tht1,
+                                        fi0, fi1, radSample, lenSample,
+                                        Material.
+                                        Copper ()));
+                                sphList.get (ii).setRotationAxis (Rotate.X_AXIS);
+                                sphList.get (ii).setRotate (90);
+                            } else if ( zDir == 1 ) {
+                                centerX += gapVal + oRad;
+                                sphList.add (new Sphere_SECT ("Sphere", centerX,
+                                        centerY, centerZ, iRad, oRad, tht0, tht1,
+                                        fi0, fi1, radSample, lenSample,
+                                        Material.
+                                        Copper ()));
+                            }
+                            camV.add (sphList.get (ii));
+                            geoTextEntry = "Sphere" + "  (" + centerX + ",  " +
+                                    centerY + ",  " + centerZ + ")  " + "  " +
+                                    iRad + "  " + oRad + "  " + tht0 * RTODeg +
+                                    "  " + tht1 * RTODeg + "  " + fi0 * RTODeg +
+                                    "  " + fi1 * RTODeg + "  " + objAxis.
+                                    getText () +
+                                    "\n";
+                            geoEntries.appendText (geoTextEntry);
+                        }
+                        nodeList.setText (" Total " + objCnt + "Sphere added");
+                        sphList.clear ();
+                    }
+                    if ( cpY != 0 ) {
+                        objCnt += cpY;
+                        centerX = oX;
+                        centerY = oY;
+                        centerZ = oZ;
+                        for ( int ii = 0; ii < cpY; ii++ ) {
+                            if ( xDir == 1 ) {
+                                centerY += gapVal + oRad;
+                                sphList.add (new Sphere_SECT ("Sphere", centerX,
+                                        centerY, centerZ, iRad, oRad, tht0, tht1,
+                                        fi0, fi1, radSample, lenSample,
+                                        Material.
+                                        Copper ()));
+                                sphList.get (ii).setRotationAxis (Rotate.Y_AXIS);
+                                sphList.get (ii).setRotate (90.0);
+                            } else if ( yDir == 1 ) {
+                                centerY += gapVal + oRad;
+                                sphList.add (new Sphere_SECT ("Sphere", centerX,
+                                        centerY, centerZ, iRad, oRad, tht0, tht1,
+                                        fi0, fi1, radSample, lenSample,
+                                        Material.
+                                        Copper ()));
+                                sphList.get (ii).setRotationAxis (Rotate.X_AXIS);
+                                sphList.get (ii).setRotate (90);
+                            } else if ( zDir == 1 ) {
+                                centerY += gapVal + oRad;
+                                sphList.add (new Sphere_SECT ("Sphere", centerX,
+                                        centerY, centerZ, iRad, oRad, tht0, tht1,
+                                        fi0, fi1, radSample, lenSample,
+                                        Material.
+                                        Copper ()));
+                            }
+                            camV.add (sphList.get (ii));
+                            geoTextEntry = "Sphere" + "  (" + centerX + ",  " +
+                                    centerY + ",  " + centerZ + ")  " + "  " +
+                                    iRad + "  " + oRad + "  " + tht0 * RTODeg +
+                                    "  " + tht1 * RTODeg + "  " + fi0 * RTODeg +
+                                    "  " + fi1 * RTODeg + "  " + objAxis.
+                                    getText () +
+                                    "\n";
+                            geoEntries.appendText (geoTextEntry);
+                        }
+                        nodeList.setText (" Total " + objCnt + "Sphere added");
+                        sphList.clear ();
+                    }
+                    if ( cpZ != 0 ) {
+                        objCnt += cpZ;
+                        centerX = oX;
+                        centerY = oY;
+                        centerZ = oZ;
+                        for ( int ii = 0; ii < cpZ; ii++ ) {
+                            if ( xDir == 1 ) {
+                                centerZ += gapVal + oRad;
+                                sphList.add (new Sphere_SECT ("Sphere", centerX,
+                                        centerY, centerZ, iRad, oRad, tht0, tht1,
+                                        fi0, fi1, radSample, lenSample,
+                                        Material.
+                                        Copper ()));
+                                sphList.get (ii).setRotationAxis (Rotate.Y_AXIS);
+                                sphList.get (ii).setRotate (90.0);
+                            } else if ( yDir == 1 ) {
+                                centerZ += gapVal + oRad;
+                                sphList.add (new Sphere_SECT ("Sphere", centerX,
+                                        centerY, centerZ, iRad, oRad, tht0, tht1,
+                                        fi0, fi1, radSample, lenSample,
+                                        Material.
+                                        Copper ()));
+                                sphList.get (ii).setRotationAxis (Rotate.X_AXIS);
+                                sphList.get (ii).setRotate (90);
+                            } else if ( zDir == 1 ) {
+                                centerZ += gapVal + oRad;
+                                sphList.add (new Sphere_SECT ("Sphere", centerX,
+                                        centerY, centerZ, iRad, oRad, tht0, tht1,
+                                        fi0, fi1, radSample, lenSample,
+                                        Material.
+                                        Copper ()));
+                            }
+                            camV.add (sphList.get (ii));
+                            geoTextEntry = "Sphere" + "  (" + centerX + ",  " +
+                                    centerY + ",  " + centerZ + ")  " + "  " +
+                                    iRad + "  " + oRad + "  " + tht0 * RTODeg +
+                                    "  " + tht1 * RTODeg + "  " + fi0 * RTODeg +
+                                    "  " + fi1 * RTODeg + "  " + objAxis.
+                                    getText () +
+                                    "\n";
+                            geoEntries.appendText (geoTextEntry);
+                        }
+                        nodeList.setText (" Total " + objCnt + "Sphere added");
+                        sphList.clear ();
+                    }
                 } else if ( matList.getValue ().contains ("Rubber") ) {
-
-                    sph1 = new Sphere_SECT ("Sphere", iRad, oRad, tht0, tht1,
-                            fi0, fi1, radSample, lenSample, Material.Rubber ());
+                    if ( cpX != 0 ) {
+                        objCnt += cpX;
+                        centerX = oX;
+                        centerY = oY;
+                        centerZ = oZ;
+                        for ( int ii = 0; ii < cpX; ii++ ) {
+                            if ( xDir == 1 ) {
+                                centerX += gapVal + oRad;
+                                sphList.add (new Sphere_SECT ("Sphere", centerX,
+                                        centerY, centerZ, iRad, oRad, tht0, tht1,
+                                        fi0, fi1, radSample, lenSample,
+                                        Material.Rubber ()));
+                                sphList.get (ii).setRotationAxis (Rotate.Y_AXIS);
+                                sphList.get (ii).setRotate (90.0);
+                            } else if ( yDir == 1 ) {
+                                centerX += gapVal + oRad;
+                                sphList.add (new Sphere_SECT ("Sphere", centerX,
+                                        centerY, centerZ, iRad, oRad, tht0, tht1,
+                                        fi0, fi1, radSample, lenSample,
+                                        Material.Rubber ()));
+                                sphList.get (ii).setRotationAxis (Rotate.X_AXIS);
+                                sphList.get (ii).setRotate (90);
+                            } else if ( zDir == 1 ) {
+                                centerX += gapVal + oRad;
+                                sphList.add (new Sphere_SECT ("Sphere", centerX,
+                                        centerY, centerZ, iRad, oRad, tht0, tht1,
+                                        fi0, fi1, radSample, lenSample,
+                                        Material.Rubber ()));
+                            }
+                            camV.add (sphList.get (ii));
+                            geoTextEntry = "Sphere" + "  (" + centerX + ",  " +
+                                    centerY + ",  " + centerZ + ")  " + "  " +
+                                    iRad + "  " + oRad + "  " + tht0 * RTODeg +
+                                    "  " + tht1 * RTODeg + "  " + fi0 * RTODeg +
+                                    "  " + fi1 * RTODeg + "  " + objAxis.
+                                    getText () +
+                                    "\n";
+                            geoEntries.appendText (geoTextEntry);
+                        }
+                        nodeList.setText (" Total " + objCnt + "Sphere added");
+                        sphList.clear ();
+                    }
+                    if ( cpY != 0 ) {
+                        objCnt += cpY;
+                        centerX = oX;
+                        centerY = oY;
+                        centerZ = oZ;
+                        for ( int ii = 0; ii < cpY; ii++ ) {
+                            if ( xDir == 1 ) {
+                                centerY += gapVal + oRad;
+                                sphList.add (new Sphere_SECT ("Sphere", centerX,
+                                        centerY, centerZ, iRad, oRad, tht0, tht1,
+                                        fi0, fi1, radSample, lenSample,
+                                        Material.Rubber ()));
+                                sphList.get (ii).setRotationAxis (Rotate.Y_AXIS);
+                                sphList.get (ii).setRotate (90.0);
+                            } else if ( yDir == 1 ) {
+                                centerY += gapVal + oRad;
+                                sphList.add (new Sphere_SECT ("Sphere", centerX,
+                                        centerY, centerZ, iRad, oRad, tht0, tht1,
+                                        fi0, fi1, radSample, lenSample,
+                                        Material.Rubber ()));
+                                sphList.get (ii).setRotationAxis (Rotate.X_AXIS);
+                                sphList.get (ii).setRotate (90);
+                            } else if ( zDir == 1 ) {
+                                centerY += gapVal + oRad;
+                                sphList.add (new Sphere_SECT ("Sphere", centerX,
+                                        centerY, centerZ, iRad, oRad, tht0, tht1,
+                                        fi0, fi1, radSample, lenSample,
+                                        Material.Rubber ()));
+                            }
+                            camV.add (sphList.get (ii));
+                            geoTextEntry = "Sphere" + "  (" + centerX + ",  " +
+                                    centerY + ",  " + centerZ + ")  " + "  " +
+                                    iRad + "  " + oRad + "  " + tht0 * RTODeg +
+                                    "  " + tht1 * RTODeg + "  " + fi0 * RTODeg +
+                                    "  " + fi1 * RTODeg + "  " + objAxis.
+                                    getText () +
+                                    "\n";
+                            geoEntries.appendText (geoTextEntry);
+                        }
+                        nodeList.setText (" Total " + objCnt + "Sphere added");
+                        sphList.clear ();
+                    }
+                    if ( cpZ != 0 ) {
+                        objCnt += cpZ;
+                        centerX = oX;
+                        centerY = oY;
+                        centerZ = oZ;
+                        for ( int ii = 0; ii < cpZ; ii++ ) {
+                            if ( xDir == 1 ) {
+                                centerZ += gapVal + oRad;
+                                sphList.add (new Sphere_SECT ("Sphere", centerX,
+                                        centerY, centerZ, iRad, oRad, tht0, tht1,
+                                        fi0, fi1, radSample, lenSample,
+                                        Material.Rubber ()));
+                                sphList.get (ii).setRotationAxis (Rotate.Y_AXIS);
+                                sphList.get (ii).setRotate (90.0);
+                            } else if ( yDir == 1 ) {
+                                centerZ += gapVal + oRad;
+                                sphList.add (new Sphere_SECT ("Sphere", centerX,
+                                        centerY, centerZ, iRad, oRad, tht0, tht1,
+                                        fi0, fi1, radSample, lenSample,
+                                        Material.Rubber ()));
+                                sphList.get (ii).setRotationAxis (Rotate.X_AXIS);
+                                sphList.get (ii).setRotate (90);
+                            } else if ( zDir == 1 ) {
+                                centerZ += gapVal + oRad;
+                                sphList.add (new Sphere_SECT ("Sphere", centerX,
+                                        centerY, centerZ, iRad, oRad, tht0, tht1,
+                                        fi0, fi1, radSample, lenSample,
+                                        Material.Rubber ()));
+                            }
+                            camV.add (sphList.get (ii));
+                            geoTextEntry = "Sphere" + "  (" + centerX + ",  " +
+                                    centerY + ",  " + centerZ + ")  " + "  " +
+                                    iRad + "  " + oRad + "  " + tht0 * RTODeg +
+                                    "  " + tht1 * RTODeg + "  " + fi0 * RTODeg +
+                                    "  " + fi1 * RTODeg + "  " + objAxis.
+                                    getText () +
+                                    "\n";
+                            geoEntries.appendText (geoTextEntry);
+                        }
+                        nodeList.setText (" Total " + objCnt + "Sphere added");
+                        sphList.clear ();
+                    }
                 } else if ( matList.getValue ().contains ("Brass") ) {
-                    sph1 = new Sphere_SECT ("Sphere", iRad, oRad, tht0, tht1,
-                            fi0, fi1, radSample, lenSample, Material.Brass ());
+                    if ( cpX != 0 ) {
+                        objCnt += cpX;
+                        centerX = oX;
+                        centerY = oY;
+                        centerZ = oZ;
+                        for ( int ii = 0; ii < cpX; ii++ ) {
+                            if ( xDir == 1 ) {
+                                centerX += gapVal + oRad;
+                                sphList.add (new Sphere_SECT ("Sphere", centerX,
+                                        centerY, centerZ, iRad, oRad, tht0, tht1,
+                                        fi0, fi1, radSample, lenSample,
+                                        Material.Brass ()));
+                                sphList.get (ii).setRotationAxis (Rotate.Y_AXIS);
+                                sphList.get (ii).setRotate (90.0);
+                            } else if ( yDir == 1 ) {
+                                centerX += gapVal + oRad;
+                                sphList.add (new Sphere_SECT ("Sphere", centerX,
+                                        centerY, centerZ, iRad, oRad, tht0, tht1,
+                                        fi0, fi1, radSample, lenSample,
+                                        Material.Brass ()));
+                                sphList.get (ii).setRotationAxis (Rotate.X_AXIS);
+                                sphList.get (ii).setRotate (90);
+                            } else if ( zDir == 1 ) {
+                                centerX += gapVal + oRad;
+                                sphList.add (new Sphere_SECT ("Sphere", centerX,
+                                        centerY, centerZ, iRad, oRad, tht0, tht1,
+                                        fi0, fi1, radSample, lenSample,
+                                        Material.Brass ()));
+                            }
+                            camV.add (sphList.get (ii));
+                            geoTextEntry = "Sphere" + "  (" + centerX + ",  " +
+                                    centerY + ",  " + centerZ + ")  " + "  " +
+                                    iRad + "  " + oRad + "  " + tht0 * RTODeg +
+                                    "  " + tht1 * RTODeg + "  " + fi0 * RTODeg +
+                                    "  " + fi1 * RTODeg + "  " + objAxis.
+                                    getText () +
+                                    "\n";
+                            geoEntries.appendText (geoTextEntry);
+                        }
+                        nodeList.setText (" Total " + objCnt + "Sphere added");
+                        sphList.clear ();
+                    }
+                    if ( cpY != 0 ) {
+                        objCnt += cpY;
+                        centerX = oX;
+                        centerY = oY;
+                        centerZ = oZ;
+                        for ( int ii = 0; ii < cpY; ii++ ) {
+                            if ( xDir == 1 ) {
+                                centerY += gapVal + oRad;
+                                sphList.add (new Sphere_SECT ("Sphere", centerX,
+                                        centerY, centerZ, iRad, oRad, tht0, tht1,
+                                        fi0, fi1, radSample, lenSample,
+                                        Material.Brass ()));
+                                sphList.get (ii).setRotationAxis (Rotate.Y_AXIS);
+                                sphList.get (ii).setRotate (90.0);
+                            } else if ( yDir == 1 ) {
+                                centerY += gapVal + oRad;
+                                sphList.add (new Sphere_SECT ("Sphere", centerX,
+                                        centerY, centerZ, iRad, oRad, tht0, tht1,
+                                        fi0, fi1, radSample, lenSample,
+                                        Material.Brass ()));
+                                sphList.get (ii).setRotationAxis (Rotate.X_AXIS);
+                                sphList.get (ii).setRotate (90);
+                            } else if ( zDir == 1 ) {
+                                centerY += gapVal + oRad;
+                                sphList.add (new Sphere_SECT ("Sphere", centerX,
+                                        centerY, centerZ, iRad, oRad, tht0, tht1,
+                                        fi0, fi1, radSample, lenSample,
+                                        Material.Brass ()));
+                            }
+                            camV.add (sphList.get (ii));
+                            geoTextEntry = "Sphere" + "  (" + centerX + ",  " +
+                                    centerY + ",  " + centerZ + ")  " + "  " +
+                                    iRad + "  " + oRad + "  " + tht0 * RTODeg +
+                                    "  " + tht1 * RTODeg + "  " + fi0 * RTODeg +
+                                    "  " + fi1 * RTODeg + "  " + objAxis.
+                                    getText () +
+                                    "\n";
+                            geoEntries.appendText (geoTextEntry);
+                        }
+                        nodeList.setText (" Total " + objCnt + "Sphere added");
+                        sphList.clear ();
+                    }
+                    if ( cpZ != 0 ) {
+                        objCnt += cpZ;
+                        centerX = oX;
+                        centerY = oY;
+                        centerZ = oZ;
+                        for ( int ii = 0; ii < cpZ; ii++ ) {
+                            if ( xDir == 1 ) {
+                                centerZ += gapVal + oRad;
+                                sphList.add (new Sphere_SECT ("Sphere", centerX,
+                                        centerY, centerZ, iRad, oRad, tht0, tht1,
+                                        fi0, fi1, radSample, lenSample,
+                                        Material.Brass ()));
+                                sphList.get (ii).setRotationAxis (Rotate.Y_AXIS);
+                                sphList.get (ii).setRotate (90.0);
+                            } else if ( yDir == 1 ) {
+                                centerZ += gapVal + oRad;
+                                sphList.add (new Sphere_SECT ("Sphere", centerX,
+                                        centerY, centerZ, iRad, oRad, tht0, tht1,
+                                        fi0, fi1, radSample, lenSample,
+                                        Material.Brass ()));
+                                sphList.get (ii).setRotationAxis (Rotate.X_AXIS);
+                                sphList.get (ii).setRotate (90);
+                            } else if ( zDir == 1 ) {
+                                centerZ += gapVal + oRad;
+                                sphList.add (new Sphere_SECT ("Sphere", centerX,
+                                        centerY, centerZ, iRad, oRad, tht0, tht1,
+                                        fi0, fi1, radSample, lenSample,
+                                        Material.Brass ()));
+                            }
+                            camV.add (sphList.get (ii));
+                            geoTextEntry = "Sphere" + "  (" + centerX + ",  " +
+                                    centerY + ",  " + centerZ + ")  " + "  " +
+                                    iRad + "  " + oRad + "  " + tht0 * RTODeg +
+                                    "  " + tht1 * RTODeg + "  " + fi0 * RTODeg +
+                                    "  " + fi1 * RTODeg + "  " + objAxis.
+                                    getText () +
+                                    "\n";
+                            geoEntries.appendText (geoTextEntry);
+                        }
+                        nodeList.setText (" Total " + objCnt + "Sphere added");
+                        sphList.clear ();
+                    }
+
                 } else if ( matList.getValue ().contains ("Glass") ) {
-                    sph1 = new Sphere_SECT ("Sphere", iRad, oRad, tht0, tht1,
-                            fi0, fi1, radSample, lenSample, Material.Glass ());
+                    if ( cpX != 0 ) {
+                        objCnt += cpX;
+                        centerX = oX;
+                        centerY = oY;
+                        centerZ = oZ;
+                        for ( int ii = 0; ii < cpX; ii++ ) {
+                            if ( xDir == 1 ) {
+                                centerX += gapVal + oRad;
+                                sphList.add (new Sphere_SECT ("Sphere", centerX,
+                                        centerY, centerZ, iRad, oRad, tht0, tht1,
+                                        fi0, fi1, radSample, lenSample,
+                                        Material.Glass ()));
+                                sphList.get (ii).setRotationAxis (Rotate.Y_AXIS);
+                                sphList.get (ii).setRotate (90.0);
+                            } else if ( yDir == 1 ) {
+                                centerX += gapVal + oRad;
+                                sphList.add (new Sphere_SECT ("Sphere", centerX,
+                                        centerY, centerZ, iRad, oRad, tht0, tht1,
+                                        fi0, fi1, radSample, lenSample,
+                                        Material.Glass ()));
+                                sphList.get (ii).setRotationAxis (Rotate.X_AXIS);
+                                sphList.get (ii).setRotate (90);
+                            } else if ( zDir == 1 ) {
+                                centerX += gapVal + oRad;
+                                sphList.add (new Sphere_SECT ("Sphere", centerX,
+                                        centerY, centerZ, iRad, oRad, tht0, tht1,
+                                        fi0, fi1, radSample, lenSample,
+                                        Material.Glass ()));
+                            }
+                            camV.add (sphList.get (ii));
+                            geoTextEntry = "Sphere" + "  (" + centerX + ",  " +
+                                    centerY + ",  " + centerZ + ")  " + "  " +
+                                    iRad + "  " + oRad + "  " + tht0 * RTODeg +
+                                    "  " + tht1 * RTODeg + "  " + fi0 * RTODeg +
+                                    "  " + fi1 * RTODeg + "  " + objAxis.
+                                    getText () +
+                                    "\n";
+                            geoEntries.appendText (geoTextEntry);
+                        }
+                        nodeList.setText (" Total " + objCnt + "Sphere added");
+                        sphList.clear ();
+                    }
+                    if ( cpY != 0 ) {
+                        objCnt += cpY;
+                        centerX = oX;
+                        centerY = oY;
+                        centerZ = oZ;
+                        for ( int ii = 0; ii < cpY; ii++ ) {
+                            if ( xDir == 1 ) {
+                                centerY += gapVal + oRad;
+                                sphList.add (new Sphere_SECT ("Sphere", centerX,
+                                        centerY, centerZ, iRad, oRad, tht0, tht1,
+                                        fi0, fi1, radSample, lenSample,
+                                        Material.Glass ()));
+                                sphList.get (ii).setRotationAxis (Rotate.Y_AXIS);
+                                sphList.get (ii).setRotate (90.0);
+                            } else if ( yDir == 1 ) {
+                                centerY += gapVal + oRad;
+                                sphList.add (new Sphere_SECT ("Sphere", centerX,
+                                        centerY, centerZ, iRad, oRad, tht0, tht1,
+                                        fi0, fi1, radSample, lenSample,
+                                        Material.Glass ()));
+                            } else if ( zDir == 1 ) {
+                                centerY += gapVal + oRad;
+                                sphList.add (new Sphere_SECT ("Sphere", centerX,
+                                        centerY, centerZ, iRad, oRad, tht0, tht1,
+                                        fi0, fi1, radSample, lenSample,
+                                        Material.Glass ()));
+                                sphList.get (ii).setRotationAxis (Rotate.X_AXIS);
+                                sphList.get (ii).setRotate (90);
+                            }
+                            camV.add (sphList.get (ii));
+                            geoTextEntry = "Sphere" + "  (" + centerX + ",  " +
+                                    centerY + ",  " + centerZ + ")  " + "  " +
+                                    iRad + "  " + oRad + "  " + tht0 * RTODeg +
+                                    "  " + tht1 * RTODeg + "  " + fi0 * RTODeg +
+                                    "  " + fi1 * RTODeg + "  " + objAxis.
+                                    getText () +
+                                    "\n";
+                            geoEntries.appendText (geoTextEntry);
+                        }
+                        nodeList.setText (" Total " + objCnt + "Sphere added");
+                        sphList.clear ();
+                    }
+                    if ( cpZ != 0 ) {
+                        objCnt += cpZ;
+                        centerX = oX;
+                        centerY = oY;
+                        centerZ = oZ;
+                        for ( int ii = 0; ii < cpZ; ii++ ) {
+                            if ( xDir == 1 ) {
+                                centerZ += gapVal + oRad;
+                                sphList.add (new Sphere_SECT ("Sphere", centerX,
+                                        centerY, centerZ, iRad, oRad, tht0, tht1,
+                                        fi0, fi1, radSample, lenSample,
+                                        Material.Glass ()));
+                                sphList.get (ii).setRotationAxis (Rotate.Y_AXIS);
+                                sphList.get (ii).setRotate (90.0);
+                            } else if ( yDir == 1 ) {
+                                centerZ += gapVal + oRad;
+                                sphList.add (new Sphere_SECT ("Sphere", centerX,
+                                        centerY, centerZ, iRad, oRad, tht0, tht1,
+                                        fi0, fi1, radSample, lenSample,
+                                        Material.Glass ()));
+                                sphList.get (ii).setRotationAxis (Rotate.X_AXIS);
+                                sphList.get (ii).setRotate (90);
+                            } else if ( zDir == 1 ) {
+                                centerZ += gapVal + oRad;
+                                sphList.add (new Sphere_SECT ("Sphere", centerX,
+                                        centerY, centerZ, iRad, oRad, tht0, tht1,
+                                        fi0, fi1, radSample, lenSample,
+                                        Material.Glass ()));
+                            }
+                            camV.add (sphList.get (ii));
+                            geoTextEntry = "Sphere" + "  (" + centerX + ",  " +
+                                    centerY + ",  " + centerZ + ")  " + "  " +
+                                    iRad + "  " + oRad + "  " + tht0 * RTODeg +
+                                    "  " + tht1 * RTODeg + "  " + fi0 * RTODeg +
+                                    "  " + fi1 * RTODeg + "  " + objAxis.
+                                    getText () +
+                                    "\n";
+                            geoEntries.appendText (geoTextEntry);
+                        }
+                        nodeList.setText (" Total " + objCnt + "Sphere added");
+                        sphList.clear ();
+                    }
                 } else {
-                    sph1 = new Sphere_SECT ("Sphere", iRad, oRad, tht0, tht1,
-                            fi0, fi1, radSample, lenSample, Material.Plastic ());
-                }
-                if ( objAxis.getText ().matches (axisX) ) {
-                    sph1.setRotate (90.0);
-                }
-                sph1.setTranslateX (oX);
-                sph1.setTranslateY (oY);
-                sph1.setTranslateZ (oZ);
 
-                geoTextEntry = "Sphere" + "  " + baseCX.getText () + "  " +
-                        baseCY.getText () + "  " + baseCZ.getText () + "  " +
-                        "  " + iRad + "    " + oRad + "  " + tht0 * RTODeg +
-                        "  " + tht1 * RTODeg +
-                        "  " + fi0 * RTODeg + "  " + fi1 * RTODeg + "  " +
-                        objAxis.getText () +
-                        "\n";
-                geoEntries.appendText (geoTextEntry);
+                    if ( cpX != 0 ) {
+                        objCnt += cpX;
+                        centerX = oX;
+                        centerY = oY;
+                        centerZ = oZ;
+                        for ( int ii = 0; ii < cpX; ii++ ) {
+                            if ( xDir == 1 ) {
+                                centerX += gapVal + oRad;
+                                sphList.add (new Sphere_SECT ("Sphere", centerX,
+                                        centerY, centerZ, iRad, oRad, tht0, tht1,
+                                        fi0, fi1, radSample, lenSample,
+                                        Material.Plastic ()));
+                                sphList.get (ii).setRotationAxis (Rotate.Y_AXIS);
+                                sphList.get (ii).setRotate (90.0);
+                            } else if ( yDir == 1 ) {
+                                centerX += gapVal + oRad;
+                                sphList.add (new Sphere_SECT ("Sphere", centerX,
+                                        centerY, centerZ, iRad, oRad, tht0, tht1,
+                                        fi0, fi1, radSample, lenSample,
+                                        Material.Plastic ()));
+                                sphList.get (ii).setRotationAxis (Rotate.X_AXIS);
+                                sphList.get (ii).setRotate (90);
+                            } else if ( zDir == 1 ) {
+                                centerX += gapVal + oRad;
+                                sphList.add (new Sphere_SECT ("Sphere", centerX,
+                                        centerY, centerZ, iRad, oRad, tht0, tht1,
+                                        fi0, fi1, radSample, lenSample,
+                                        Material.Plastic ()));
+                            }
+                            camV.add (sphList.get (ii));
+                            geoTextEntry = "Sphere" + "  (" + centerX + ",  " +
+                                    centerY + ",  " + centerZ + ")  " + "  " +
+                                    iRad + "  " + oRad + "  " + tht0 * RTODeg +
+                                    "  " + tht1 * RTODeg + "  " + fi0 * RTODeg +
+                                    "  " + fi1 * RTODeg + "  " + objAxis.
+                                    getText () +
+                                    "\n";
+                            geoEntries.appendText (geoTextEntry);
+                        }
+                        nodeList.setText (" Total " + objCnt + "Sphere added");
+                        sphList.clear ();
+                    }
+                    if ( cpY != 0 ) {
+                        objCnt += cpY;
+                        centerX = oX;
+                        centerY = oY;
+                        centerZ = oZ;
+                        for ( int ii = 0; ii < cpY; ii++ ) {
+                            if ( xDir == 1 ) {
+                                centerY += gapVal + oRad;
+                                sphList.add (new Sphere_SECT ("Sphere", centerX,
+                                        centerY, centerZ, iRad, oRad, tht0, tht1,
+                                        fi0, fi1, radSample, lenSample,
+                                        Material.Plastic ()));
+                                sphList.get (ii).setRotationAxis (Rotate.Y_AXIS);
+                                sphList.get (ii).setRotate (90.0);
+                            } else if ( yDir == 1 ) {
+                                centerY += gapVal + oRad;
+                                sphList.add (new Sphere_SECT ("Sphere", centerX,
+                                        centerY, centerZ, iRad, oRad, tht0, tht1,
+                                        fi0, fi1, radSample, lenSample,
+                                        Material.Plastic ()));
+                                sphList.get (ii).setRotationAxis (Rotate.X_AXIS);
+                                sphList.get (ii).setRotate (90);
+                            } else if ( zDir == 1 ) {
+                                centerY += gapVal + oRad;
+                                sphList.add (new Sphere_SECT ("Sphere", centerX,
+                                        centerY, centerZ, iRad, oRad, tht0, tht1,
+                                        fi0, fi1, radSample, lenSample,
+                                        Material.Plastic ()));
+                            }
+                            camV.add (sphList.get (ii));
+                            geoTextEntry = "Sphere" + "  (" + centerX + ",  " +
+                                    centerY + ",  " + centerZ + ")  " + "  " +
+                                    iRad + "  " + oRad + "  " + tht0 * RTODeg +
+                                    "  " + tht1 * RTODeg + "  " + fi0 * RTODeg +
+                                    "  " + fi1 * RTODeg + "  " + objAxis.
+                                    getText () +
+                                    "\n";
+                            geoEntries.appendText (geoTextEntry);
+                        }
+                        nodeList.setText (" Total " + objCnt + "Sphere added");
+                        sphList.clear ();
+                    }
+                    if ( cpZ != 0 ) {
+                        objCnt += cpZ;
+                        centerX = oX;
+                        centerY = oY;
+                        centerZ = oZ;
+                        for ( int ii = 0; ii < cpZ; ii++ ) {
+                            if ( xDir == 1 ) {
+                                centerZ += gapVal + oRad;
+                                sphList.add (new Sphere_SECT ("Sphere", centerX,
+                                        centerY, centerZ, iRad, oRad, tht0, tht1,
+                                        fi0, fi1, radSample, lenSample,
+                                        Material.Plastic ()));
+                                sphList.get (ii).setRotationAxis (Rotate.Y_AXIS);
+                                sphList.get (ii).setRotate (90.0);
+                            } else if ( yDir == 1 ) {
+                                centerZ += gapVal + oRad;
+                                sphList.add (new Sphere_SECT ("Sphere", centerX,
+                                        centerY, centerZ, iRad, oRad, tht0, tht1,
+                                        fi0, fi1, radSample, lenSample,
+                                        Material.Plastic ()));
+                                sphList.get (ii).setRotationAxis (Rotate.X_AXIS);
+                                sphList.get (ii).setRotate (90);
+                            } else if ( zDir == 1 ) {
+                                centerZ += gapVal + oRad;
+                                sphList.add (new Sphere_SECT ("Sphere", centerX,
+                                        centerY, centerZ, iRad, oRad, tht0, tht1,
+                                        fi0, fi1, radSample, lenSample,
+                                        Material.Plastic ()));
+                            }
+                            camV.add (sphList.get (ii));
+                            geoTextEntry = "Sphere" + "  (" + centerX + ",  " +
+                                    centerY + ",  " + centerZ + ")  " + "  " +
+                                    iRad + "  " + oRad + "  " + tht0 * RTODeg +
+                                    "  " + tht1 * RTODeg + "  " + fi0 * RTODeg +
+                                    "  " + fi1 * RTODeg + "  " + objAxis.
+                                    getText () +
+                                    "\n";
+                            geoEntries.appendText (geoTextEntry);
+                        }
+                        nodeList.setText (" Total " + objCnt + "Sphere added");
+                        sphList.clear ();
+                    }
+                }
+
                 matEntries.appendText (matList.getValue () + "\n");
-
-                nodeList.setText ("Sphere added");
-                camV.add (sph1);
                 numGeom++;
                 paramPane.getChildren ().clear ();
             }
         });
+        sphList.remove (0, sphList.size ());
     }
 
     void complete(Stage vegaStage, Scene vegaScene) {
 
         camV.frameCam (vegaStage, vegaScene);
         //  MouseHandler mouseHandler = new MouseHandler(vegaScene, camV);
-        KeyHandler keyHandler = new KeyHandler (vegaStage, vegaScene, camV);
+        KeyHandler keyHandler = new KeyHandler (vegaStage, vegaScene,
+                camV);
         vegaStage.setScene (vegaScene);
         vegaStage.show ();
     }
@@ -1481,7 +2144,8 @@ public class GeomController extends Mesh {
             recordsDir.mkdirs ();
         }
 
-        WritableImage fImage = camV.snapshot (new SnapshotParameters (), null);
+        WritableImage fImage = camV.snapshot (new SnapshotParameters (),
+                null);
 
         //*****  Updating config box ******
         String txtList1 = matEntries.getText ();
@@ -1495,9 +2159,11 @@ public class GeomController extends Mesh {
         File iFile = new File (fName);
         try {
             ImageIO.
-                    write (SwingFXUtils.fromFXImage (fImage, null), "png", iFile);
+                    write (SwingFXUtils.fromFXImage (fImage, null),
+                            "png", iFile);
         } catch (IOException ex) {
-            popupMsg.infoBox ("Problem in saving the Geometry snapshot..",
+            popupMsg.infoBox (
+                    "Problem in saving the Geometry snapshot..",
                     "Geometry saving ERROR");
             Logger
                     .getLogger (GeomController.class
@@ -1572,8 +2238,8 @@ public class GeomController extends Mesh {
         hb9.setSpacing (2);
         hb10.setSpacing (2);
 
-        VBox vb1 = new VBox (BaseCoord, hb1, hb2, hb3, hb4, hb5, hb6, hb7, hb8,
-                hb9, hb10);
+        VBox vb1 = new VBox (BaseCoord, hb1, hb2, hb3, hb4, hb5, hb6,
+                hb7, hb8,hb9, hb10);
 
         baseCX.setPromptText ("0.0");
         baseCY.setPromptText ("0.0");
@@ -1583,66 +2249,51 @@ public class GeomController extends Mesh {
         paramPane.getChildren ().clear ();
         paramPane.add (vb1, 0, 0); // col row 
 
-        //paramPane.add(matT, 0, 5);
-        // paramPane.add(matList, 0, 6);
         paramPane.add (drawMe, 0, 15);
-        drawMe.
-                setOnAction (new EventHandler<ActionEvent> () {
+        ObservableList<Brick> brkList = FXCollections.
+                observableArrayList ();
+
+        drawMe.setOnAction (new EventHandler<ActionEvent> () {
                     @Override
                     public void handle(ActionEvent ev) {
-                        paramPane.getChildren ().removeAll (vb1, radIT, radOT,
+                        paramPane.getChildren ().removeAll (vb1, radIT,
+                                radOT,
                                 radI,
-                                radO, heightT, ht, objAxisT, objAxis, drawMe);
+                                radO, heightT, ht, objAxisT, objAxis,
+                                drawMe);
                         double newCX, newCY, newCZ, lenV, widV, depV, gapVal;
                         double oX, oY, oZ;
                         int cpX = 0, cpY = 0, cpZ = 0;
                         int xDir = 0, yDir = 0, zDir = 0;
 
                         oX = (!baseCX.getText ().isEmpty () ? Double.
-                                parseDouble (
-                                        baseCX.getText ()) : 0.0);
+                                parseDouble (baseCX.getText ()) : 0.0);
                         oY = (!baseCY.getText ().isEmpty () ? Double.
-                                parseDouble (
-                                        baseCY.getText ()) : 0.0);
+                                parseDouble (baseCY.getText ()) : 0.0);
                         oZ = (!baseCZ.getText ().isEmpty () ? Double.
-                                parseDouble (
-                                        baseCZ.getText ()) : 0.0);
+                                parseDouble (baseCZ.getText ()) : 0.0);
                         lenV = (!lenVal.getText ().isEmpty () ? Double.
-                                parseDouble (
-                                        lenVal.getText ()) : 0.0);
+                                parseDouble (lenVal.getText ()) : 0.0);
                         widV = (!widVal.getText ().isEmpty () ? Double.
-                                parseDouble (
-                                        widVal.getText ()) : 0.0);
+                                parseDouble (widVal.getText ()) : 0.0);
                         depV = (!depVal.getText ().isEmpty () ? Double.
-                                parseDouble (
-                                        depVal.getText ()) : 0.0);
-                        cpX = (!cpyX.getText ().isEmpty () ? Integer.parseInt (
-                                cpyX.
-                                getText ()) : 0);
-                        cpY = (!cpyY.getText ().isEmpty () ? Integer.parseInt (
-                                cpyY.
-                                getText ()) : 0);
-                        cpZ = (!cpyZ.getText ().isEmpty () ? Integer.parseInt (
-                                cpyZ.
-                                getText ()) : 0);
+                                parseDouble (depVal.getText ()) : 0.0);
+                        cpX = (!cpyX.getText ().isEmpty () ? Integer.
+                                parseInt (cpyX.getText ()) : 0);
+                        cpY = (!cpyY.getText ().isEmpty () ? Integer.
+                                parseInt (cpyY.getText ()) : 0);
+                        cpZ = (!cpyZ.getText ().isEmpty () ? Integer.
+                                parseInt (cpyZ.getText ()) : 0);
                         gapVal = (!gap.getText ().isEmpty () ? Double.
-                                parseDouble (gap.
-                                        getText ()) : 0.0);
-                        xDir = (!objAxis.getText ().isEmpty () && objAxis.
-                                getText ().
-                                matches (axisX) ? 1 : 0);
-                        yDir = (!objAxis.getText ().isEmpty () && objAxis.
-                                getText ().
-                                matches (axisY) ? 1 : 0);
-                        zDir = (!objAxis.getText ().isEmpty () && objAxis.
-                                getText ().
-                                matches (axisZ) ? 1 : 0);
-                        xDir
-                                = ((xDir == 0 && yDir == 0 && zDir == 0) ? 1
-                                        : xDir);
-
-                        ObservableList<Brick> brkList = FXCollections.
-                                observableArrayList ();
+                                parseDouble (gap.getText ()) : 0.0);
+                        xDir = (!objAxis.getText ().isEmpty () &&
+                                objAxis.getText ().matches (axisX) ? 1 : 0);
+                        yDir = (!objAxis.getText ().isEmpty () &&
+                                objAxis.getText ().matches (axisY) ? 1 : 0);
+                        zDir = (!objAxis.getText ().isEmpty () &&
+                                objAxis.getText ().matches (axisZ) ? 1 : 0);
+                        xDir = ((xDir == 0 && yDir == 0 && zDir == 0)
+                                        ? 1 : xDir);
 
                         objCnt = 0;
                         if ( matList.getValue ().contains ("Copper") ) {
@@ -1655,34 +2306,50 @@ public class GeomController extends Mesh {
                                     if ( xDir == 1 ) {
                                         newCX += (gapVal + lenV);
                                         brkList.add (
-                                                new Brick ("Brick", newCX, newCY,
-                                                        newCZ, lenV, widV, depV,
-                                                        Material.Copper ()));
+                                                new Brick ("Brick",
+                                                        newCX, newCY,
+                                                        newCZ, lenV,
+                                                        widV, depV,
+                                                        Material.
+                                                        Copper ()));
                                     } else if ( yDir == 1 ) {
                                         newCX += (gapVal + widV);
                                         brkList.add (
-                                                new Brick ("Brick", newCX, newCY,
-                                                        newCZ, lenV, widV, depV,
-                                                        Material.Copper ()));
-                                        brkList.get (ii).setRotationAxis (
-                                                Rotate.Z_AXIS);
-                                        brkList.get (ii).setRotate (90.0);
+                                                new Brick ("Brick",
+                                                        newCX, newCY,
+                                                        newCZ, lenV,
+                                                        widV, depV,
+                                                        Material.
+                                                        Copper ()));
+                                        brkList.get (ii).
+                                                setRotationAxis (
+                                                        Rotate.Z_AXIS);
+                                        brkList.get (ii).
+                                                setRotate (90.0);
                                     } else if ( zDir == 1 ) {
                                         newCX += (gapVal + depV);
                                         brkList.add (
-                                                new Brick ("Brick", newCX, newCY,
-                                                        newCZ, lenV, widV, depV,
-                                                        Material.Copper ()));
-                                        brkList.get (ii).setRotationAxis (
-                                                Rotate.Y_AXIS);
-                                        brkList.get (ii).setRotate (90.0);
+                                                new Brick ("Brick",
+                                                        newCX, newCY,
+                                                        newCZ, lenV,
+                                                        widV, depV,
+                                                        Material.
+                                                        Copper ()));
+                                        brkList.get (ii).
+                                                setRotationAxis (
+                                                        Rotate.Y_AXIS);
+                                        brkList.get (ii).
+                                                setRotate (90.0);
                                     }
                                     camV.add (brkList.get (ii));
                                     geoTextEntry
-                                            = "Brick" + "  " + newCX + "  " +
+                                            = "Brick" + "  " + newCX +
+                                            "  " +
                                             newCY + "  " + newCZ +
-                                            "  " + "  " + lenV + "  " + widV +
-                                            "  " + depV + "  " + objAxis.
+                                            "  " + "  " + lenV + "  " +
+                                            widV +
+                                            "  " + depV + "  " +
+                                            objAxis.
                                             getText () + "\n";
                                     geoEntries.appendText (geoTextEntry);
                                 }
@@ -1699,7 +2366,8 @@ public class GeomController extends Mesh {
                                     if ( xDir == 1 ) {
                                         newCY += (gapVal + widV);
                                         brkList.add (
-                                                new Brick ("Brick", newCX, newCY,
+                                                new Brick ("Brick",
+                                                        newCX, newCY,
                                                         newCZ,
                                                         lenV, widV, depV,
                                                         Material.
@@ -1707,32 +2375,41 @@ public class GeomController extends Mesh {
                                     } else if ( yDir == 1 ) {
                                         newCY += (gapVal + lenV);
                                         brkList.add (
-                                                new Brick ("Brick", newCX, newCY,
+                                                new Brick ("Brick",
+                                                        newCX, newCY,
                                                         newCZ,
                                                         lenV, widV, depV,
                                                         Material.
                                                         Copper ()));
-                                        brkList.get (ii).setRotationAxis (
-                                                Rotate.Z_AXIS);
-                                        brkList.get (ii).setRotate (90.0);
+                                        brkList.get (ii).
+                                                setRotationAxis (
+                                                        Rotate.Z_AXIS);
+                                        brkList.get (ii).
+                                                setRotate (90.0);
                                     } else if ( zDir == 1 ) {
                                         newCY += (gapVal + widV);
                                         brkList.add (
-                                                new Brick ("Brick", newCX, newCY,
+                                                new Brick ("Brick",
+                                                        newCX, newCY,
                                                         newCZ,
                                                         lenV, widV, depV,
                                                         Material.
                                                         Copper ()));
-                                        brkList.get (ii).setRotationAxis (
-                                                Rotate.Y_AXIS);
-                                        brkList.get (ii).setRotate (90.0);
+                                        brkList.get (ii).
+                                                setRotationAxis (
+                                                        Rotate.Y_AXIS);
+                                        brkList.get (ii).
+                                                setRotate (90.0);
                                     }
                                     camV.add (brkList.get (ii));
                                     geoTextEntry
-                                            = "Brick" + "  " + newCX + "  " +
+                                            = "Brick" + "  " + newCX +
+                                            "  " +
                                             newCY + "  " + newCZ +
-                                            "  " + "  " + lenV + "  " + widV +
-                                            "  " + depV + "  " + objAxis.
+                                            "  " + "  " + lenV + "  " +
+                                            widV +
+                                            "  " + depV + "  " +
+                                            objAxis.
                                             getText () + "\n";
                                     geoEntries.appendText (geoTextEntry);
                                 }
@@ -1749,7 +2426,8 @@ public class GeomController extends Mesh {
                                     if ( xDir == 1 ) {
                                         newCZ += (gapVal + depV);
                                         brkList.add (
-                                                new Brick ("Brick", newCX, newCY,
+                                                new Brick ("Brick",
+                                                        newCX, newCY,
                                                         newCZ,
                                                         lenV, widV, depV,
                                                         Material.
@@ -1757,32 +2435,41 @@ public class GeomController extends Mesh {
                                     } else if ( yDir == 1 ) {
                                         newCZ += (gapVal + depV);
                                         brkList.add (
-                                                new Brick ("Brick", newCX, newCY,
+                                                new Brick ("Brick",
+                                                        newCX, newCY,
                                                         newCZ,
                                                         lenV, widV, depV,
                                                         Material.
                                                         Copper ()));
-                                        brkList.get (ii).setRotationAxis (
-                                                Rotate.Z_AXIS);
-                                        brkList.get (ii).setRotate (90.0);
+                                        brkList.get (ii).
+                                                setRotationAxis (
+                                                        Rotate.Z_AXIS);
+                                        brkList.get (ii).
+                                                setRotate (90.0);
                                     } else if ( zDir == 1 ) {
                                         newCZ += (gapVal + lenV);
                                         brkList.add (
-                                                new Brick ("Brick", newCX, newCY,
+                                                new Brick ("Brick",
+                                                        newCX, newCY,
                                                         newCZ,
                                                         lenV, widV, depV,
                                                         Material.
                                                         Copper ()));
-                                        brkList.get (ii).setRotationAxis (
-                                                Rotate.Y_AXIS);
-                                        brkList.get (ii).setRotate (90.0);
+                                        brkList.get (ii).
+                                                setRotationAxis (
+                                                        Rotate.Y_AXIS);
+                                        brkList.get (ii).
+                                                setRotate (90.0);
                                     }
                                     camV.add (brkList.get (ii));
                                     geoTextEntry
-                                            = "Brick" + "  " + newCX + "  " +
+                                            = "Brick" + "  " + newCX +
+                                            "  " +
                                             newCY + "  " + newCZ +
-                                            "  " + "  " + lenV + "  " + widV +
-                                            "  " + depV + "  " + objAxis.
+                                            "  " + "  " + lenV + "  " +
+                                            widV +
+                                            "  " + depV + "  " +
+                                            objAxis.
                                             getText () + "\n";
                                     geoEntries.appendText (geoTextEntry);
                                 }
@@ -1791,7 +2478,8 @@ public class GeomController extends Mesh {
                                 brkList.clear ();
                             }
 
-                        } else if ( matList.getValue ().contains ("Rubber") ) {
+                        } else if ( matList.getValue ().contains (
+                                "Rubber") ) {
                             if ( cpX != 0 ) {
                                 objCnt += cpX;
                                 newCX = oX;
@@ -1801,34 +2489,50 @@ public class GeomController extends Mesh {
                                     if ( xDir == 1 ) {
                                         newCX += (gapVal + lenV);
                                         brkList.add (
-                                                new Brick ("Brick", newCX, newCY,
-                                                        newCZ, lenV, widV, depV,
-                                                        Material.Rubber ()));
+                                                new Brick ("Brick",
+                                                        newCX, newCY,
+                                                        newCZ, lenV,
+                                                        widV, depV,
+                                                        Material.
+                                                        Rubber ()));
                                     } else if ( yDir == 1 ) {
                                         newCX += (gapVal + widV);
                                         brkList.add (
-                                                new Brick ("Brick", newCX, newCY,
-                                                        newCZ, lenV, widV, depV,
-                                                        Material.Rubber ()));
-                                        brkList.get (ii).setRotationAxis (
-                                                Rotate.Z_AXIS);
-                                        brkList.get (ii).setRotate (90.0);
+                                                new Brick ("Brick",
+                                                        newCX, newCY,
+                                                        newCZ, lenV,
+                                                        widV, depV,
+                                                        Material.
+                                                        Rubber ()));
+                                        brkList.get (ii).
+                                                setRotationAxis (
+                                                        Rotate.Z_AXIS);
+                                        brkList.get (ii).
+                                                setRotate (90.0);
                                     } else if ( zDir == 1 ) {
                                         newCX += (gapVal + depV);
                                         brkList.add (
-                                                new Brick ("Brick", newCX, newCY,
-                                                        newCZ, lenV, widV, depV,
-                                                        Material.Rubber ()));
-                                        brkList.get (ii).setRotationAxis (
-                                                Rotate.Y_AXIS);
-                                        brkList.get (ii).setRotate (90.0);
+                                                new Brick ("Brick",
+                                                        newCX, newCY,
+                                                        newCZ, lenV,
+                                                        widV, depV,
+                                                        Material.
+                                                        Rubber ()));
+                                        brkList.get (ii).
+                                                setRotationAxis (
+                                                        Rotate.Y_AXIS);
+                                        brkList.get (ii).
+                                                setRotate (90.0);
                                     }
                                     camV.add (brkList.get (ii));
                                     geoTextEntry
-                                            = "Brick" + "  " + newCX + "  " +
+                                            = "Brick" + "  " + newCX +
+                                            "  " +
                                             newCY + "  " + newCZ +
-                                            "  " + "  " + lenV + "  " + widV +
-                                            "  " + depV + "  " + objAxis.
+                                            "  " + "  " + lenV + "  " +
+                                            widV +
+                                            "  " + depV + "  " +
+                                            objAxis.
                                             getText () + "\n";
                                     geoEntries.appendText (geoTextEntry);
                                 }
@@ -1845,7 +2549,8 @@ public class GeomController extends Mesh {
                                     if ( xDir == 1 ) {
                                         newCY += (gapVal + widV);
                                         brkList.add (
-                                                new Brick ("Brick", newCX, newCY,
+                                                new Brick ("Brick",
+                                                        newCX, newCY,
                                                         newCZ,
                                                         lenV, widV, depV,
                                                         Material.
@@ -1853,32 +2558,41 @@ public class GeomController extends Mesh {
                                     } else if ( yDir == 1 ) {
                                         newCY += (gapVal + lenV);
                                         brkList.add (
-                                                new Brick ("Brick", newCX, newCY,
+                                                new Brick ("Brick",
+                                                        newCX, newCY,
                                                         newCZ,
                                                         lenV, widV, depV,
                                                         Material.
                                                         Rubber ()));
-                                        brkList.get (ii).setRotationAxis (
-                                                Rotate.Z_AXIS);
-                                        brkList.get (ii).setRotate (90.0);
+                                        brkList.get (ii).
+                                                setRotationAxis (
+                                                        Rotate.Z_AXIS);
+                                        brkList.get (ii).
+                                                setRotate (90.0);
                                     } else if ( zDir == 1 ) {
                                         newCY += (gapVal + widV);
                                         brkList.add (
-                                                new Brick ("Brick", newCX, newCY,
+                                                new Brick ("Brick",
+                                                        newCX, newCY,
                                                         newCZ,
                                                         lenV, widV, depV,
                                                         Material.
                                                         Rubber ()));
-                                        brkList.get (ii).setRotationAxis (
-                                                Rotate.Y_AXIS);
-                                        brkList.get (ii).setRotate (90.0);
+                                        brkList.get (ii).
+                                                setRotationAxis (
+                                                        Rotate.Y_AXIS);
+                                        brkList.get (ii).
+                                                setRotate (90.0);
                                     }
                                     camV.add (brkList.get (ii));
                                     geoTextEntry
-                                            = "Brick" + "  " + newCX + "  " +
+                                            = "Brick" + "  " + newCX +
+                                            "  " +
                                             newCY + "  " + newCZ +
-                                            "  " + "  " + lenV + "  " + widV +
-                                            "  " + depV + "  " + objAxis.
+                                            "  " + "  " + lenV + "  " +
+                                            widV +
+                                            "  " + depV + "  " +
+                                            objAxis.
                                             getText () + "\n";
                                     geoEntries.appendText (geoTextEntry);
                                 }
@@ -1895,7 +2609,8 @@ public class GeomController extends Mesh {
                                     if ( xDir == 1 ) {
                                         newCZ += (gapVal + depV);
                                         brkList.add (
-                                                new Brick ("Brick", newCX, newCY,
+                                                new Brick ("Brick",
+                                                        newCX, newCY,
                                                         newCZ,
                                                         lenV, widV, depV,
                                                         Material.
@@ -1903,32 +2618,41 @@ public class GeomController extends Mesh {
                                     } else if ( yDir == 1 ) {
                                         newCZ += (gapVal + depV);
                                         brkList.add (
-                                                new Brick ("Brick", newCX, newCY,
+                                                new Brick ("Brick",
+                                                        newCX, newCY,
                                                         newCZ,
                                                         lenV, widV, depV,
                                                         Material.
                                                         Rubber ()));
-                                        brkList.get (ii).setRotationAxis (
-                                                Rotate.Z_AXIS);
-                                        brkList.get (ii).setRotate (90.0);
+                                        brkList.get (ii).
+                                                setRotationAxis (
+                                                        Rotate.Z_AXIS);
+                                        brkList.get (ii).
+                                                setRotate (90.0);
                                     } else if ( zDir == 1 ) {
                                         newCZ += (gapVal + lenV);
                                         brkList.add (
-                                                new Brick ("Brick", newCX, newCY,
+                                                new Brick ("Brick",
+                                                        newCX, newCY,
                                                         newCZ,
                                                         lenV, widV, depV,
                                                         Material.
                                                         Rubber ()));
-                                        brkList.get (ii).setRotationAxis (
-                                                Rotate.Y_AXIS);
-                                        brkList.get (ii).setRotate (90.0);
+                                        brkList.get (ii).
+                                                setRotationAxis (
+                                                        Rotate.Y_AXIS);
+                                        brkList.get (ii).
+                                                setRotate (90.0);
                                     }
                                     camV.add (brkList.get (ii));
                                     geoTextEntry
-                                            = "Brick" + "  " + newCX + "  " +
+                                            = "Brick" + "  " + newCX +
+                                            "  " +
                                             newCY + "  " + newCZ +
-                                            "  " + "  " + lenV + "  " + widV +
-                                            "  " + depV + "  " + objAxis.
+                                            "  " + "  " + lenV + "  " +
+                                            widV +
+                                            "  " + depV + "  " +
+                                            objAxis.
                                             getText () + "\n";
                                     geoEntries.appendText (geoTextEntry);
                                 }
@@ -1937,7 +2661,8 @@ public class GeomController extends Mesh {
                                 brkList.clear ();
                             }
 
-                        } else if ( matList.getValue ().contains ("Brass") ) {
+                        } else if ( matList.getValue ().contains (
+                                "Brass") ) {
                             if ( cpX != 0 ) {
                                 objCnt += cpX;
                                 newCX = oX;
@@ -1947,34 +2672,50 @@ public class GeomController extends Mesh {
                                     if ( xDir == 1 ) {
                                         newCX += (gapVal + lenV);
                                         brkList.add (
-                                                new Brick ("Brick", newCX, newCY,
-                                                        newCZ, lenV, widV, depV,
-                                                        Material.Brass ()));
+                                                new Brick ("Brick",
+                                                        newCX, newCY,
+                                                        newCZ, lenV,
+                                                        widV, depV,
+                                                        Material.
+                                                        Brass ()));
                                     } else if ( yDir == 1 ) {
                                         newCX += (gapVal + widV);
                                         brkList.add (
-                                                new Brick ("Brick", newCX, newCY,
-                                                        newCZ, lenV, widV, depV,
-                                                        Material.Brass ()));
-                                        brkList.get (ii).setRotationAxis (
-                                                Rotate.Z_AXIS);
-                                        brkList.get (ii).setRotate (90.0);
+                                                new Brick ("Brick",
+                                                        newCX, newCY,
+                                                        newCZ, lenV,
+                                                        widV, depV,
+                                                        Material.
+                                                        Brass ()));
+                                        brkList.get (ii).
+                                                setRotationAxis (
+                                                        Rotate.Z_AXIS);
+                                        brkList.get (ii).
+                                                setRotate (90.0);
                                     } else if ( zDir == 1 ) {
                                         newCX += (gapVal + depV);
                                         brkList.add (
-                                                new Brick ("Brick", newCX, newCY,
-                                                        newCZ, lenV, widV, depV,
-                                                        Material.Brass ()));
-                                        brkList.get (ii).setRotationAxis (
-                                                Rotate.Y_AXIS);
-                                        brkList.get (ii).setRotate (90.0);
+                                                new Brick ("Brick",
+                                                        newCX, newCY,
+                                                        newCZ, lenV,
+                                                        widV, depV,
+                                                        Material.
+                                                        Brass ()));
+                                        brkList.get (ii).
+                                                setRotationAxis (
+                                                        Rotate.Y_AXIS);
+                                        brkList.get (ii).
+                                                setRotate (90.0);
                                     }
                                     camV.add (brkList.get (ii));
                                     geoTextEntry
-                                            = "Brick" + "  " + newCX + "  " +
+                                            = "Brick" + "  " + newCX +
+                                            "  " +
                                             newCY + "  " + newCZ +
-                                            "  " + "  " + lenV + "  " + widV +
-                                            "  " + depV + "  " + objAxis.
+                                            "  " + "  " + lenV + "  " +
+                                            widV +
+                                            "  " + depV + "  " +
+                                            objAxis.
                                             getText () + "\n";
                                     geoEntries.appendText (geoTextEntry);
                                 }
@@ -1991,7 +2732,8 @@ public class GeomController extends Mesh {
                                     if ( xDir == 1 ) {
                                         newCY += (gapVal + widV);
                                         brkList.add (
-                                                new Brick ("Brick", newCX, newCY,
+                                                new Brick ("Brick",
+                                                        newCX, newCY,
                                                         newCZ,
                                                         lenV, widV, depV,
                                                         Material.
@@ -1999,32 +2741,41 @@ public class GeomController extends Mesh {
                                     } else if ( yDir == 1 ) {
                                         newCY += (gapVal + lenV);
                                         brkList.add (
-                                                new Brick ("Brick", newCX, newCY,
+                                                new Brick ("Brick",
+                                                        newCX, newCY,
                                                         newCZ,
                                                         lenV, widV, depV,
                                                         Material.
                                                         Brass ()));
-                                        brkList.get (ii).setRotationAxis (
-                                                Rotate.Z_AXIS);
-                                        brkList.get (ii).setRotate (90.0);
+                                        brkList.get (ii).
+                                                setRotationAxis (
+                                                        Rotate.Z_AXIS);
+                                        brkList.get (ii).
+                                                setRotate (90.0);
                                     } else if ( zDir == 1 ) {
                                         newCY += (gapVal + widV);
                                         brkList.add (
-                                                new Brick ("Brick", newCX, newCY,
+                                                new Brick ("Brick",
+                                                        newCX, newCY,
                                                         newCZ,
                                                         lenV, widV, depV,
                                                         Material.
                                                         Brass ()));
-                                        brkList.get (ii).setRotationAxis (
-                                                Rotate.Y_AXIS);
-                                        brkList.get (ii).setRotate (90.0);
+                                        brkList.get (ii).
+                                                setRotationAxis (
+                                                        Rotate.Y_AXIS);
+                                        brkList.get (ii).
+                                                setRotate (90.0);
                                     }
                                     camV.add (brkList.get (ii));
                                     geoTextEntry
-                                            = "Brick" + "  " + newCX + "  " +
+                                            = "Brick" + "  " + newCX +
+                                            "  " +
                                             newCY + "  " + newCZ +
-                                            "  " + "  " + lenV + "  " + widV +
-                                            "  " + depV + "  " + objAxis.
+                                            "  " + "  " + lenV + "  " +
+                                            widV +
+                                            "  " + depV + "  " +
+                                            objAxis.
                                             getText () + "\n";
                                     geoEntries.appendText (geoTextEntry);
                                 }
@@ -2041,7 +2792,8 @@ public class GeomController extends Mesh {
                                     if ( xDir == 1 ) {
                                         newCZ += (gapVal + depV);
                                         brkList.add (
-                                                new Brick ("Brick", newCX, newCY,
+                                                new Brick ("Brick",
+                                                        newCX, newCY,
                                                         newCZ,
                                                         lenV, widV, depV,
                                                         Material.
@@ -2049,32 +2801,41 @@ public class GeomController extends Mesh {
                                     } else if ( yDir == 1 ) {
                                         newCZ += (gapVal + depV);
                                         brkList.add (
-                                                new Brick ("Brick", newCX, newCY,
+                                                new Brick ("Brick",
+                                                        newCX, newCY,
                                                         newCZ,
                                                         lenV, widV, depV,
                                                         Material.
                                                         Brass ()));
-                                        brkList.get (ii).setRotationAxis (
-                                                Rotate.Z_AXIS);
-                                        brkList.get (ii).setRotate (90.0);
+                                        brkList.get (ii).
+                                                setRotationAxis (
+                                                        Rotate.Z_AXIS);
+                                        brkList.get (ii).
+                                                setRotate (90.0);
                                     } else if ( zDir == 1 ) {
                                         newCZ += (gapVal + lenV);
                                         brkList.add (
-                                                new Brick ("Brick", newCX, newCY,
+                                                new Brick ("Brick",
+                                                        newCX, newCY,
                                                         newCZ,
                                                         lenV, widV, depV,
                                                         Material.
                                                         Brass ()));
-                                        brkList.get (ii).setRotationAxis (
-                                                Rotate.Y_AXIS);
-                                        brkList.get (ii).setRotate (90.0);
+                                        brkList.get (ii).
+                                                setRotationAxis (
+                                                        Rotate.Y_AXIS);
+                                        brkList.get (ii).
+                                                setRotate (90.0);
                                     }
                                     camV.add (brkList.get (ii));
                                     geoTextEntry
-                                            = "Brick" + "  " + newCX + "  " +
+                                            = "Brick" + "  " + newCX +
+                                            "  " +
                                             newCY + "  " + newCZ +
-                                            "  " + "  " + lenV + "  " + widV +
-                                            "  " + depV + "  " + objAxis.
+                                            "  " + "  " + lenV + "  " +
+                                            widV +
+                                            "  " + depV + "  " +
+                                            objAxis.
                                             getText () + "\n";
                                     geoEntries.appendText (geoTextEntry);
                                 }
@@ -2082,7 +2843,8 @@ public class GeomController extends Mesh {
                                         " Brick added");
                                 brkList.clear ();
                             }
-                        } else if ( matList.getValue ().contains ("Glass") ) {
+                        } else if ( matList.getValue ().contains (
+                                "Glass") ) {
                             if ( cpX != 0 ) {
                                 objCnt += cpX;
                                 newCX = oX;
@@ -2092,34 +2854,50 @@ public class GeomController extends Mesh {
                                     if ( xDir == 1 ) {
                                         newCX += (gapVal + lenV);
                                         brkList.add (
-                                                new Brick ("Brick", newCX, newCY,
-                                                        newCZ, lenV, widV, depV,
-                                                        Material.Glass ()));
+                                                new Brick ("Brick",
+                                                        newCX, newCY,
+                                                        newCZ, lenV,
+                                                        widV, depV,
+                                                        Material.
+                                                        Glass ()));
                                     } else if ( yDir == 1 ) {
                                         newCX += (gapVal + widV);
                                         brkList.add (
-                                                new Brick ("Brick", newCX, newCY,
-                                                        newCZ, lenV, widV, depV,
-                                                        Material.Glass ()));
-                                        brkList.get (ii).setRotationAxis (
-                                                Rotate.Z_AXIS);
-                                        brkList.get (ii).setRotate (90.0);
+                                                new Brick ("Brick",
+                                                        newCX, newCY,
+                                                        newCZ, lenV,
+                                                        widV, depV,
+                                                        Material.
+                                                        Glass ()));
+                                        brkList.get (ii).
+                                                setRotationAxis (
+                                                        Rotate.Z_AXIS);
+                                        brkList.get (ii).
+                                                setRotate (90.0);
                                     } else if ( zDir == 1 ) {
                                         newCX += (gapVal + depV);
                                         brkList.add (
-                                                new Brick ("Brick", newCX, newCY,
-                                                        newCZ, lenV, widV, depV,
-                                                        Material.Glass ()));
-                                        brkList.get (ii).setRotationAxis (
-                                                Rotate.Y_AXIS);
-                                        brkList.get (ii).setRotate (90.0);
+                                                new Brick ("Brick",
+                                                        newCX, newCY,
+                                                        newCZ, lenV,
+                                                        widV, depV,
+                                                        Material.
+                                                        Glass ()));
+                                        brkList.get (ii).
+                                                setRotationAxis (
+                                                        Rotate.Y_AXIS);
+                                        brkList.get (ii).
+                                                setRotate (90.0);
                                     }
                                     camV.add (brkList.get (ii));
                                     geoTextEntry
-                                            = "Brick" + "  " + newCX + "  " +
+                                            = "Brick" + "  " + newCX +
+                                            "  " +
                                             newCY + "  " + newCZ +
-                                            "  " + "  " + lenV + "  " + widV +
-                                            "  " + depV + "  " + objAxis.
+                                            "  " + "  " + lenV + "  " +
+                                            widV +
+                                            "  " + depV + "  " +
+                                            objAxis.
                                             getText () + "\n";
                                     geoEntries.appendText (geoTextEntry);
                                 }
@@ -2136,7 +2914,8 @@ public class GeomController extends Mesh {
                                     if ( xDir == 1 ) {
                                         newCY += (gapVal + widV);
                                         brkList.add (
-                                                new Brick ("Brick", newCX, newCY,
+                                                new Brick ("Brick",
+                                                        newCX, newCY,
                                                         newCZ,
                                                         lenV, widV, depV,
                                                         Material.
@@ -2144,32 +2923,41 @@ public class GeomController extends Mesh {
                                     } else if ( yDir == 1 ) {
                                         newCY += (gapVal + lenV);
                                         brkList.add (
-                                                new Brick ("Brick", newCX, newCY,
+                                                new Brick ("Brick",
+                                                        newCX, newCY,
                                                         newCZ,
                                                         lenV, widV, depV,
                                                         Material.
                                                         Glass ()));
-                                        brkList.get (ii).setRotationAxis (
-                                                Rotate.Z_AXIS);
-                                        brkList.get (ii).setRotate (90.0);
+                                        brkList.get (ii).
+                                                setRotationAxis (
+                                                        Rotate.Z_AXIS);
+                                        brkList.get (ii).
+                                                setRotate (90.0);
                                     } else if ( zDir == 1 ) {
                                         newCY += (gapVal + widV);
                                         brkList.add (
-                                                new Brick ("Brick", newCX, newCY,
+                                                new Brick ("Brick",
+                                                        newCX, newCY,
                                                         newCZ,
                                                         lenV, widV, depV,
                                                         Material.
                                                         Glass ()));
-                                        brkList.get (ii).setRotationAxis (
-                                                Rotate.Y_AXIS);
-                                        brkList.get (ii).setRotate (90.0);
+                                        brkList.get (ii).
+                                                setRotationAxis (
+                                                        Rotate.Y_AXIS);
+                                        brkList.get (ii).
+                                                setRotate (90.0);
                                     }
                                     camV.add (brkList.get (ii));
                                     geoTextEntry
-                                            = "Brick" + "  " + newCX + "  " +
+                                            = "Brick" + "  " + newCX +
+                                            "  " +
                                             newCY + "  " + newCZ +
-                                            "  " + "  " + lenV + "  " + widV +
-                                            "  " + depV + "  " + objAxis.
+                                            "  " + "  " + lenV + "  " +
+                                            widV +
+                                            "  " + depV + "  " +
+                                            objAxis.
                                             getText () + "\n";
                                     geoEntries.appendText (geoTextEntry);
                                 }
@@ -2186,7 +2974,8 @@ public class GeomController extends Mesh {
                                     if ( xDir == 1 ) {
                                         newCZ += (gapVal + depV);
                                         brkList.add (
-                                                new Brick ("Brick", newCX, newCY,
+                                                new Brick ("Brick",
+                                                        newCX, newCY,
                                                         newCZ,
                                                         lenV, widV, depV,
                                                         Material.
@@ -2194,32 +2983,41 @@ public class GeomController extends Mesh {
                                     } else if ( yDir == 1 ) {
                                         newCZ += (gapVal + depV);
                                         brkList.add (
-                                                new Brick ("Brick", newCX, newCY,
+                                                new Brick ("Brick",
+                                                        newCX, newCY,
                                                         newCZ,
                                                         lenV, widV, depV,
                                                         Material.
                                                         Glass ()));
-                                        brkList.get (ii).setRotationAxis (
-                                                Rotate.Z_AXIS);
-                                        brkList.get (ii).setRotate (90.0);
+                                        brkList.get (ii).
+                                                setRotationAxis (
+                                                        Rotate.Z_AXIS);
+                                        brkList.get (ii).
+                                                setRotate (90.0);
                                     } else if ( zDir == 1 ) {
                                         newCZ += (gapVal + lenV);
                                         brkList.add (
-                                                new Brick ("Brick", newCX, newCY,
+                                                new Brick ("Brick",
+                                                        newCX, newCY,
                                                         newCZ,
                                                         lenV, widV, depV,
                                                         Material.
                                                         Glass ()));
-                                        brkList.get (ii).setRotationAxis (
-                                                Rotate.Y_AXIS);
-                                        brkList.get (ii).setRotate (90.0);
+                                        brkList.get (ii).
+                                                setRotationAxis (
+                                                        Rotate.Y_AXIS);
+                                        brkList.get (ii).
+                                                setRotate (90.0);
                                     }
                                     camV.add (brkList.get (ii));
                                     geoTextEntry
-                                            = "Brick" + "  " + newCX + "  " +
+                                            = "Brick" + "  " + newCX +
+                                            "  " +
                                             newCY + "  " + newCZ +
-                                            "  " + "  " + lenV + "  " + widV +
-                                            "  " + depV + "  " + objAxis.
+                                            "  " + "  " + lenV + "  " +
+                                            widV +
+                                            "  " + depV + "  " +
+                                            objAxis.
                                             getText () + "\n";
                                     geoEntries.appendText (geoTextEntry);
                                 }
@@ -2237,34 +3035,50 @@ public class GeomController extends Mesh {
                                     if ( xDir == 1 ) {
                                         newCX += (gapVal + lenV);
                                         brkList.add (
-                                                new Brick ("Brick", newCX, newCY,
-                                                        newCZ, lenV, widV, depV,
-                                                        Material.Plastic ()));
+                                                new Brick ("Brick",
+                                                        newCX, newCY,
+                                                        newCZ, lenV,
+                                                        widV, depV,
+                                                        Material.
+                                                        Plastic ()));
                                     } else if ( yDir == 1 ) {
                                         newCX += (gapVal + widV);
                                         brkList.add (
-                                                new Brick ("Brick", newCX, newCY,
-                                                        newCZ, lenV, widV, depV,
-                                                        Material.Plastic ()));
-                                        brkList.get (ii).setRotationAxis (
-                                                Rotate.Z_AXIS);
-                                        brkList.get (ii).setRotate (90.0);
+                                                new Brick ("Brick",
+                                                        newCX, newCY,
+                                                        newCZ, lenV,
+                                                        widV, depV,
+                                                        Material.
+                                                        Plastic ()));
+                                        brkList.get (ii).
+                                                setRotationAxis (
+                                                        Rotate.Z_AXIS);
+                                        brkList.get (ii).
+                                                setRotate (90.0);
                                     } else if ( zDir == 1 ) {
                                         newCX += (gapVal + depV);
                                         brkList.add (
-                                                new Brick ("Brick", newCX, newCY,
-                                                        newCZ, lenV, widV, depV,
-                                                        Material.Plastic ()));
-                                        brkList.get (ii).setRotationAxis (
-                                                Rotate.Y_AXIS);
-                                        brkList.get (ii).setRotate (90.0);
+                                                new Brick ("Brick",
+                                                        newCX, newCY,
+                                                        newCZ, lenV,
+                                                        widV, depV,
+                                                        Material.
+                                                        Plastic ()));
+                                        brkList.get (ii).
+                                                setRotationAxis (
+                                                        Rotate.Y_AXIS);
+                                        brkList.get (ii).
+                                                setRotate (90.0);
                                     }
                                     camV.add (brkList.get (ii));
                                     geoTextEntry
-                                            = "Brick" + "  " + newCX + "  " +
+                                            = "Brick" + "  " + newCX +
+                                            "  " +
                                             newCY + "  " + newCZ +
-                                            "  " + "  " + lenV + "  " + widV +
-                                            "  " + depV + "  " + objAxis.
+                                            "  " + "  " + lenV + "  " +
+                                            widV +
+                                            "  " + depV + "  " +
+                                            objAxis.
                                             getText () + "\n";
                                     geoEntries.appendText (geoTextEntry);
                                 }
@@ -2281,7 +3095,8 @@ public class GeomController extends Mesh {
                                     if ( xDir == 1 ) {
                                         newCY += (gapVal + widV);
                                         brkList.add (
-                                                new Brick ("Brick", newCX, newCY,
+                                                new Brick ("Brick",
+                                                        newCX, newCY,
                                                         newCZ,
                                                         lenV, widV, depV,
                                                         Material.
@@ -2289,32 +3104,41 @@ public class GeomController extends Mesh {
                                     } else if ( yDir == 1 ) {
                                         newCY += (gapVal + lenV);
                                         brkList.add (
-                                                new Brick ("Brick", newCX, newCY,
+                                                new Brick ("Brick",
+                                                        newCX, newCY,
                                                         newCZ,
                                                         lenV, widV, depV,
                                                         Material.
                                                         Plastic ()));
-                                        brkList.get (ii).setRotationAxis (
-                                                Rotate.Z_AXIS);
-                                        brkList.get (ii).setRotate (90.0);
+                                        brkList.get (ii).
+                                                setRotationAxis (
+                                                        Rotate.Z_AXIS);
+                                        brkList.get (ii).
+                                                setRotate (90.0);
                                     } else if ( zDir == 1 ) {
                                         newCY += (gapVal + widV);
                                         brkList.add (
-                                                new Brick ("Brick", newCX, newCY,
+                                                new Brick ("Brick",
+                                                        newCX, newCY,
                                                         newCZ,
                                                         lenV, widV, depV,
                                                         Material.
                                                         Plastic ()));
-                                        brkList.get (ii).setRotationAxis (
-                                                Rotate.Y_AXIS);
-                                        brkList.get (ii).setRotate (90.0);
+                                        brkList.get (ii).
+                                                setRotationAxis (
+                                                        Rotate.Y_AXIS);
+                                        brkList.get (ii).
+                                                setRotate (90.0);
                                     }
                                     camV.add (brkList.get (ii));
                                     geoTextEntry
-                                            = "Brick" + "  " + newCX + "  " +
+                                            = "Brick" + "  " + newCX +
+                                            "  " +
                                             newCY + "  " + newCZ +
-                                            "  " + "  " + lenV + "  " + widV +
-                                            "  " + depV + "  " + objAxis.
+                                            "  " + "  " + lenV + "  " +
+                                            widV +
+                                            "  " + depV + "  " +
+                                            objAxis.
                                             getText () + "\n";
                                     geoEntries.appendText (geoTextEntry);
                                 }
@@ -2331,7 +3155,8 @@ public class GeomController extends Mesh {
                                     if ( xDir == 1 ) {
                                         newCZ += (gapVal + depV);
                                         brkList.add (
-                                                new Brick ("Brick", newCX, newCY,
+                                                new Brick ("Brick",
+                                                        newCX, newCY,
                                                         newCZ,
                                                         lenV, widV, depV,
                                                         Material.
@@ -2339,32 +3164,41 @@ public class GeomController extends Mesh {
                                     } else if ( yDir == 1 ) {
                                         newCZ += (gapVal + depV);
                                         brkList.add (
-                                                new Brick ("Brick", newCX, newCY,
+                                                new Brick ("Brick",
+                                                        newCX, newCY,
                                                         newCZ,
                                                         lenV, widV, depV,
                                                         Material.
                                                         Plastic ()));
-                                        brkList.get (ii).setRotationAxis (
-                                                Rotate.Z_AXIS);
-                                        brkList.get (ii).setRotate (90.0);
+                                        brkList.get (ii).
+                                                setRotationAxis (
+                                                        Rotate.Z_AXIS);
+                                        brkList.get (ii).
+                                                setRotate (90.0);
                                     } else if ( zDir == 1 ) {
                                         newCZ += (gapVal + lenV);
                                         brkList.add (
-                                                new Brick ("Brick", newCX, newCY,
+                                                new Brick ("Brick",
+                                                        newCX, newCY,
                                                         newCZ,
                                                         lenV, widV, depV,
                                                         Material.
                                                         Plastic ()));
-                                        brkList.get (ii).setRotationAxis (
-                                                Rotate.Y_AXIS);
-                                        brkList.get (ii).setRotate (90.0);
+                                        brkList.get (ii).
+                                                setRotationAxis (
+                                                        Rotate.Y_AXIS);
+                                        brkList.get (ii).
+                                                setRotate (90.0);
                                     }
                                     camV.add (brkList.get (ii));
                                     geoTextEntry
-                                            = "Brick" + "  " + newCX + "  " +
+                                            = "Brick" + "  " + newCX +
+                                            "  " +
                                             newCY + "  " + newCZ +
-                                            "  " + "  " + lenV + "  " + widV +
-                                            "  " + depV + "  " + objAxis.
+                                            "  " + "  " + lenV + "  " +
+                                            widV +
+                                            "  " + depV + "  " +
+                                            objAxis.
                                             getText () + "\n";
                                     geoEntries.appendText (geoTextEntry);
                                 }
@@ -2373,7 +3207,8 @@ public class GeomController extends Mesh {
                                 brkList.clear ();
                             }
                         }
-                        matEntries.appendText (matList.getValue () + "\n");
+                        matEntries.appendText (matList.getValue () +
+                                "\n");
                         numGeom++;
                         paramPane.getChildren ().clear ();
                     }
