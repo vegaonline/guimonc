@@ -6,7 +6,6 @@
 package moncgui;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.logging.*;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
@@ -35,6 +34,7 @@ public class MoncGUI extends Application {
     private String txtGeo = null;
     private String txtZone = null;
     private String txtMat = null;
+    private String MatProp = null;
     private ObservableList<String> eleSelectName = FXCollections.observableArrayList ();
     private java.util.List<double[]> eleData = new java.util.ArrayList<double[]> ();
 
@@ -65,9 +65,8 @@ public class MoncGUI extends Application {
         this.txtMat = strMat;
         this.txtGeo = strGeo;
     }
-    public void setArray(ObservableList<String> ele, List<double[]> eleDat) {
-        this.eleSelectName = ele;
-        this.eleData = eleDat;
+    public void setMatProp(String matProps) {
+        this.MatProp = matProps;
     }
 
     @Override
@@ -110,10 +109,9 @@ public class MoncGUI extends Application {
             rootLayout.setCenter (confPage);
             ConfigSetController controller = loader.getController ();
             controller.setMainApp (this);
-            controller.setMyStage (primaryStage);
-            controller.setArray (eleSelectName, eleData);
-            if ( txtMat != null ) {
-                controller.matArea.appendText (txtMat);
+            controller.setMyStage (primaryStage);            
+            if ( MatProp != null ) {
+                controller.matArea.appendText (MatProp);
             }
             if ( txtGeo != null ) {
                 controller.geoArea.appendText (txtGeo);
