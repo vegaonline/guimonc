@@ -60,7 +60,7 @@ public class MatGeneratorController implements Initializable {
     ArrayList<Double> oneRow = new ArrayList<Double>();
     ObservableList<Double> eleData1 = FXCollections.observableArrayList(oneRow);
     ObservableList<Double> eleData2 = FXCollections.observableArrayList(oneRow);
-    private List<String> elename = new ArrayList<String>();
+    ObservableList<String> elename = FXCollections.observableArrayList();
     ObservableList<String> elementName = FXCollections.observableArrayList();
     ObservableList<String> eleSelectName = FXCollections.observableArrayList();
     int DLMax = 28;
@@ -201,7 +201,7 @@ public class MatGeneratorController implements Initializable {
                     tstData = Double.parseDouble(data[4].toString());
                     oneRow.add(tstData);
                     eleData1.addAll(oneRow);
-                    elename.add(data[0].toString());
+                    // elename.add(data[0].toString());
                     elementName.add(data[0].toString());
                     datType.put(data[0].toString(), 0);
                     serialNum.put(data[0].toString(), i);
@@ -247,7 +247,7 @@ public class MatGeneratorController implements Initializable {
                         oneRow.add(tstData);
                     }
                     eleData2.addAll(oneRow);
-                    elename.add(data[0].toString());
+                    // elename.add(data[0].toString());
                     elementName.add(data[0].toString());
                     datType.put(data[0].toString(), 1);
                     serialNum.put(data[0].toString(), i);
@@ -340,32 +340,42 @@ public class MatGeneratorController implements Initializable {
             String matProps = "";
             int key = 0;
             int ind2get = DLMax;
+            int iVal = 0;
             double val = 0.0;
             ObservableList<String> tempList = FXCollections.observableArrayList();
             int count = matSelected.getItems().size();
             matSelected.getSelectionModel().selectAll();
             tempList.addAll(matSelected.getItems());
+            elename.addAll(tempList);
             for (int ii = 0; ii < count; ii++) {
                 matProps += tempList.get(ii);
                 int dataArray2Search = (Integer) datType.get(tempList.get(ii)).intValue();
                 int srNum = (Integer) serialNum.get(tempList.get(ii)).intValue();
                 if (dataArray2Search == 0) {
                     for (int jj = 0; jj < 4; jj++) {
-                        matProps += "  " + eleData1.get(srNum * 4 + jj);
+                        val = eleData1.get(srNum * 4 + jj);
+                        if (jj == 1 && val != 0.0) {
+                            matProps += "   " + (int) val;
+                        } else if (val != 0.0) {
+                            matProps += "  " + val;
+                        }
                     }
                 } else if (dataArray2Search == 1) {
                     for (int jj = 0; jj < DLMax; jj++) {
                         val = eleData2.get(srNum * ind2get + jj);
-                        val = (jj == 2 ? (int) val : val);
-                        val = (jj > 2 && (jj + 1 % 2 == 0) ? (int) val : val);
-                        if (val != 0) {
+                        if (jj == 2 && val != 0.0) {
+                            matProps += "  " + (int) val;
+                        } else if (jj > 2 && (jj + 1) % 2 == 0 && val != 0.0) {
+                            matProps += "  " + (int) val;
+                        } else if (val != 0) {
                             matProps += "  " + val;
                         }
                     }
                 }
                 matProps += "\n";
-            }            
-            myGUI.setMatProp(matProps);
+            }
+            System.out.println("In MatGen " + elename.size());
+            myGUI.setMatProp(matProps, elename);
             matGenPane.getChildren().clear();
             eleData1.clear();
             eleData2.clear();
@@ -373,6 +383,6 @@ public class MatGeneratorController implements Initializable {
             elementName.clear();
             eleSelectName.clear();
             oneRow.clear();
-        });        
+        });
     }
 }

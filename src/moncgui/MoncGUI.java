@@ -65,14 +65,15 @@ public class MoncGUI extends Application {
         this.txtMat = strMat;
         this.txtGeo = strGeo;
     }
-    public void setMatProp(String matProps) {
+    public void setMatProp(String matProps, ObservableList<String> eleList) {
         this.MatProp = matProps;
+        this.eleSelectName.addAll(eleList);
+        System.out.println("In MoncGUI " +  this.eleSelectName.size());
     }
 
     @Override
     public void start(Stage pStage) throws Exception {
         this.primaryStage = pStage;
-
         primaryStage.setTitle ("MONC GUI :: Abhijit Bhattacharyya");
         FXMLLoader loader = new FXMLLoader (MoncGUI.class.getResource (
                 "RootLayout.fxml"));
@@ -137,13 +138,14 @@ public class MoncGUI extends Application {
 
     public void GeomStart() {
         try {
-            FXMLLoader loader = new FXMLLoader (getClass ().getResource (
+            FXMLLoader loader = new FXMLLoader (MoncGUI.class.getResource (
                     "Geom.fxml"));  // MoncGUI.c
             AnchorPane geomPage = (AnchorPane) loader.load ();
             rootLayout.setCenter (geomPage);
             GeomController controller = loader.getController ();
             controller.setMainApp (this);
             controller.setMyStage (primaryStage);
+            controller.setMatNameArray(eleSelectName);
         } catch (IOException ex) {
             System.out.println (" Problem in loading geometry set");
             Logger.getLogger (MoncGUI.class.getName ()).log (Level.SEVERE, null,
