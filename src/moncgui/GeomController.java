@@ -47,14 +47,10 @@ public class GeomController extends Mesh {
     private Stage geoStage;
     private Scene geoScene;
     private CameraView camV = new CameraView();
-    private Object_Array_List oal1;
-    private List<Object_Array_List> objLIST = new ArrayList<Object_Array_List>(
-            totObjectNum);
     private int objCnt = 0;
     private Stage newStage = new Stage();
     private Scene newScene;
     private Axis3D axis;
-    private Group objGroup;
 
     private final ScrollBar scB = new ScrollBar();
     private final SplitPane paramPane1 = new SplitPane();
@@ -250,7 +246,6 @@ public class GeomController extends Mesh {
         matList.getItems ().add ("Glass");
         matList.getItems ().add ("Plastic");
          */
-//        System.out.println(matNames.get(1));
         matList.getItems().addAll(matNames);
     }
 
@@ -454,12 +449,18 @@ public class GeomController extends Mesh {
                     );
                     resetGeom();
                 }
-
                 radSample = (int) (radScale * Math.sqrt(oRad) + 0.5);
                 lenSample = 2; // (int) (lenScale * Math.sqrt (length) + 0.5);    
 
-                objGroup = new Group();
-
+                if (cpX == 0 && cpY == 0 && cpZ == 0){
+                    if (xDir ==1) {
+                        cpX = 1;
+                    } else if (yDir == 1) {
+                        cpY = 1;                        
+                    } else if (zDir == 1) {
+                        cpZ = 1;
+                    }
+                }
                 objCnt = 0;
                 String matName = matList.getValue().toString();
                 if (cpX != 0) {
@@ -500,6 +501,7 @@ public class GeomController extends Mesh {
                                 + newCY + ",  " + newCZ + ")  " + "  " + iRad + "  "
                                 + oRad + "  " + length + "  " + tht0 * RTODeg
                                 + "  " + tht1 * RTODeg + "  " + objAxis.getText()
+                                + " Material = " + (1 + matNames.indexOf(matName))
                                 + "\n";
                         geoEntries.appendText(geoTextEntry);
                     }
@@ -539,10 +541,12 @@ public class GeomController extends Mesh {
                             tubeList.get(ii).setRotate(90.0);
                         }
                         camV.add(tubeList.get(ii));
-                        geoTextEntry = "TUBE" + "  (" + newCX + ",  "
-                                + newCY + ",  " + newCZ + ")  " + "  " + iRad + "  "
-                                + oRad + "  " + length + "  " + tht0 * RTODeg
-                                + "  " + tht1 * RTODeg + "  " + objAxis.getText()
+                        geoTextEntry = "TUBE" 
+                                + "  (" + newCX + ",  " + newCY + ",  " + newCZ + ")  " 
+                                + "  " + iRad + "  " + oRad + "  " + length + "  " 
+                                + tht0 * RTODeg + "  " + tht1 * RTODeg + "  " 
+                                + objAxis.getText()
+                                + " Material = " + (1 + matNames.indexOf(matName))
                                 + "\n";
                         geoEntries.appendText(geoTextEntry);
                     }
@@ -582,12 +586,12 @@ public class GeomController extends Mesh {
                             tubeList.get(ii).setRotate(90.0);
                         }
                         camV.add(tubeList.get(ii));
-                        geoTextEntry = "TUBE" + "  (" + newCX + ",  "
-                                + newCY
-                                + ",  " + newCZ + ")  " + "  " + iRad + "  "
-                                + oRad + "  " + length + "  " + tht0 * RTODeg
-                                + "  "
+                        geoTextEntry = "TUBE" 
+                                + "  (" + newCX + ",  " + newCY + ",  " + newCZ + ")  " 
+                                + "  " + iRad + "  " + oRad + "  " + length 
+                                + "  " + tht0 * RTODeg + "  "
                                 + tht1 * RTODeg + "  " + objAxis.getText()
+                                + " Material = " + (1 + matNames.indexOf(matName))
                                 + "\n";
                         geoEntries.appendText(geoTextEntry);
                         // objGroup.getChildren ().add (tubeList.get (ii));
@@ -595,8 +599,7 @@ public class GeomController extends Mesh {
                     nodeList.setText("Toal " + objCnt + "Tube added");
                     tubeList.clear();
                 }
-
-                matEntries.appendText(matList.getValue() + "\n");
+                matEntries.appendText( matNames.indexOf(matList.getValue()) + matList.getValue() + "\n");
                 numGeom++;
                 paramPane.getChildren().clear();
             }
@@ -812,8 +815,8 @@ public class GeomController extends Mesh {
                                 + centerY + ",  " + centerZ + ")  " + "  "
                                 + iRad + "  " + oRad + "  " + tht0 * RTODeg
                                 + "  " + tht1 * RTODeg + "  " + fi0 * RTODeg
-                                + "  " + fi1 * RTODeg + "  " + objAxis.
-                                getText()
+                                + "  " + fi1 * RTODeg + "  " + objAxis.getText()
+                                + " Material = " + (1 + matNames.indexOf(matName))
                                 + "\n";
                         geoEntries.appendText(geoTextEntry);
                     }
@@ -854,8 +857,8 @@ public class GeomController extends Mesh {
                                 + centerY + ",  " + centerZ + ")  " + "  "
                                 + iRad + "  " + oRad + "  " + tht0 * RTODeg
                                 + "  " + tht1 * RTODeg + "  " + fi0 * RTODeg
-                                + "  " + fi1 * RTODeg + "  " + objAxis.
-                                getText()
+                                + "  " + fi1 * RTODeg + "  " + objAxis.getText()
+                                + " Material = " + (1 + matNames.indexOf(matName))
                                 + "\n";
                         geoEntries.appendText(geoTextEntry);
                     }
@@ -896,8 +899,8 @@ public class GeomController extends Mesh {
                                 + centerY + ",  " + centerZ + ")  " + "  "
                                 + iRad + "  " + oRad + "  " + tht0 * RTODeg
                                 + "  " + tht1 * RTODeg + "  " + fi0 * RTODeg
-                                + "  " + fi1 * RTODeg + "  " + objAxis.
-                                getText()
+                                + "  " + fi1 * RTODeg + "  " + objAxis.getText()
+                                + " Material = " + (1 + matNames.indexOf(matName))
                                 + "\n";
                         geoEntries.appendText(geoTextEntry);
                     }
@@ -973,6 +976,7 @@ public class GeomController extends Mesh {
 
     @FXML
     private void doCLS(ActionEvent event) {
+        camV.getChildren().clear();
     }
 
     @FXML
@@ -988,7 +992,7 @@ public class GeomController extends Mesh {
         WritableImage fImage = camV.snapshot(new SnapshotParameters(),
                 null);
 
-        //*****  Updating config box ******
+        //*****  Updating config box ******       
         String txtList1 = matEntries.getText();
         String txtList2 = geoEntries.getText();
         myGUI.setTxt(txtList1, txtList2);
@@ -1183,13 +1187,12 @@ public class GeomController extends Mesh {
                         camV.add(brkList.get(ii));
                         geoTextEntry
                                 = "Brick" + "  " + newCX
-                                + "  "
-                                + newCY + "  " + newCZ
+                                + "  " + newCY + "  " + newCZ
                                 + "  " + "  " + lenV + "  "
-                                + widV
-                                + "  " + depV + "  "
-                                + objAxis.
-                                getText() + "\n";
+                                + widV + "  " + depV + "  "
+                                + objAxis.getText() 
+                                + " Material = " + (1 + matNames.indexOf(matName))
+                                + "\n";                        
                         geoEntries.appendText(geoTextEntry);
                     }
                     nodeList.setText("Total " + objCnt
@@ -1240,13 +1243,12 @@ public class GeomController extends Mesh {
                         camV.add(brkList.get(ii));
                         geoTextEntry
                                 = "Brick" + "  " + newCX
-                                + "  "
-                                + newCY + "  " + newCZ
+                                + "  "+ newCY + "  " + newCZ
                                 + "  " + "  " + lenV + "  "
-                                + widV
-                                + "  " + depV + "  "
-                                + objAxis.
-                                getText() + "\n";
+                                + widV + "  " + depV + "  "
+                                + objAxis.getText() 
+                                + " Material = " + (1 + matNames.indexOf(matName))
+                                + "\n";
                         geoEntries.appendText(geoTextEntry);
                     }
                     nodeList.setText("Total " + objCnt
@@ -1297,13 +1299,12 @@ public class GeomController extends Mesh {
                         camV.add(brkList.get(ii));
                         geoTextEntry
                                 = "Brick" + "  " + newCX
-                                + "  "
-                                + newCY + "  " + newCZ
+                                + "  "+ newCY + "  " + newCZ
                                 + "  " + "  " + lenV + "  "
-                                + widV
-                                + "  " + depV + "  "
-                                + objAxis.
-                                getText() + "\n";
+                                + widV+ "  " + depV + "  "
+                                + objAxis.getText() 
+                                + " Material = " + (1 + matNames.indexOf(matName))
+                                + "\n";
                         geoEntries.appendText(geoTextEntry);
                     }
                     nodeList.setText("Total " + objCnt

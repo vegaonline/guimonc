@@ -11,7 +11,6 @@ import java.util.*;
 import java.util.logging.*;
 import javafx.beans.value.*;
 import javafx.collections.*;
-import javafx.event.*;
 import javafx.fxml.*;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -81,43 +80,7 @@ public class MatGeneratorController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        menuBar = new MenuBar();
-        matProcess = new Menu("Process material");
-        matSelect = new Menu("Select material for Simulation");
-        newMat = new MenuItem("Create Material");
-        delMat = new MenuItem("Delete Material");
-        seeMat = new MenuItem("Review Material");
-        selectIt = new MenuItem("Select Material");
-
-        matProcess.getItems().addAll(newMat, delMat, seeMat);
-        matSelect.getItems().add(selectIt);
-        menuBar.getMenus().addAll(matProcess, matSelect);
-        matGenPane.getChildren().add(menuBar);
-
-        newMat.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent ev) {
-                System.out.println(" I am in newmat");
-                makeNewMat();
-            }
-        });
-
-        delMat.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent ev) {
-                deleteMat();
-            }
-        });
-
-        seeMat.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent ev) {
-                reviewMat();
-            }
-        });
-
-        selectIt.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent ev) {
-                selMat();
-            }
-        });
+        selMat();
     }
 
     public String matFileHandler(int act) {
@@ -149,31 +112,6 @@ public class MatGeneratorController implements Initializable {
                     "File Saving Procedure not successful");
             return null;
         }
-    }
-
-    public void makeNewMat() {
-        popupMsg.infoBox(
-                "Material management is under development. Please have patience. Thank You",
-                "Feature is under development");
-        matGenPane.getChildren().clear();
-        matGenPane.getChildren().add(menuBar);
-
-    }
-
-    public void deleteMat() {
-        popupMsg.infoBox(
-                "Material management is under development. Please have patience. Thank You",
-                "Feature is under development");
-    }
-
-    public void reviewMat() {
-        File dataF = null;
-        String fileName = null;
-        fileName = matFileHandler(1);
-        System.out.println(dataF);
-        popupMsg.infoBox(
-                "Material management is under development. Please have patience. Thank You",
-                "Feature is under development");
     }
 
     public void getdataContents(File fl1, File fl2) {
