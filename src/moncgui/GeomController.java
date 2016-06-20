@@ -26,6 +26,9 @@ import javafx.scene.text.Font;
 import javafx.scene.transform.Rotate;
 import javafx.stage.*;
 import javax.imageio.ImageIO;
+import moncgui.Material;
+import moncgui.Mesh;
+import moncgui.Sphere;
 
 /**
  * FXML Controller class
@@ -965,8 +968,8 @@ public class GeomController extends Mesh {
     }
 
     private void resetGeom() {
-        drawPane.getItems().clear();
         camV.resetCam();
+        drawPane.getItems().clear();
     }
 
     @FXML
@@ -976,7 +979,8 @@ public class GeomController extends Mesh {
 
     @FXML
     private void doCLS(ActionEvent event) {
-        camV.getChildren().clear();
+        buildScene();
+        //camV.getChildren().clear();
     }
 
     @FXML

@@ -7,51 +7,63 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="moncgui.RootLayoutController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+            minWidth="-Infinity" prefHeight="480.0" prefWidth="600.0" 
+            xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" 
+            fx:controller="moncgui.RootLayoutController">
     <top>
-        <MenuBar BorderPane.alignment="CENTER">
+        <MenuBar style="-fx-background-color: #ebf2d7; -fx-text-fill: #125e7c;" 
+                 BorderPane.alignment="CENTER">
             <menus>
-                <Menu fx:id="doMat" mnemonicParsing="false" text="Material Manager"> 
+                <Menu fx:id="doMat" mnemonicParsing="false" 
+                      text="Material Manager"> 
                     <items>
-                        <MenuItem fx:id="doManageMat" mnemonicParsing="false" onAction="#manageMat" 
-                                  text="Manage Material"/>
+                        <MenuItem fx:id="doManageMat" mnemonicParsing="false" 
+                                  onAction="#manageMat" text="Manage Material" />
                     </items>
                 </Menu>
                 <Menu fx:id="doGeom" mnemonicParsing="false" text="Geometry">
                     <items>
-                        <MenuItem fx:id="doGeomStart" mnemonicParsing="false" onAction="#GeomInitialize" 
-                                  text="Start Design" />
+                        <MenuItem fx:id="doGeomStart" mnemonicParsing="false" 
+                                  onAction="#GeomInitialize" text="Start Design" />
                     </items>
                 </Menu>
                 <Menu fx:id="doConfig" mnemonicParsing="false" text="Configure">
                     <items>
-                        <MenuItem fx:id="doConfigNew" mnemonicParsing="false" onAction="#confNew" 
-                                  text="New" />
+                        <MenuItem fx:id="doConfigNew" mnemonicParsing="false" 
+                                  onAction="#confNew" text="New" />
                     </items>
                 </Menu>
-                <Menu fx:id="doRun" mnemonicParsing="false" text="Run" >
+                <Menu fx:id="doRun" mnemonicParsing="false" text="Run">
                     <items> 
                         <MenuItem fx:id="RUNMONC" mnemonicParsing="false" 
                                   onAction="#MONCRun" text="RUN MONC CODE" />
                     </items> 
                 </Menu>
-                <Menu fx:id="anaLyzePlot" mnemonicParsing="false" text="Analyze and Report">
+                <Menu fx:id="anaLyzePlot" mnemonicParsing="false" 
+                      text="Analyze and Report">
                     <items>
-                        <MenuItem fx:id="analyzePlot" mnemonicParsing="false" onAction="#doPlot" text="Plot" />
-                        <MenuItem fx:id="makeReport" mnemonicParsing="false" onAction="#doRPT" text="Prepare Report" />
+                        <MenuItem fx:id="analyzePlot" mnemonicParsing="false" 
+                                  onAction="#doPlot" text="Plot" />
+                        <MenuItem fx:id="makeReport" mnemonicParsing="false" 
+                                  onAction="#doRPT" text="Prepare Report" />
                     </items>
                 </Menu>
-                <Menu fx:id="HOME" mnemonicParsing="false" text="ASSIST" >
+                <Menu fx:id="HOME" mnemonicParsing="false" text="ASSIST">
                     <items>
-                        <MenuItem fx:id="help" mnemonicParsing="false" onAction="#doHELP" text="Help" />
-                        <MenuItem fx:id="about" mnemonicParsing="false" onAction="#doAbout" text="About"/>
-                        <MenuItem fx:id="exit" mnemonicParsing="false"  onAction="#handleExit" text="EXIT" />
+                        <MenuItem fx:id="help" mnemonicParsing="false" 
+                                  onAction="#doHELP" text="Help" />
+                        <MenuItem fx:id="about" mnemonicParsing="false" 
+                                  onAction="#doAbout" text="About" />
+                        <MenuItem fx:id="exit" mnemonicParsing="false" 
+                                  onAction="#handleExit" text="EXIT" />
                     </items>
                 </Menu>
             </menus>
         </MenuBar>
     </top>
     <center>
-        <AnchorPane fx:id="rootConfigPane" BorderPane.alignment="CENTER" />
+        <AnchorPane fx:id="rootConfigPane" style="-fx-background-color: #d7f1f2;" 
+                    BorderPane.alignment="CENTER" />
     </center>
 </BorderPane>

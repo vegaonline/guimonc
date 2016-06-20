@@ -7,8 +7,6 @@
 <?import javafx.scene.layout.*?>
 
 
-<AnchorPane id="AnchorPane" fx:id="matGenPane" prefHeight="400.0" prefWidth="600.0" 
-            xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" 
-            fx:controller="moncgui.MatGeneratorController">
+<AnchorPane id="AnchorPane" fx:id="matGenPane" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #d7f1f2;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="moncgui.MatGeneratorController">
     
 </AnchorPane>

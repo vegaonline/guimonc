@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.scene.shape.*?>
 <?import java.lang.*?>
 <?import java.net.*?>
@@ -8,19 +10,55 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="moncgui.GeomController">
+<AnchorPane id="AnchorPane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: LIGHTCYAN;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="moncgui.GeomController">
     <stylesheets>
         <URL value="@geom.css" />
     </stylesheets>
    <children>
-      <HBox layoutX="2.0" layoutY="1.0" prefHeight="29.0" prefWidth="646.0">
+      <HBox alignment="TOP_CENTER" layoutX="2.0" layoutY="1.0" prefHeight="29.0" prefWidth="646.0">
          <children>
-            <Button fx:id="shapeRST" mnemonicParsing="false" onAction="#doGeomReset" onMouseClicked="#doDrawReset" text="Reset" />
-            <Button fx:id="geomClear" mnemonicParsing="false" onAction="#doCLS" text="clear" />
-            <Button fx:id="shapeBricks" mnemonicParsing="false" onAction="#doBrick" text="Brick" />
-            <Button fx:id="shapeEllip" mnemonicParsing="false" onAction="#doShapeCirc" text="Spheroid / Ellipsoid" />
-            <Button fx:id="shapeCYL" mnemonicParsing="false" onAction="#doShapeCyl" text="Tube/Disk" />
-            <Button fx:id="shapeUpd" mnemonicParsing="false" onAction="#doUpdate" text="UPDATE" />
+            <Button fx:id="shapeRST" mnemonicParsing="false" onAction="#doGeomReset" onMouseClicked="#doDrawReset" style="-fx-background-color: #ebf2d7;                             -fx-focus-color:transparent;" text="Reset" textFill="#125e7c">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
+               <effect>
+                  <InnerShadow />
+               </effect></Button>
+            <Button fx:id="geomClear" focusTraversable="true" mnemonicParsing="false" onAction="#doCLS" style="-fx-background-color: #ebf2d7;" text="clear" textFill="#125e7c">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
+               <effect>
+                  <InnerShadow />
+               </effect></Button>
+            <Button fx:id="shapeBricks" mnemonicParsing="false" onAction="#doBrick" style="-fx-background-color: #ebf2d7;" text="Brick" textFill="#125e7c">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
+               <effect>
+                  <InnerShadow />
+               </effect></Button>
+            <Button fx:id="shapeEllip" mnemonicParsing="false" onAction="#doShapeCirc" style="-fx-background-color: #ebf2d7;" text="Spheroid / Ellipsoid" textFill="#125e7c">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
+               <effect>
+                  <InnerShadow />
+               </effect></Button>
+            <Button fx:id="shapeCYL" mnemonicParsing="false" onAction="#doShapeCyl" style="-fx-background-color: #ebf2d7;" text="Tube/Disk" textFill="#125e7c">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
+               <effect>
+                  <InnerShadow />
+               </effect></Button>
+            <Button fx:id="shapeUpd" mnemonicParsing="false" onAction="#doUpdate" style="-fx-background-color: #ebf2d7;" text="UPDATE" textFill="#125e7c">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
+               <effect>
+                  <InnerShadow />
+               </effect></Button>
          </children>
       </HBox>
       <BorderPane fx:id="geoMainArea" layoutX="1.0" layoutY="29.0" />
