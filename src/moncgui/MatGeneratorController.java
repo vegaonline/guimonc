@@ -194,7 +194,6 @@ public class MatGeneratorController implements Initializable {
                     i++;
                 }
             }
-            System.out.println ("DLMAX = " + DLMax);
             DLMax += 3;
             resource.close ();
         } catch (FileNotFoundException ex) {
@@ -328,7 +327,6 @@ public class MatGeneratorController implements Initializable {
                 }
                 matProps += "\n";
             }
-            System.out.println ("In MatGen " + elename.size ());
             myGUI.setMatProp (matProps, elename);
             matGenPane.getChildren ().clear ();
             eleData1.clear ();

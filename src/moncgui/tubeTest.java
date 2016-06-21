@@ -24,6 +24,12 @@ public class tubeTest extends Mesh {
     private double centerX;
     private double centerY;
     private double centerZ;
+    public double xMin;
+    public double xMax;
+    public double yMin;
+    public double yMax;
+    public double zMin;
+    public double zMax;
 
     /**
      * Constructor meant for Savable use only.
@@ -53,14 +59,14 @@ public class tubeTest extends Mesh {
     }
 
     /**
-     * 
+     *
      * @param name
      * @param outerRadius
      * @param innerRadius
      * @param height
      * @param axisSamples
      * @param radialSamples
-     * @param material 
+     * @param material
      */
     public tubeTest(final String name, final double outerRadius,
             final double innerRadius, final double height, final int axisSamples,
@@ -247,17 +253,27 @@ public class tubeTest extends Mesh {
     }
 
     public Vector3D getCenter() {
-        Vector3D center = new Vector3D(0,0,0);
+        Vector3D center = new Vector3D (0, 0, 0);
         center.x = this.centerX;
         center.y = this.centerY;
         center.z = this.centerZ;
         return center;
     }
-    
+
     public void setHeight(final double height) {
         this.height = height;
         allocateVertices ();
     }
+
+    public void getExtent(int xDir, int yDir, int zDir) {
+        xMin = centerX - xDir * 0.5 * height - yDir * outerRadius;
+        xMax = centerX + xDir * 0.5 * height + yDir * outerRadius;
+        yMin = centerY - yDir * 0.5 * height - xDir * outerRadius;
+        yMax = centerY + yDir * 0.5 * height + xDir * outerRadius;
+        zMin = centerZ - zDir * 0.5 * height - yDir * outerRadius;
+        zMax = centerZ + zDir * 0.5 * height + yDir * outerRadius;
+    }
+    
 
     private void setGeometryData() {
         final double dA = Math.abs (theta0 - theta1);

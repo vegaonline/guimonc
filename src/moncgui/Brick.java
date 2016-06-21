@@ -12,6 +12,12 @@ public class Brick extends Mesh {
     private double centerX;
     private double centerY;
     private double centerZ;
+    public double xMin;
+    public double xMax;
+    public double yMin;
+    public double yMax;
+    public double zMin;
+    public double zMax;
 
     public Brick(String name, double cx, double cy, double cz, double length,
             double breadth, double depth,
@@ -28,6 +34,15 @@ public class Brick extends Mesh {
         setNormalData ();
         setIndexData ();
         createTriangles ();
+    }
+
+    public void getExtent(int xDir, int yDir, int zDir) {
+        xMin = centerX - xDir * 0.5 * l2 - yDir * b2;
+        xMax = centerX + xDir * 0.5 * l2 + yDir * b2;
+        yMin = centerY - yDir * 0.5 * l2 - xDir * d2;
+        yMax = centerY + yDir * 0.5 * l2 + xDir * d2;
+        zMin = centerZ - zDir * 0.5 * l2 - yDir * b2;
+        zMax = centerZ + zDir * 0.5 * l2 + yDir * b2;
     }
 
     private void setVertexData() {
