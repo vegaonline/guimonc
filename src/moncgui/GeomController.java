@@ -10,6 +10,7 @@ import java.io.*;
 import static java.lang.Math.*;
 import java.util.*;
 import java.util.logging.*;
+import javafx.beans.value.*;
 import javafx.collections.*;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.*;
@@ -60,7 +61,6 @@ public class GeomController extends Mesh {
     private final SplitPane drawPane = new SplitPane ();
     private final GridPane paramPane = new GridPane ();
     private final GridPane objPane = new GridPane ();
-    private final ToggleGroup inView = new ToggleGroup ();
 
     FileChooser fileChooser = new FileChooser ();
 
@@ -92,6 +92,13 @@ public class GeomController extends Mesh {
     private Label inViewT = new Label ("View Inside ");
     private RadioButton inViewYes;
     private RadioButton inViewNo;
+    private final ToggleGroup inView = new ToggleGroup ();
+    private Label cpTypeL = new Label ("copy type: ");
+    private Label cpAxial = new Label ("Axial");
+    private Label cpCirc = new Label ("Circular");
+    private RadioButton cpAxialRB;
+    private RadioButton cpCircRB;
+    private final ToggleGroup cpTypeG = new ToggleGroup ();
     private Label BaseCoord = new Label ("Origin (X, Y, Z) ");
     private TextField baseCX = new TextField ();
     private TextField baseCY = new TextField ();
@@ -130,6 +137,19 @@ public class GeomController extends Mesh {
     private TextField cpyX = new TextField ();
     private TextField cpyY = new TextField ();
     private TextField cpyZ = new TextField ();
+
+    private Label cpCenT = new Label ("Position of copy");
+    private Label cpCenThtT = new Label ("Theta (degree)");
+    private Label cpCenPhiT = new Label ("Phi (degree)");
+    private Label cpRadT = new Label ("copy Radius");
+    private Label cpNumT = new Label ("Number of copies");
+    private TextField cpCenX = new TextField ();
+    private TextField cpCenY = new TextField ();
+    private TextField cpCenZ = new TextField ();
+    private TextField cpCenTht = new TextField ();
+    private TextField cpCenPhi = new TextField ();
+    private TextField cpRad = new TextField ();
+    private TextField cpNum = new TextField ();
 
     private String axisX = "[xX]";
     private String axisY = "[yY]";
@@ -235,15 +255,14 @@ public class GeomController extends Mesh {
         drawPane.autosize ();
         paramPane.autosize ();
 
-        /*   // open for testing boolean
-        
-        // test for boolean geometry\        
-        testBool.setLayoutX (1);
-        testBool.setLayoutY (0);
-        paramPane.add (testBool, 1, 0);
-
-*       */
-        
+        /*
+         * // open for testing boolean
+         *
+         * // test for boolean geometry\ testBool.setLayoutX (1);
+         * testBool.setLayoutY (0); paramPane.add (testBool, 1, 0);
+         *
+         *
+         */
         // redefined for plot window
         drawWidth = 850.0;
         drawHeight = 750.0;
@@ -397,6 +416,12 @@ public class GeomController extends Mesh {
         copyNumTZ.setFont (new Font ("Times New Roman", 10));
         gapT.setFont (new Font ("Times New Roman", 10));
         inViewT.setFont (new Font ("Times New Roman", 10));
+        cpTypeL.setFont (new Font ("Times New Roman", 10));
+        cpCenT.setFont (new Font ("Times New Roman", 10));
+        cpCenThtT.setFont (new Font ("Times New Roman", 10));
+        cpCenPhiT.setFont (new Font ("Times New Roman", 10));
+        cpRadT.setFont (new Font ("Times New Roman", 10));
+        cpNumT.setFont (new Font ("Times New Roman", 10));
 
         baseCX.setPrefColumnCount (5);
         baseCX.setAlignment (Pos.CENTER_RIGHT);
@@ -417,21 +442,39 @@ public class GeomController extends Mesh {
         phi1.setMaxSize (40, 1);
         ht.setPrefColumnCount (5);
         ht.setAlignment (Pos.CENTER_RIGHT);
-        ht.setMaxSize (40, 1); // width height
+        ht.setMaxSize (50, 1); // width height
         objAxis.setMaxSize (30, 1);
         cpyX.setMaxSize (40, 1);
         cpyY.setMaxSize (40, 1);
         cpyZ.setMaxSize (40, 1);
         gap.setMaxSize (40, 1);
         gap.setAlignment (Pos.CENTER_RIGHT);
+        cpCenX.setMaxSize (40, 1);
+        cpCenY.setMaxSize (40, 1);
+        cpCenZ.setMaxSize (40, 1);
+        cpCenTht.setMaxSize (40, 1);
+        cpCenPhi.setMaxSize (40, 1);
+        cpRad.setMaxSize (40, 1);
+        cpNum.setMaxSize (40, 1);
 
         inViewYes = new RadioButton (" Yes ");
+        inViewYes.setFont (willCopyT.getFont ());
         inViewYes.setToggleGroup (inView);
         inViewNo = new RadioButton (" No ");
+        inViewNo.setFont (willCopyT.getFont ());
         inViewNo.setToggleGroup (inView);
         inViewNo.setSelected (true);
         inViewYes.setUserData ("true");
         inViewNo.setUserData ("false");
+
+        cpAxialRB = new RadioButton ("Copy Axially");
+        cpAxialRB.setFont (willCopyT.getFont ());
+        cpAxialRB.setToggleGroup (cpTypeG);
+        cpCircRB = new RadioButton ("Copy Circularly");
+        cpCircRB.setFont (willCopyT.getFont ());
+        cpCircRB.setToggleGroup (cpTypeG);
+        cpAxialRB.setUserData ("Axial");
+        cpCircRB.setUserData ("Circular");
 
         HBox hb1 = new HBox (baseCX, baseCY, baseCZ);
         HBox hb2 = new HBox (radIT, radI);
@@ -446,6 +489,13 @@ public class GeomController extends Mesh {
         HBox hb11 = new HBox (gapT, gap);
         HBox hb12 = new HBox (matT, matList);
         HBox hb13 = new HBox (inViewT, inViewYes, inViewNo);
+        VBox vb0 = new VBox (cpAxialRB, cpCircRB);
+        HBox hb14 = new HBox (cpTypeL, vb0);
+        HBox hb15 = new HBox (cpCenT, cpCenX, cpCenY, cpCenZ);
+        HBox hb16 = new HBox (cpCenThtT, cpCenTht);
+        HBox hb17 = new HBox (cpCenPhiT, cpCenPhi);
+        HBox hb18 = new HBox (cpRadT, cpRad);
+        HBox hb19 = new HBox (cpNumT, cpNum);
 
         hb1.setSpacing (2); //hb1.setPadding(new Insets(2));
         hb2.setSpacing (2);
@@ -460,9 +510,17 @@ public class GeomController extends Mesh {
         hb11.setSpacing (2);
         hb12.setSpacing (2);
         hb13.setSpacing (2);
+        hb14.setSpacing (2);
+        hb15.setSpacing (2);
+        hb16.setSpacing (2);
+        hb17.setSpacing (2);
+        hb18.setSpacing (2);
+        hb19.setSpacing (2);
 
-        VBox vb1 = new VBox (BaseCoord, hb1, hb2, hb3, hb4, hb5, hb6, hb7, hb8,
-                hb9, hb10, hb11, hb12, hb13);
+        VBox vb1 = new VBox (BaseCoord, hb1, hb2, hb3, hb4, hb5, hb6, hb7,
+                hb12, hb13, hb14);
+        VBox vb2 = new VBox (hb8, hb9, hb10, hb11);
+        VBox vb3 = new VBox (hb15, hb16, hb17, hb18, hb19);
 
         baseCX.setPromptText ("0.0");
         baseCY.setPromptText ("0.0");
@@ -476,6 +534,24 @@ public class GeomController extends Mesh {
         paramPane.add (vb1, 0, 0); // col row                 
         paramPane.add (drawMe, 0, 9);
 
+        cpTypeG.selectedToggleProperty ().addListener (
+                new ChangeListener<Toggle> () {
+            public void changed(ObservableValue<? extends Toggle> ov,
+                    Toggle old_toggle, Toggle new_toggle) {
+                if ( cpTypeG.getSelectedToggle ().getUserData ().
+                        toString ().contains ("Axial") ) {
+                    paramPane.getChildren ().clear ();
+                    paramPane.add (vb2, 0, 0);
+                    paramPane.add (drawMe, 0, 9);
+                } else if ( cpTypeG.getSelectedToggle ().getUserData ().
+                        toString ().contains ("Circular") ) {
+                    paramPane.getChildren ().clear ();
+                    paramPane.add (vb3, 0, 0);
+                    paramPane.add (drawMe, 0, 9);
+                }
+            }
+        });
+
         ObservableList<tubeTest> tubeList = FXCollections.
                 observableArrayList ();
 
@@ -488,11 +564,29 @@ public class GeomController extends Mesh {
                 double oRad, iRad, length, tht0, tht1, gapVal = 0.0, oX = 0.0, oY
                         = 0.0, oZ = 0.0;
                 double newCX = 0.0, newCY = 0.0, newCZ = 0.0;
-                int cpX = 0, cpY = 0, cpZ = 0;
+                double cpcenX = 0.0, cpcenY = 0.0, cpcenZ = 0.0;
+                double cprad = 0.0, cptht = 0.0, cpphi = 0.0;
+                int cpX = 0, cpY = 0, cpZ = 0, cpnum;
                 int xDir = 0, yDir = 0, zDir = 0;
                 boolean naked = (inView.getSelectedToggle ().getUserData ().
                         toString ().contains ("true") ? true : false);
+                boolean cpAx = (cpTypeG.getSelectedToggle ().getUserData ().
+                        toString ().contains ("Axial") ? true : false);
 
+                cpcenX = (!cpCenX.getText ().isEmpty () ? Double.parseDouble (
+                        cpCenX.getText ()) : 0.0);
+                cpcenY = (!cpCenY.getText ().isEmpty () ? Double.parseDouble (
+                        cpCenY.getText ()) : 0.0);
+                cpcenZ = (!cpCenZ.getText ().isEmpty () ? Double.parseDouble (
+                        cpCenZ.getText ()) : 0.0);
+                cprad = (!cpRad.getText ().isEmpty () ? Double.parseDouble (
+                        cpRad.getText ()) : 0.0);
+                cptht = (!cpCenTht.getText ().isEmpty () ? Double.parseDouble (
+                        cpCenTht.getText ()) : 0.0);
+                cpphi = (!cpCenPhi.getText ().isEmpty () ? Double.parseDouble (
+                        cpCenPhi.getText ()) : 0.0);
+                cpnum = (!cpNum.getText ().isEmpty () ? Integer.parseInt (cpNum.
+                        getText ()) : 0);
                 oX = (!baseCX.getText ().isEmpty () ? Double.parseDouble (
                         baseCX.getText ()) : 0.0);
                 oY = (!baseCY.getText ().isEmpty () ? Double.parseDouble (
@@ -546,149 +640,183 @@ public class GeomController extends Mesh {
                 }
                 objCnt = 0;
                 String matName = matList.getValue ().toString ();
-                if ( cpX != 0 ) {
-                    objCnt += cpX;
-                    newCX = oX;
-                    newCY = oY;
-                    newCY = oZ;
-                    for ( int ii = 0; ii < cpX; ii++ ) {
-                        if ( xDir == 1 ) {
-                            newCX += (gapVal + length);
-                            tubeList.add (
-                                    new tubeTest ("Tube", newCX, newCY,
-                                            newCZ, oRad, iRad, length, tht0,
-                                            tht1, lenSample, radSample, naked,
-                                            Material.matProcess (matName)));
-                            tubeList.get (ii).setRotate (90.0);   //  tub2.setRotate(90.0);                           
-                        } else if ( yDir == 1 ) {
-                            newCX += (2.0 * oRad + gapVal);
-                            tubeList.add (
-                                    new tubeTest ("Tube", newCX, newCY,
-                                            newCZ, oRad, iRad, length, tht0,
-                                            tht1, lenSample, radSample, naked,
-                                            Material.matProcess (matName)));
-                        } else if ( zDir == 1 ) {
-                            newCX += (2.0 * oRad + gapVal);
-                            tubeList.add (
-                                    new tubeTest ("Tube", newCX, newCY,
-                                            newCZ, oRad, iRad, length, tht0,
-                                            tht1, lenSample, radSample, naked,
-                                            Material.matProcess (matName)));
-                            tubeList.get (ii).
-                                    setRotationAxis (Rotate.X_AXIS);
-                            tubeList.get (ii).setRotate (90.0);
-                        }
-                        camV.add (tubeList.get (ii));
+                if ( !cpAx ) {
+                    double pltTht = 0.0, pltPhi = 0.0, dtht = 0.0, dphi = 0.0;
+                    dtht = 2.0 * Math.PI / cpnum;
+                    newCX = cpcenX;
+                    newCY = cpcenY;
+                    newCZ = cpcenZ;
+                    pltTht = cptht;
+                    pltPhi = cpphi;
+                    for ( int icopy = 0; icopy < cpnum; icopy++ ) {
+                        newCX += cprad * Math.sin (pltTht) * Math.cos (pltPhi);
+                        newCY += cprad * Math.sin (pltTht) * Math.sin (pltPhi);
+                        newCZ += cprad * Math.cos (pltTht);
+                        tubeList.add(new tubeTest("Tube", newCX, newCY,
+                                                newCZ, oRad, iRad, length, tht0,
+                                                tht1, lenSample, radSample,
+                                                naked,
+                                                Material.matProcess (matName)));
+                        camV.add (tubeList.get (icopy));
+                        pltTht += dtht;
+                        pltPhi += dphi;
+                    }
+                } else {
+                    if ( cpX != 0 ) {
+                        objCnt += cpX;
+                        newCX = oX;
+                        newCY = oY;
+                        newCY = oZ;
+                        for ( int ii = 0; ii < cpX; ii++ ) {
+                            if ( xDir == 1 ) {
+                                newCX += (gapVal + length);
+                                tubeList.add (
+                                        new tubeTest ("Tube", newCX, newCY,
+                                                newCZ, oRad, iRad, length, tht0,
+                                                tht1, lenSample, radSample,
+                                                naked,
+                                                Material.matProcess (matName)));
+                                tubeList.get (ii).setRotate (90.0);   //  tub2.setRotate(90.0);                           
+                            } else if ( yDir == 1 ) {
+                                newCX += (2.0 * oRad + gapVal);
+                                tubeList.add (
+                                        new tubeTest ("Tube", newCX, newCY,
+                                                newCZ, oRad, iRad, length, tht0,
+                                                tht1, lenSample, radSample,
+                                                naked,
+                                                Material.matProcess (matName)));
+                            } else if ( zDir == 1 ) {
+                                newCX += (2.0 * oRad + gapVal);
+                                tubeList.add (
+                                        new tubeTest ("Tube", newCX, newCY,
+                                                newCZ, oRad, iRad, length, tht0,
+                                                tht1, lenSample, radSample,
+                                                naked,
+                                                Material.matProcess (matName)));
+                                tubeList.get (ii).
+                                        setRotationAxis (Rotate.X_AXIS);
+                                tubeList.get (ii).setRotate (90.0);
+                            }
+                            camV.add (tubeList.get (ii));
 
-                        geoTextEntry = "TUBE" + "  (" + newCX + ",  " +
-                                newCY + ",  " + newCZ + ")  " + "  " + iRad +
-                                "  " +
-                                oRad + "  " + length + "  " + tht0 * RTODeg +
-                                "  " + tht1 * RTODeg + "  " + objAxis.
-                                getText () +
-                                " Material = " + (1 + matNames.
-                                indexOf (matName)) +
-                                "\n";
-                        geoEntries.appendText (geoTextEntry);
-                    }
-                    nodeList.setText (" Total " + objCnt + "Tube added");
-                    tubeList.clear ();
-                }
-                if ( cpY != 0 ) {
-                    objCnt += cpY;
-                    newCX = oX;
-                    newCY = oY;
-                    newCY = oZ;
-                    for ( int ii = 0; ii < cpY; ii++ ) {
-                        if ( xDir == 1 ) {
-                            newCY += (2.0 * oRad + gapVal);
-                            tubeList.add (
-                                    new tubeTest ("Tube", newCX, newCY,
-                                            newCZ, oRad, iRad, length, tht0,
-                                            tht1, lenSample, radSample, naked,
-                                            Material.matProcess (matName)));
-                            tubeList.get (ii).setRotate (90.0);   //  tub2.setRotate(90.0);                           
-                        } else if ( yDir == 1 ) {
-                            newCY += (length + gapVal);
-                            tubeList.add (
-                                    new tubeTest ("Tube", newCX, newCY,
-                                            newCZ, oRad, iRad, length, tht0,
-                                            tht1, lenSample, radSample, naked,
-                                            Material.matProcess (matName)));
-                        } else if ( zDir == 1 ) {
-                            newCY += (2.0 * oRad + gapVal);
-                            tubeList.add (
-                                    new tubeTest ("Tube", newCX, newCY,
-                                            newCZ, oRad, iRad, length, tht0,
-                                            tht1, lenSample, radSample, naked,
-                                            Material.matProcess (matName)));
-                            tubeList.get (ii).
-                                    setRotationAxis (Rotate.X_AXIS);
-                            tubeList.get (ii).setRotate (90.0);
+                            geoTextEntry = "TUBE" + "  (" + newCX + ",  " +
+                                    newCY + ",  " + newCZ + ")  " + "  " + iRad +
+                                    "  " +
+                                    oRad + "  " + length + "  " + tht0 * RTODeg +
+                                    "  " + tht1 * RTODeg + "  " + objAxis.
+                                    getText () +
+                                    " Material = " + (1 + matNames.
+                                    indexOf (matName)) +
+                                    "\n";
+                            geoEntries.appendText (geoTextEntry);
                         }
-                        camV.add (tubeList.get (ii));
-                        geoTextEntry = "TUBE" +
-                                "  (" + newCX + ",  " + newCY + ",  " + newCZ +
-                                ")  " +
-                                "  " + iRad + "  " + oRad + "  " + length +
-                                "  " +
-                                tht0 * RTODeg + "  " + tht1 * RTODeg + "  " +
-                                objAxis.getText () +
-                                " Material = " + (1 + matNames.
-                                indexOf (matName)) +
-                                "\n";
-                        geoEntries.appendText (geoTextEntry);
+                        nodeList.setText (" Total " + objCnt + "Tube added");
+                        tubeList.clear ();
                     }
-                    nodeList.setText ("Total " + objCnt + "Tube added");
-                    tubeList.clear ();
-                }
-                if ( cpZ != 0 ) {
-                    objCnt += cpZ;
-                    newCX = oX;
-                    newCY = oY;
-                    newCY = oZ;
-                    for ( int ii = 0; ii < cpZ; ii++ ) {
-                        if ( xDir == 1 ) {
-                            newCZ += (2.0 * oRad + gapVal);
-                            tubeList.add (
-                                    new tubeTest ("Tube", newCX, newCY,
-                                            newCZ, oRad, iRad, length, tht0,
-                                            tht1, lenSample, radSample, naked,
-                                            Material.matProcess (matName)));
-                            tubeList.get (ii).setRotate (90.0);   //  tub2.setRotate(90.0);                           
-                        } else if ( yDir == 1 ) {
-                            newCZ += (2.0 * oRad + gapVal);
-                            tubeList.add (
-                                    new tubeTest ("Tube", newCX, newCY,
-                                            newCZ, oRad, iRad, length, tht0,
-                                            tht1, lenSample, radSample, naked,
-                                            Material.matProcess (matName)));
-                        } else if ( zDir == 1 ) {
-                            newCZ += (length + gapVal);
-                            tubeList.add (
-                                    new tubeTest ("Tube", newCX, newCY,
-                                            newCZ, oRad, iRad, length, tht0,
-                                            tht1, lenSample, radSample, naked,
-                                            Material.matProcess (matName)));
-                            tubeList.get (ii).
-                                    setRotationAxis (Rotate.X_AXIS);
-                            tubeList.get (ii).setRotate (90.0);
+                    if ( cpY != 0 ) {
+                        objCnt += cpY;
+                        newCX = oX;
+                        newCY = oY;
+                        newCY = oZ;
+                        for ( int ii = 0; ii < cpY; ii++ ) {
+                            if ( xDir == 1 ) {
+                                newCY += (2.0 * oRad + gapVal);
+                                tubeList.add (
+                                        new tubeTest ("Tube", newCX, newCY,
+                                                newCZ, oRad, iRad, length, tht0,
+                                                tht1, lenSample, radSample,
+                                                naked,
+                                                Material.matProcess (matName)));
+                                tubeList.get (ii).setRotate (90.0);   //  tub2.setRotate(90.0);                           
+                            } else if ( yDir == 1 ) {
+                                newCY += (length + gapVal);
+                                tubeList.add (
+                                        new tubeTest ("Tube", newCX, newCY,
+                                                newCZ, oRad, iRad, length, tht0,
+                                                tht1, lenSample, radSample,
+                                                naked,
+                                                Material.matProcess (matName)));
+                            } else if ( zDir == 1 ) {
+                                newCY += (2.0 * oRad + gapVal);
+                                tubeList.add (
+                                        new tubeTest ("Tube", newCX, newCY,
+                                                newCZ, oRad, iRad, length, tht0,
+                                                tht1, lenSample, radSample,
+                                                naked,
+                                                Material.matProcess (matName)));
+                                tubeList.get (ii).
+                                        setRotationAxis (Rotate.X_AXIS);
+                                tubeList.get (ii).setRotate (90.0);
+                            }
+                            camV.add (tubeList.get (ii));
+                            geoTextEntry = "TUBE" +
+                                    "  (" + newCX + ",  " + newCY + ",  " +
+                                    newCZ +
+                                    ")  " +
+                                    "  " + iRad + "  " + oRad + "  " + length +
+                                    "  " +
+                                    tht0 * RTODeg + "  " + tht1 * RTODeg + "  " +
+                                    objAxis.getText () +
+                                    " Material = " + (1 + matNames.
+                                    indexOf (matName)) +
+                                    "\n";
+                            geoEntries.appendText (geoTextEntry);
                         }
-                        camV.add (tubeList.get (ii));
-                        geoTextEntry = "TUBE" +
-                                "  (" + newCX + ",  " + newCY + ",  " + newCZ +
-                                ")  " +
-                                "  " + iRad + "  " + oRad + "  " + length +
-                                "  " + tht0 * RTODeg + "  " +
-                                tht1 * RTODeg + "  " + objAxis.getText () +
-                                " Material = " + (1 + matNames.
-                                indexOf (matName)) +
-                                "\n";
-                        geoEntries.appendText (geoTextEntry);
-                        // objGroup.getChildren ().add (tubeList.get (ii));
+                        nodeList.setText ("Total " + objCnt + "Tube added");
+                        tubeList.clear ();
                     }
-                    nodeList.setText ("Toal " + objCnt + "Tube added");
-                    tubeList.clear ();
+                    if ( cpZ != 0 ) {
+                        objCnt += cpZ;
+                        newCX = oX;
+                        newCY = oY;
+                        newCY = oZ;
+                        for ( int ii = 0; ii < cpZ; ii++ ) {
+                            if ( xDir == 1 ) {
+                                newCZ += (2.0 * oRad + gapVal);
+                                tubeList.add (
+                                        new tubeTest ("Tube", newCX, newCY,
+                                                newCZ, oRad, iRad, length, tht0,
+                                                tht1, lenSample, radSample,
+                                                naked,
+                                                Material.matProcess (matName)));
+                                tubeList.get (ii).setRotate (90.0);   //  tub2.setRotate(90.0);                           
+                            } else if ( yDir == 1 ) {
+                                newCZ += (2.0 * oRad + gapVal);
+                                tubeList.add (
+                                        new tubeTest ("Tube", newCX, newCY,
+                                                newCZ, oRad, iRad, length, tht0,
+                                                tht1, lenSample, radSample,
+                                                naked,
+                                                Material.matProcess (matName)));
+                            } else if ( zDir == 1 ) {
+                                newCZ += (length + gapVal);
+                                tubeList.add (
+                                        new tubeTest ("Tube", newCX, newCY,
+                                                newCZ, oRad, iRad, length, tht0,
+                                                tht1, lenSample, radSample,
+                                                naked,
+                                                Material.matProcess (matName)));
+                                tubeList.get (ii).
+                                        setRotationAxis (Rotate.X_AXIS);
+                                tubeList.get (ii).setRotate (90.0);
+                            }
+                            camV.add (tubeList.get (ii));
+                            geoTextEntry = "TUBE" +
+                                    "  (" + newCX + ",  " + newCY + ",  " +
+                                    newCZ +
+                                    ")  " +
+                                    "  " + iRad + "  " + oRad + "  " + length +
+                                    "  " + tht0 * RTODeg + "  " +
+                                    tht1 * RTODeg + "  " + objAxis.getText () +
+                                    " Material = " + (1 + matNames.
+                                    indexOf (matName)) +
+                                    "\n";
+                            geoEntries.appendText (geoTextEntry);
+                            // objGroup.getChildren ().add (tubeList.get (ii));
+                        }
+                        nodeList.setText ("Toal " + objCnt + "Tube added");
+                        tubeList.clear ();
+                    }
                 }
                 matEntries.appendText (matNames.indexOf (matList.getValue ()) +
                         matList.getValue () + "\n");
