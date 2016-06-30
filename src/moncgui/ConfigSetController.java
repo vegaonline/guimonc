@@ -125,16 +125,13 @@ public class ConfigSetController implements Initializable {
         massAL.setFont(new Font("Times New Roman", 12));
         matL.setFont(new Font("Times new Roman", 12));
         matL.setAlignment(Pos.CENTER);
-        matL.setTranslateX(120);
+        matL.setTranslateX (150);        
         zoneL.setFont(new Font("Times new Roman", 12));
         zoneL.setAlignment(Pos.CENTER);
         zoneL.setTranslateX(200);
         geoL.setFont(new Font("Times New Roman", 12));
         geoL.setAlignment(Pos.CENTER);
-        geoL.setTranslateX(200);
-
-        upd.setTranslateX(185);
-        
+        geoL.setTranslateX(200);                
         projT.setMaxSize(600, 1);
         eventNT.setMaxSize(70, 1);
         inactN.setMaxSize(50, 1);
@@ -154,7 +151,7 @@ public class ConfigSetController implements Initializable {
         HBox hb4 = new HBox(chargeZL, chargeZ, massAL, massA);
         hb4.setSpacing(10);
         HBox hb100 = new HBox(zoneL);
-        HBox hb101 = new HBox(matL, upd);
+        HBox hb101 = new HBox(matL);
         hb101.setSpacing(10);
         HBox hb102 = new HBox(geoL);
         HBox hb200 = new HBox(saveButton, cleanButton);

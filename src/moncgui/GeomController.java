@@ -491,7 +491,7 @@ public class GeomController extends Mesh {
         HBox hb13 = new HBox (inViewT, inViewYes, inViewNo);
         VBox vb0 = new VBox (cpAxialRB, cpCircRB);
         HBox hb14 = new HBox (cpTypeL, vb0);
-        HBox hb15 = new HBox (cpCenT, cpCenX, cpCenY, cpCenZ);
+        //HBox hb15 = new HBox (cpCenT, cpCenX, cpCenY, cpCenZ);
         HBox hb16 = new HBox (cpCenThtT, cpCenTht);
         HBox hb17 = new HBox (cpCenPhiT, cpCenPhi);
         HBox hb18 = new HBox (cpRadT, cpRad);
@@ -511,7 +511,7 @@ public class GeomController extends Mesh {
         hb12.setSpacing (2);
         hb13.setSpacing (2);
         hb14.setSpacing (2);
-        hb15.setSpacing (2);
+        //hb15.setSpacing (2);
         hb16.setSpacing (2);
         hb17.setSpacing (2);
         hb18.setSpacing (2);
@@ -879,6 +879,12 @@ public class GeomController extends Mesh {
         copyNumTY.setFont (new Font ("Times New Roman", 10));
         copyNumTZ.setFont (new Font ("Times New Roman", 10));
         gapT.setFont (new Font ("Times New Roman", 10));
+        cpTypeL.setFont (new Font ("Times New Roman", 10));
+        cpCenT.setFont (new Font ("Times New Roman", 10));
+        cpCenThtT.setFont (new Font ("Times New Roman", 10));
+        cpCenPhiT.setFont (new Font ("Times New Roman", 10));
+        cpRadT.setFont (new Font ("Times New Roman", 10));
+        cpNumT.setFont (new Font ("Times New Roman", 10));
 
         baseCX.setPrefColumnCount (5);
         baseCX.setAlignment (Pos.CENTER_RIGHT);
@@ -915,6 +921,23 @@ public class GeomController extends Mesh {
         gap.setMaxSize (40, 1);
         gap.setAlignment (Pos.CENTER_RIGHT);
 
+        cpCenX.setMaxSize (40, 1);
+        cpCenY.setMaxSize (40, 1);
+        cpCenZ.setMaxSize (40, 1);
+        cpCenTht.setMaxSize (40, 1);
+        cpCenPhi.setMaxSize (40, 1);
+        cpRad.setMaxSize (40, 1);
+        cpNum.setMaxSize (40, 1);
+
+        cpAxialRB = new RadioButton ("Copy Axially");
+        cpAxialRB.setFont (willCopyT.getFont ());
+        cpAxialRB.setToggleGroup (cpTypeG);
+        cpCircRB = new RadioButton ("Copy Circularly");
+        cpCircRB.setFont (willCopyT.getFont ());
+        cpCircRB.setToggleGroup (cpTypeG);
+        cpAxialRB.setUserData ("Axial");
+        cpCircRB.setUserData ("Circular");
+
         HBox hb1 = new HBox (baseCX, baseCY, baseCZ);
         HBox hb2 = new HBox (radIT, radI, radOT, radO);
         HBox hb3 = new HBox (radOT, radO);
@@ -928,6 +951,13 @@ public class GeomController extends Mesh {
         HBox hb11 = new HBox (copyNumTY, cpyY);
         HBox hb12 = new HBox (copyNumTZ, cpyZ);
         HBox hb13 = new HBox (gapT, gap);
+        VBox vb0 = new VBox (cpAxialRB, cpCircRB);
+        HBox hb14 = new HBox (cpTypeL, vb0);
+        //HBox hb15 = new HBox (cpCenT, cpCenX, cpCenY, cpCenZ);
+        HBox hb16 = new HBox (cpCenThtT, cpCenTht);
+        HBox hb17 = new HBox (cpCenPhiT, cpCenPhi);
+        HBox hb18 = new HBox (cpRadT, cpRad);
+        HBox hb19 = new HBox (cpNumT, cpNum);
 
         hb1.setSpacing (2); //hb1.setPadding(new Insets(2));
         hb2.setSpacing (2);
@@ -942,10 +972,18 @@ public class GeomController extends Mesh {
         hb11.setSpacing (2);
         hb12.setSpacing (2);
         hb13.setSpacing (2);
+        hb14.setSpacing (2);
+       // hb15.setSpacing (2);
+        hb16.setSpacing (2);
+        hb17.setSpacing (2);
+        hb18.setSpacing (2);
+        hb19.setSpacing (2);
 
         // VBox vb1 = new VBox (BaseCoord, hb1, hb2, hb3, hb4, hb5, hb6);
         VBox vb1 = new VBox (BaseCoord, hb1, hb2, hb3, hb4, hb5, hb6, hb7, hb8,
-                hb9, hb10, hb11, hb12, hb13);
+                hb9, hb14);
+        VBox vb2 = new VBox (hb10, hb11, hb12, hb13);
+        VBox vb3 = new VBox (hb16, hb17, hb18, hb19);
 
         baseCX.setPromptText ("0.0");
         baseCY.setPromptText ("0.0");
@@ -960,8 +998,25 @@ public class GeomController extends Mesh {
 
         paramPane.getChildren ().clear ();
         paramPane.add (vb1, 0, 0); // col row 
+        paramPane.add (drawMe, 0, 9);  //15
 
-        paramPane.add (drawMe, 0, 3);  //15
+        cpTypeG.selectedToggleProperty ().addListener (
+                new ChangeListener<Toggle> () {
+            public void changed(ObservableValue<? extends Toggle> ov,
+                    Toggle old_toggle, Toggle new_toggle) {
+                if ( cpTypeG.getSelectedToggle ().getUserData ().
+                        toString ().contains ("Axial") ) {
+                    paramPane.getChildren ().clear ();
+                    paramPane.add (vb2, 0, 0);
+                    paramPane.add (drawMe, 0, 9);
+                } else if ( cpTypeG.getSelectedToggle ().getUserData ().
+                        toString ().contains ("Circular") ) {
+                    paramPane.getChildren ().clear ();
+                    paramPane.add (vb3, 0, 0);
+                    paramPane.add (drawMe, 0, 9);
+                }
+            }
+        });
 
         ObservableList<Sphere_SECT> sphList = FXCollections.
                 observableArrayList ();
@@ -976,7 +1031,20 @@ public class GeomController extends Mesh {
                         oY = 0.0, oZ = 0.0, centerX = 0.0, centerY = 0.0,
                         centerZ = 0.0;
                 int xDir = 0, yDir = 0, zDir = 0;
-                int cpX = 0, cpY = 0, cpZ = 0;
+                int cpX = 0, cpY = 0, cpZ = 0, cpnum = 0;
+                double cprad = 0.0, cptht = 0.0, cpphi = 0.0;
+
+                boolean cpAx = (cpTypeG.getSelectedToggle ().getUserData ().
+                        toString ().contains ("Axial") ? true : false);
+
+                cprad = (!cpRad.getText ().isEmpty () ? Double.parseDouble (
+                        cpRad.getText ()) : 0.0);
+                cptht = (!cpCenTht.getText ().isEmpty () ? Double.parseDouble (
+                        cpCenTht.getText ()) * dTORad : 0.0);
+                cpphi = (!cpCenPhi.getText ().isEmpty () ? Double.parseDouble (
+                        cpCenPhi.getText ()) * dTORad : 0.0);
+                cpnum = (!cpNum.getText ().isEmpty () ? Integer.parseInt (cpNum.
+                        getText ()) : 0);
 
                 iRad = (!radI.getText ().isEmpty () ? Double.
                         parseDouble (radI.getText ()) : 0.0);
@@ -1025,152 +1093,216 @@ public class GeomController extends Mesh {
                 radSample = (int) (radScale * Math.sqrt (oRad) + 0.5);
                 lenSample = 15;
 
-                centerX = cpX;
-                centerY = cpY;
-                centerZ = cpZ;
+                if ( cpX == 0 && cpY == 0 && cpZ == 0 ) {
+                    if ( xDir == 1 ) {
+                        cpX = 1;
+                    } else if ( yDir == 1 ) {
+                        cpY = 1;
+                    } else if ( zDir == 1 ) {
+                        cpZ = 1;
+                    }
+                }
+                centerX = oX;
+                centerY = oY;
+                centerZ = oZ;
 
                 objCnt = 0;
                 String matName = matList.getValue ().toString ();
 
-                if ( cpX != 0 ) {
-                    objCnt += cpX;
+                if ( !cpAx ) {
+                    double pltTht = 0.0, pltPhi = 0.0, dtht = 0.0, dphi = 0.0;
+                    dtht = 2.0 * Math.PI / cpnum;
                     centerX = oX;
                     centerY = oY;
                     centerZ = oZ;
-                    for ( int ii = 0; ii < cpX; ii++ ) {
+                    pltTht = cptht;
+                    pltPhi = cpphi;
+                    for ( int icopy = 0; icopy < cpnum; icopy++ ) {
+                        centerX += cprad * Math.sin (pltTht) * Math.cos (pltPhi);
+                        centerY += cprad * Math.sin (pltTht) * Math.sin (pltPhi);
+                        centerZ += cprad * Math.cos (pltTht);
                         if ( xDir == 1 ) {
-                            centerX += gapVal + oRad;
-                            sphList.add (new Sphere_SECT ("Sphere", centerX,
-                                    centerY, centerZ, iRad, oRad, tht0, tht1,
-                                    fi0, fi1, radSample, lenSample,
-                                    Material.matProcess (matName)));
-                            sphList.get (ii).setRotationAxis (Rotate.Y_AXIS);
-                            sphList.get (ii).setRotate (90.0);
+                            sphList.add (
+                                    new Sphere_SECT ("Sphere", centerX, centerY,
+                                            centerZ, iRad, oRad, tht0,
+                                            tht1, fi0, fi1, radSample, lenSample,
+                                            Material.matProcess (matName)));
+                            sphList.get (icopy).setRotate (90.0);   //  tub2.setRotate(90.0);                           
                         } else if ( yDir == 1 ) {
-                            centerX += gapVal + oRad;
-                            sphList.add (new Sphere_SECT ("Sphere", centerX,
-                                    centerY, centerZ, iRad, oRad, tht0, tht1,
-                                    fi0, fi1, radSample, lenSample,
-                                    Material.matProcess (matName)));
-                            sphList.get (ii).setRotationAxis (Rotate.X_AXIS);
-                            sphList.get (ii).setRotate (90);
+                            sphList.add (
+                                    new Sphere_SECT ("Sphere", centerX, centerY,
+                                            centerZ, iRad, oRad, tht0,
+                                            tht1, fi0, fi1, radSample, lenSample,
+                                            Material.matProcess (matName)));
                         } else if ( zDir == 1 ) {
-                            centerX += gapVal + oRad;
-                            sphList.add (new Sphere_SECT ("Sphere", centerX,
-                                    centerY, centerZ, iRad, oRad, tht0, tht1,
-                                    fi0, fi1, radSample, lenSample,
-                                    Material.matProcess (matName)));
+                            sphList.add (
+                                    new Sphere_SECT ("Sphere", centerX, centerY,
+                                            centerZ, iRad, oRad, tht0,
+                                            tht1, fi0, fi1, radSample, lenSample,
+                                            Material.matProcess (matName)));
+                            sphList.get (icopy).setRotationAxis (Rotate.X_AXIS);
+                            sphList.get (icopy).setRotate (90.0);
                         }
-                        camV.add (sphList.get (ii));
-                        geoTextEntry = "Sphere" + "  (" + centerX + ",  " +
-                                centerY + ",  " + centerZ + ")  " + "  " +
-                                iRad + "  " + oRad + "  " + tht0 * RTODeg +
-                                "  " + tht1 * RTODeg + "  " + fi0 * RTODeg +
-                                "  " + fi1 * RTODeg + "  " + objAxis.getText () +
-                                " Material = " + (1 + matNames.
-                                indexOf (matName)) +
-                                "\n";
+                        camV.add (sphList.get (icopy));
+                        objCnt++;
+                        pltTht += dtht;
+                        pltPhi += dphi;
+                        geoTextEntry = "Sphere " + "  (" + centerX + ",  " +
+                                centerY + ",  " + centerZ + ")  " + "  " + iRad +
+                                "  " + oRad + "  " + tht0 * RTODeg +
+                                "  " + tht1 * RTODeg + "  " +
+                                fi0 * RTODeg + "  " + fi1 * RTODeg + "  " +
+                                objAxis.getText () + " Material = " + (1 +
+                                matNames.indexOf (matName)) + "\n";
                         geoEntries.appendText (geoTextEntry);
                     }
                     nodeList.setText (" Total " + objCnt + "Sphere added");
                     sphList.clear ();
-                }
-                if ( cpY != 0 ) {
-                    objCnt += cpY;
-                    centerX = oX;
-                    centerY = oY;
-                    centerZ = oZ;
-                    for ( int ii = 0; ii < cpY; ii++ ) {
-                        if ( xDir == 1 ) {
-                            centerY += gapVal + oRad;
-                            sphList.add (new Sphere_SECT ("Sphere", centerX,
-                                    centerY, centerZ, iRad, oRad, tht0, tht1,
-                                    fi0, fi1, radSample, lenSample,
-                                    Material.matProcess (matName)));
-                            sphList.get (ii).setRotationAxis (Rotate.Y_AXIS);
-                            sphList.get (ii).setRotate (90.0);
-                        } else if ( yDir == 1 ) {
-                            centerY += gapVal + oRad;
-                            sphList.add (new Sphere_SECT ("Sphere", centerX,
-                                    centerY, centerZ, iRad, oRad, tht0, tht1,
-                                    fi0, fi1, radSample, lenSample,
-                                    Material.matProcess (matName)));
-                            sphList.get (ii).setRotationAxis (Rotate.X_AXIS);
-                            sphList.get (ii).setRotate (90);
-                        } else if ( zDir == 1 ) {
-                            centerY += gapVal + oRad;
-                            sphList.add (new Sphere_SECT ("Sphere", centerX,
-                                    centerY, centerZ, iRad, oRad, tht0, tht1,
-                                    fi0, fi1, radSample, lenSample,
-                                    Material.matProcess (matName)));
+                } else {
+                    if ( cpX != 0 ) {
+                        objCnt += cpX;
+                        centerX = oX;
+                        centerY = oY;
+                        centerZ = oZ;
+                        for ( int ii = 0; ii < cpX; ii++ ) {
+                            if ( xDir == 1 ) {
+                                centerX += gapVal + oRad;
+                                sphList.add (new Sphere_SECT ("Sphere", centerX,
+                                        centerY, centerZ, iRad, oRad, tht0, tht1,
+                                        fi0, fi1, radSample, lenSample,
+                                        Material.matProcess (matName)));
+                                sphList.get (ii).setRotationAxis (Rotate.Y_AXIS);
+                                sphList.get (ii).setRotate (90.0);
+                            } else if ( yDir == 1 ) {
+                                centerX += gapVal + oRad;
+                                sphList.add (new Sphere_SECT ("Sphere", centerX,
+                                        centerY, centerZ, iRad, oRad, tht0, tht1,
+                                        fi0, fi1, radSample, lenSample,
+                                        Material.matProcess (matName)));
+                                sphList.get (ii).setRotationAxis (Rotate.X_AXIS);
+                                sphList.get (ii).setRotate (90);
+                            } else if ( zDir == 1 ) {
+                                centerX += gapVal + oRad;
+                                sphList.add (new Sphere_SECT ("Sphere", centerX,
+                                        centerY, centerZ, iRad, oRad, tht0, tht1,
+                                        fi0, fi1, radSample, lenSample,
+                                        Material.matProcess (matName)));
+                            }
+                            camV.add (sphList.get (ii));
+                            geoTextEntry = "Sphere" + "  (" + centerX + ",  " +
+                                    centerY + ",  " + centerZ + ")  " + "  " +
+                                    iRad + "  " + oRad + "  " + tht0 * RTODeg +
+                                    "  " + tht1 * RTODeg + "  " + fi0 * RTODeg +
+                                    "  " + fi1 * RTODeg + "  " + objAxis.
+                                    getText () +
+                                    " Material = " + (1 + matNames.
+                                    indexOf (matName)) +
+                                    "\n";
+                            geoEntries.appendText (geoTextEntry);
                         }
-                        camV.add (sphList.get (ii));
-                        geoTextEntry = "Sphere" + "  (" + centerX + ",  " +
-                                centerY + ",  " + centerZ + ")  " + "  " +
-                                iRad + "  " + oRad + "  " + tht0 * RTODeg +
-                                "  " + tht1 * RTODeg + "  " + fi0 * RTODeg +
-                                "  " + fi1 * RTODeg + "  " + objAxis.getText () +
-                                " Material = " + (1 + matNames.
-                                indexOf (matName)) +
-                                "\n";
-                        geoEntries.appendText (geoTextEntry);
+                        nodeList.setText (" Total " + objCnt + "Sphere added");
+                        sphList.clear ();
                     }
-                    nodeList.setText (" Total " + objCnt + "Sphere added");
-                    sphList.clear ();
-                }
-                if ( cpZ != 0 ) {
-                    objCnt += cpZ;
-                    centerX = oX;
-                    centerY = oY;
-                    centerZ = oZ;
-                    for ( int ii = 0; ii < cpZ; ii++ ) {
-                        if ( xDir == 1 ) {
-                            centerZ += gapVal + oRad;
-                            sphList.add (new Sphere_SECT ("Sphere", centerX,
-                                    centerY, centerZ, iRad, oRad, tht0, tht1,
-                                    fi0, fi1, radSample, lenSample,
-                                    Material.matProcess (matName)));
-                            sphList.get (ii).setRotationAxis (Rotate.Y_AXIS);
-                            sphList.get (ii).setRotate (90.0);
-                        } else if ( yDir == 1 ) {
-                            centerZ += gapVal + oRad;
-                            sphList.add (new Sphere_SECT ("Sphere", centerX,
-                                    centerY, centerZ, iRad, oRad, tht0, tht1,
-                                    fi0, fi1, radSample, lenSample,
-                                    Material.matProcess (matName)));
-                            sphList.get (ii).setRotationAxis (Rotate.X_AXIS);
-                            sphList.get (ii).setRotate (90);
-                        } else if ( zDir == 1 ) {
-                            centerZ += gapVal + oRad;
-                            sphList.add (new Sphere_SECT ("Sphere", centerX,
-                                    centerY, centerZ, iRad, oRad, tht0, tht1,
-                                    fi0, fi1, radSample, lenSample,
-                                    Material.matProcess (matName)));
+                    if ( cpY != 0 ) {
+                        objCnt += cpY;
+                        centerX = oX;
+                        centerY = oY;
+                        centerZ = oZ;
+                        for ( int ii = 0; ii < cpY; ii++ ) {
+                            if ( xDir == 1 ) {
+                                centerY += gapVal + oRad;
+                                sphList.add (new Sphere_SECT ("Sphere", centerX,
+                                        centerY, centerZ, iRad, oRad, tht0, tht1,
+                                        fi0, fi1, radSample, lenSample,
+                                        Material.matProcess (matName)));
+                                sphList.get (ii).setRotationAxis (Rotate.Y_AXIS);
+                                sphList.get (ii).setRotate (90.0);
+                            } else if ( yDir == 1 ) {
+                                centerY += gapVal + oRad;
+                                sphList.add (new Sphere_SECT ("Sphere", centerX,
+                                        centerY, centerZ, iRad, oRad, tht0, tht1,
+                                        fi0, fi1, radSample, lenSample,
+                                        Material.matProcess (matName)));
+                                sphList.get (ii).setRotationAxis (Rotate.X_AXIS);
+                                sphList.get (ii).setRotate (90);
+                            } else if ( zDir == 1 ) {
+                                centerY += gapVal + oRad;
+                                sphList.add (new Sphere_SECT ("Sphere", centerX,
+                                        centerY, centerZ, iRad, oRad, tht0, tht1,
+                                        fi0, fi1, radSample, lenSample,
+                                        Material.matProcess (matName)));
+                            }
+                            camV.add (sphList.get (ii));
+                            geoTextEntry = "Sphere" + "  (" + centerX + ",  " +
+                                    centerY + ",  " + centerZ + ")  " + "  " +
+                                    iRad + "  " + oRad + "  " + tht0 * RTODeg +
+                                    "  " + tht1 * RTODeg + "  " + fi0 * RTODeg +
+                                    "  " + fi1 * RTODeg + "  " + objAxis.
+                                    getText () +
+                                    " Material = " + (1 + matNames.
+                                    indexOf (matName)) +
+                                    "\n";
+                            geoEntries.appendText (geoTextEntry);
                         }
-                        camV.add (sphList.get (ii));
-                        geoTextEntry = "Sphere" + "  (" + centerX + ",  " +
-                                centerY + ",  " + centerZ + ")  " + "  " +
-                                iRad + "  " + oRad + "  " + tht0 * RTODeg +
-                                "  " + tht1 * RTODeg + "  " + fi0 * RTODeg +
-                                "  " + fi1 * RTODeg + "  " + objAxis.getText () +
-                                " Material = " + (1 + matNames.
-                                indexOf (matName)) +
-                                "\n";
-                        geoEntries.appendText (geoTextEntry);
+                        nodeList.setText (" Total " + objCnt + "Sphere added");
+                        sphList.clear ();
                     }
-                    nodeList.setText (" Total " + objCnt + "Sphere added");
-                    sphList.clear ();
+                    if ( cpZ != 0 ) {
+                        objCnt += cpZ;
+                        centerX = oX;
+                        centerY = oY;
+                        centerZ = oZ;
+                        for ( int ii = 0; ii < cpZ; ii++ ) {
+                            if ( xDir == 1 ) {
+                                centerZ += gapVal + oRad;
+                                sphList.add (new Sphere_SECT ("Sphere", centerX,
+                                        centerY, centerZ, iRad, oRad, tht0, tht1,
+                                        fi0, fi1, radSample, lenSample,
+                                        Material.matProcess (matName)));
+                                sphList.get (ii).setRotationAxis (Rotate.Y_AXIS);
+                                sphList.get (ii).setRotate (90.0);
+                            } else if ( yDir == 1 ) {
+                                centerZ += gapVal + oRad;
+                                sphList.add (new Sphere_SECT ("Sphere", centerX,
+                                        centerY, centerZ, iRad, oRad, tht0, tht1,
+                                        fi0, fi1, radSample, lenSample,
+                                        Material.matProcess (matName)));
+                                sphList.get (ii).setRotationAxis (Rotate.X_AXIS);
+                                sphList.get (ii).setRotate (90);
+                            } else if ( zDir == 1 ) {
+                                centerZ += gapVal + oRad;
+                                sphList.add (new Sphere_SECT ("Sphere", centerX,
+                                        centerY, centerZ, iRad, oRad, tht0, tht1,
+                                        fi0, fi1, radSample, lenSample,
+                                        Material.matProcess (matName)));
+                            }
+                            camV.add (sphList.get (ii));
+                            geoTextEntry = "Sphere" + "  (" + centerX + ",  " +
+                                    centerY + ",  " + centerZ + ")  " + "  " +
+                                    iRad + "  " + oRad + "  " + tht0 * RTODeg +
+                                    "  " + tht1 * RTODeg + "  " + fi0 * RTODeg +
+                                    "  " + fi1 * RTODeg + "  " + objAxis.
+                                    getText () +
+                                    " Material = " + (1 + matNames.
+                                    indexOf (matName)) +
+                                    "\n";
+                            geoEntries.appendText (geoTextEntry);
+                        }
+                        nodeList.setText (" Total " + objCnt + "Sphere added");
+                        sphList.clear ();
+                    }
                 }
-
                 matEntries.appendText (matList.getValue () + "\n");
                 numGeom++;
                 paramPane.getChildren ().clear ();
             }
+
         });
         sphList.remove (0, sphList.size ());
     }
 
-    void complete(Stage vegaStage, Scene vegaScene) {
+    void complete(Stage vegaStage, Scene vegaScene
+    ) {
 
         camV.frameCam (vegaStage, vegaScene);
         //  MouseHandler mouseHandler = new MouseHandler(vegaScene, camV);
@@ -1181,7 +1313,8 @@ public class GeomController extends Mesh {
     }
 
     @FXML
-    void doShapeCyl(ActionEvent event) {
+    void doShapeCyl(ActionEvent event
+    ) {
         if ( initialized == 0 ) {
             newStage = new Stage ();
             newStage.setTitle (
@@ -1200,7 +1333,8 @@ public class GeomController extends Mesh {
     }
 
     @FXML
-    private void doShapeCirc(ActionEvent event) {
+    private void doShapeCirc(ActionEvent event
+    ) {
         if ( initialized == 0 ) {
             newStage = new Stage ();
             newStage.setTitle (
