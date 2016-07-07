@@ -39,6 +39,7 @@ import moncgui.Sphere;
 // public class GeomController implements Initializable extends Mesh {
 public class GeomController extends Mesh {
 
+    public static String choice = "single";
     private double dTORad = Math.PI / 180.0;
     private double RTODeg = 180.0 / Math.PI;
     private int geoSnapCnt = 0;
@@ -541,11 +542,13 @@ public class GeomController extends Mesh {
                     Toggle old_toggle, Toggle new_toggle) {
                 if ( cpTypeG.getSelectedToggle ().getUserData ().
                         toString ().contains ("Axial") ) {
+                    GeomController.choice = "Axial";
                     paramPane.getChildren ().clear ();
                     paramPane.add (vb2, 0, 0);
                     paramPane.add (drawMe, 0, 9);
                 } else if ( cpTypeG.getSelectedToggle ().getUserData ().
                         toString ().contains ("Circular") ) {
+                    GeomController.choice = "Circular";
                     paramPane.getChildren ().clear ();
                     paramPane.add (vb3, 0, 0);
                     paramPane.add (drawMe, 0, 9);
@@ -568,11 +571,19 @@ public class GeomController extends Mesh {
                 double cprad = 0.0, cptht = 0.0, cpphi = 0.0;
                 int cpX = 0, cpY = 0, cpZ = 0, cpnum;
                 int xDir = 0, yDir = 0, zDir = 0;
+                int ishape = 0;
+                boolean cpAx = false;
                 boolean naked = (inView.getSelectedToggle ().getUserData ().
                         toString ().contains ("true") ? true : false);
-                boolean cpAx = (cpTypeG.getSelectedToggle ().getUserData ().
-                        toString ().contains ("Axial") ? true : false);
 
+                System.out.println ("choice = " + choice);
+                if ( choice.contains ("Circular") ) {
+                    ishape = 1;  // circular
+                } else if ( choice.contains ("Axial") ) {
+                    ishape = 2;  // Axial
+                } else if ( choice.contains ("single") ) {
+                    ishape = 0;
+                }
                 cprad = (!cpRad.getText ().isEmpty () ? Double.parseDouble (
                         cpRad.getText ()) : 0.0);
                 cptht = (!cpCenTht.getText ().isEmpty () ? Double.parseDouble (
@@ -634,7 +645,7 @@ public class GeomController extends Mesh {
                 }
                 objCnt = 0;
                 String matName = matList.getValue ().toString ();
-                if ( !cpAx ) {
+                if ( ishape == 1 ) {
                     double pltTht = 0.0, pltPhi = 0.0, dtht = 0.0, dphi = 0.0;
                     dtht = 2.0 * Math.PI / cpnum;
                     newCX = oX;
@@ -689,7 +700,7 @@ public class GeomController extends Mesh {
                     }
                     nodeList.setText (" Total " + objCnt + "Tube added");
                     tubeList.clear ();
-                } else {
+                } else if ( ishape == 2 || ishape == 0 ) {
                     if ( cpX != 0 ) {
                         objCnt += cpX;
                         newCX = oX;
@@ -973,7 +984,7 @@ public class GeomController extends Mesh {
         hb12.setSpacing (2);
         hb13.setSpacing (2);
         hb14.setSpacing (2);
-       // hb15.setSpacing (2);
+        // hb15.setSpacing (2);
         hb16.setSpacing (2);
         hb17.setSpacing (2);
         hb18.setSpacing (2);
@@ -1006,11 +1017,13 @@ public class GeomController extends Mesh {
                     Toggle old_toggle, Toggle new_toggle) {
                 if ( cpTypeG.getSelectedToggle ().getUserData ().
                         toString ().contains ("Axial") ) {
+                    GeomController.choice = "Axial";
                     paramPane.getChildren ().clear ();
                     paramPane.add (vb2, 0, 0);
                     paramPane.add (drawMe, 0, 9);
                 } else if ( cpTypeG.getSelectedToggle ().getUserData ().
                         toString ().contains ("Circular") ) {
+                    GeomController.choice = "circular";
                     paramPane.getChildren ().clear ();
                     paramPane.add (vb3, 0, 0);
                     paramPane.add (drawMe, 0, 9);
@@ -1030,12 +1043,18 @@ public class GeomController extends Mesh {
                         fi0 = 0.0, fi1 = 0.0, gapVal = 0.0, oX = 0.0,
                         oY = 0.0, oZ = 0.0, centerX = 0.0, centerY = 0.0,
                         centerZ = 0.0;
+                int ishape = 0;
                 int xDir = 0, yDir = 0, zDir = 0;
                 int cpX = 0, cpY = 0, cpZ = 0, cpnum = 0;
                 double cprad = 0.0, cptht = 0.0, cpphi = 0.0;
 
-                boolean cpAx = (cpTypeG.getSelectedToggle ().getUserData ().
-                        toString ().contains ("Axial") ? true : false);
+                if ( choice.contains ("Circular") ) {
+                    ishape = 1;
+                } else if ( choice.contains ("Axial") ) {
+                    ishape = 2;
+                } else if ( choice.contains ("songle") ) {
+                    ishape = 0;
+                }
 
                 cprad = (!cpRad.getText ().isEmpty () ? Double.parseDouble (
                         cpRad.getText ()) : 0.0);
@@ -1109,7 +1128,7 @@ public class GeomController extends Mesh {
                 objCnt = 0;
                 String matName = matList.getValue ().toString ();
 
-                if ( !cpAx ) {
+                if ( ishape == 1) {
                     double pltTht = 0.0, pltPhi = 0.0, dtht = 0.0, dphi = 0.0;
                     dtht = 2.0 * Math.PI / cpnum;
                     centerX = oX;
@@ -1158,7 +1177,7 @@ public class GeomController extends Mesh {
                     }
                     nodeList.setText (" Total " + objCnt + "Sphere added");
                     sphList.clear ();
-                } else {
+                } else if (ishape == 2 || ishape == 0){
                     if ( cpX != 0 ) {
                         objCnt += cpX;
                         centerX = oX;
